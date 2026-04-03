@@ -99,7 +99,6 @@ class _ClueLibraryScreenState extends State<ClueLibraryScreen>
                   itemCount: clues.length,
                   itemBuilder: (context, index) {
                     final clue = clues[index];
-                    final answerStart = clue.riddle.length;
                     return Card(
                       margin: const EdgeInsets.symmetric(
                         horizontal: 16,

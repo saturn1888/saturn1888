@@ -23,7 +23,8 @@ class AppTheme {
         backgroundColor: warmBrown,
         foregroundColor: Colors.white,
         elevation: 0,
-        titleTextStyle: GoogleFonts.fredokaOne(
+        titleTextStyle: GoogleFonts.fredoka(
+          fontWeight: FontWeight.w700,
           fontSize: 22,
           color: Colors.white,
         ),
@@ -31,7 +32,7 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           minimumSize: const Size(48, 56),
-          textStyle: GoogleFonts.fredokaOne(fontSize: 18),
+          textStyle: GoogleFonts.fredoka(fontSize: 18, fontWeight: FontWeight.w700),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -73,7 +74,8 @@ class AppTheme {
   }
 
   static TextStyle heading({double size = 28, Color? color}) {
-    return GoogleFonts.fredokaOne(
+    return GoogleFonts.fredoka(
+      fontWeight: FontWeight.w700,
       fontSize: size,
       color: color ?? warmBrown,
     );

@@ -26,7 +26,8 @@ class HomeScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                     Text(
                       'OzHunt',
-                      style: GoogleFonts.fredokaOne(
+                      style: GoogleFonts.fredoka(
+                        fontWeight: FontWeight.w700,
                         fontSize: 48,
                         color: AppTheme.warmBrown,
                       ),
