@@ -13,16 +13,16 @@ class HomeScreen extends StatelessWidget {
         decoration: const BoxDecoration(
           // Parchment/old map gradient background
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
             colors: [
-              Color(0xFFD4B896),
-              Color(0xFFC4A97D),
-              Color(0xFFBE9B6B),
-              Color(0xFFD2B48C),
-              Color(0xFFC4A97D),
+              Color(0xFFD9C4A5),
+              Color(0xFFCBB48E),
+              Color(0xFFC1A676),
+              Color(0xFFB89A68),
+              Color(0xFFCBB48E),
             ],
-            stops: [0.0, 0.25, 0.5, 0.75, 1.0],
+            stops: [0.0, 0.2, 0.5, 0.8, 1.0],
           ),
         ),
         child: SafeArea(
@@ -141,23 +141,20 @@ class HomeScreen extends StatelessWidget {
                       const SizedBox(height: 14),
                       SizedBox(
                         width: double.infinity,
-                        child: OutlinedButton(
+                        child: ElevatedButton(
                           onPressed: () =>
                               Navigator.pushNamed(context, '/manage'),
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(
-                              color: AppTheme.warmBrown.withOpacity(0.6),
-                              width: 2,
-                            ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.leather,
+                            foregroundColor: const Color(0xFFF5DEB3),
                             padding: const EdgeInsets.symmetric(vertical: 18),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
+                            elevation: 4,
+                            shadowColor: Colors.brown.withOpacity(0.4),
                           ),
                           child: Text(
                             'Manage Hunts 📋',
                             style: AppTheme.heading(
-                                size: 20, color: AppTheme.warmBrown),
+                                size: 20, color: const Color(0xFFF5DEB3)),
                           ),
                         ),
                       ),
@@ -183,7 +180,7 @@ class HomeScreen extends StatelessWidget {
                           vertical: 8,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFD4B896).withOpacity(0.8),
+                          color: const Color(0xFFD9C4A5).withOpacity(0.9),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: AppTheme.warmBrown),
                           boxShadow: [
