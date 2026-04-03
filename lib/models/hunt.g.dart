@@ -24,13 +24,15 @@ class HuntAdapter extends TypeAdapter<Hunt> {
       timerMinutes: fields[4] as int?,
       victoryMessage: fields[5] as String,
       createdAt: fields[6] as DateTime,
+      prizeDescription: fields[7] as String?,
+      prizePhotoPath: fields[8] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Hunt obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -44,7 +46,11 @@ class HuntAdapter extends TypeAdapter<Hunt> {
       ..writeByte(5)
       ..write(obj.victoryMessage)
       ..writeByte(6)
-      ..write(obj.createdAt);
+      ..write(obj.createdAt)
+      ..writeByte(7)
+      ..write(obj.prizeDescription)
+      ..writeByte(8)
+      ..write(obj.prizePhotoPath);
   }
 
   @override

@@ -16,6 +16,8 @@ class _ClueBuilderScreenState extends State<ClueBuilderScreen> {
   late String _huntName;
   late HuntThemeType _themeType;
   late int? _timerMinutes;
+  String? _prizeDescription;
+  String? _prizePhotoPath;
   bool _initialized = false;
 
   @override
@@ -25,6 +27,9 @@ class _ClueBuilderScreenState extends State<ClueBuilderScreen> {
       final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       _huntName = args['name'] as String;
       _themeType = args['theme'] as HuntThemeType;
+      _timerMinutes = args['timer'] as int?;
+      _prizeDescription = args['prizeDescription'] as String?;
+      _prizePhotoPath = args['prizePhotoPath'] as String?;
       _timerMinutes = args['timer'] as int?;
       _initialized = true;
     }
@@ -218,6 +223,8 @@ class _ClueBuilderScreenState extends State<ClueBuilderScreen> {
                             'theme': _themeType,
                             'timer': _timerMinutes,
                             'clues': _clues,
+                            'prizeDescription': _prizeDescription,
+                            'prizePhotoPath': _prizePhotoPath,
                           },
                         );
                       }

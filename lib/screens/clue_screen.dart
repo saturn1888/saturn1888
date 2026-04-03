@@ -29,8 +29,9 @@ class _ClueScreenState extends State<ClueScreen>
   late DateTime _startTime;
   bool _initialized = false;
 
-  // Countdown state
-  bool _showCountdown = true;
+  // Intro + Countdown state
+  bool _showIntro = true;
+  bool _showCountdown = false;
   int _countdownValue = 3;
   Timer? _countdownTimer;
   late AnimationController _countdownAnimController;
@@ -71,7 +72,6 @@ class _ClueScreenState extends State<ClueScreen>
     if (!_initialized) {
       _hunt = ModalRoute.of(context)!.settings.arguments as Hunt;
       _theme = _hunt.theme;
-      _startCountdown();
       _initialized = true;
     }
   }
@@ -225,8 +225,19 @@ class _ClueScreenState extends State<ClueScreen>
     return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 
+  void _dismissIntro() {
+    setState(() {
+      _showIntro = false;
+      _showCountdown = true;
+    });
+    _startCountdown();
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_showIntro) {
+      return _buildIntroScreen();
+    }
     if (_showCountdown) {
       return _buildCountdownScreen();
     }
@@ -455,6 +466,217 @@ class _ClueScreenState extends State<ClueScreen>
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildIntroScreen() {
+    final hasPrize = _hunt.prizeDescription != null &&
+        _hunt.prizeDescription!.isNotEmpty;
+    final hasPrizePhoto = _hunt.prizePhotoPath != null;
+
+    return Scaffold(
+      backgroundColor: _theme.backgroundColor,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  _theme.emoji,
+                  style: const TextStyle(fontSize: 64),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  _hunt.name,
+                  style: AppTheme.heading(size: 28, color: _theme.accentColor),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+
+                // How to play card
+                Card(
+                  color: _theme.cardColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        Text(
+                          'How to Play',
+                          style: AppTheme.heading(
+                            size: 22,
+                            color: _theme.accentColor,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        _introStep('1', 'Read the riddle clue',
+                            'Each clue is a riddle hinting at a location or object'),
+                        const SizedBox(height: 12),
+                        _introStep('2', 'Search and find it!',
+                            'Look around — the answer is nearby'),
+                        const SizedBox(height: 12),
+                        _introStep('3', 'Tap "I Found It!"',
+                            'Then pass the phone for the next clue'),
+                        if (hasPrize || hasPrizePhoto) ...[
+                          const SizedBox(height: 12),
+                          _introStep('4', 'Collect the treasure!',
+                              'There\'s something hidden at each spot'),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Prize section
+                if (hasPrize || hasPrizePhoto) ...[
+                  const SizedBox(height: 20),
+                  Card(
+                    color: _theme.accentColor.withOpacity(0.15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      side: BorderSide(
+                        color: _theme.accentColor.withOpacity(0.4),
+                        width: 2,
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          Text(
+                            'You\'re looking for...',
+                            style: AppTheme.body(
+                              size: 14,
+                              color: _theme.accentColor.withOpacity(0.7),
+                            ),
+                          ),
+                          if (hasPrize) ...[
+                            const SizedBox(height: 8),
+                            Text(
+                              _hunt.prizeDescription!,
+                              style: AppTheme.heading(
+                                size: 20,
+                                color: _theme.accentColor,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                          if (hasPrizePhoto) ...[
+                            const SizedBox(height: 12),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: _buildPrizeImage(),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+
+                // Timer info
+                if (_hunt.timerMinutes != null) ...[
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.timer, color: _theme.accentColor, size: 20),
+                      const SizedBox(width: 6),
+                      Text(
+                        '${_hunt.timerMinutes} minute timer',
+                        style: AppTheme.body(
+                          size: 15,
+                          color: _theme.accentColor.withOpacity(0.7),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+
+                const SizedBox(height: 32),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _dismissIntro,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _theme.accentColor,
+                      foregroundColor: _theme.backgroundColor,
+                      padding: const EdgeInsets.symmetric(vertical: 18),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: Text(
+                      'Let\'s Go!',
+                      style: AppTheme.heading(
+                        size: 24,
+                        color: _theme.backgroundColor,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _introStep(String number, String title, String subtitle) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CircleAvatar(
+          radius: 14,
+          backgroundColor: _theme.accentColor,
+          child: Text(
+            number,
+            style: AppTheme.heading(size: 14, color: _theme.backgroundColor),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: AppTheme.heading(size: 16, color: _theme.accentColor),
+              ),
+              Text(
+                subtitle,
+                style: AppTheme.body(
+                  size: 13,
+                  color: _theme.accentColor.withOpacity(0.6),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPrizeImage() {
+    final file = File(_hunt.prizePhotoPath!);
+    if (file.existsSync()) {
+      return Image.file(
+        file,
+        width: double.infinity,
+        height: 140,
+        fit: BoxFit.cover,
+      );
+    }
+    return Container(
+      width: double.infinity,
+      height: 100,
+      color: Colors.grey[300],
+      child: const Icon(Icons.broken_image, size: 32, color: Colors.grey),
     );
   }
 

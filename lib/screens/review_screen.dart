@@ -21,6 +21,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
   late HuntThemeType _themeType;
   late int? _timerMinutes;
   late List<Clue> _clues;
+  String? _prizeDescription;
+  String? _prizePhotoPath;
   bool _initialized = false;
   bool _shuffleClues = false;
 
@@ -34,6 +36,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
       _themeType = args['theme'] as HuntThemeType;
       _timerMinutes = args['timer'] as int?;
       _clues = args['clues'] as List<Clue>;
+      _prizeDescription = args['prizeDescription'] as String?;
+      _prizePhotoPath = args['prizePhotoPath'] as String?;
       _initialized = true;
     }
   }
@@ -54,6 +58,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
       clues: clues,
       timerMinutes: _timerMinutes,
       victoryMessage: _victoryController.text.trim(),
+      prizeDescription: _prizeDescription,
+      prizePhotoPath: _prizePhotoPath,
     );
 
     final box = Hive.box<Hunt>('hunts');

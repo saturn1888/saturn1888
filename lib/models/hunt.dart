@@ -27,6 +27,12 @@ class Hunt extends HiveObject {
   @HiveField(6)
   DateTime createdAt;
 
+  @HiveField(7)
+  String? prizeDescription;
+
+  @HiveField(8)
+  String? prizePhotoPath;
+
   Hunt({
     required this.id,
     required this.name,
@@ -34,6 +40,8 @@ class Hunt extends HiveObject {
     required this.clues,
     this.timerMinutes,
     this.victoryMessage = 'You did it! Amazing treasure hunters! 🎉',
+    this.prizeDescription,
+    this.prizePhotoPath,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
