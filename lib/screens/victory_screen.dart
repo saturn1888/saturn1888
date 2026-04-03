@@ -223,7 +223,7 @@ class _VictoryScreenState extends State<VictoryScreen> {
               child: ConfettiWidget(
                 confettiController: _confettiController,
                 blastDirectionality: BlastDirectionality.explosive,
-                shouldLoop: true,
+                shouldLoop: false,
                 colors: [
                   _theme.accentColor,
                   Colors.yellow,

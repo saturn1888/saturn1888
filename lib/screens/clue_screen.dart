@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:confetti/confetti.dart';
 import '../models/hunt.dart';
 import '../models/hunt_theme.dart';
@@ -14,7 +15,8 @@ class ClueScreen extends StatefulWidget {
   State<ClueScreen> createState() => _ClueScreenState();
 }
 
-class _ClueScreenState extends State<ClueScreen> {
+class _ClueScreenState extends State<ClueScreen>
+    with SingleTickerProviderStateMixin {
   late Hunt _hunt;
   late HuntThemeData _theme;
   int _currentClueIndex = 0;
@@ -27,12 +29,30 @@ class _ClueScreenState extends State<ClueScreen> {
   late DateTime _startTime;
   bool _initialized = false;
 
+  // Countdown state
+  bool _showCountdown = true;
+  int _countdownValue = 3;
+  Timer? _countdownTimer;
+  late AnimationController _countdownAnimController;
+  late Animation<double> _countdownScale;
+
   @override
   void initState() {
     super.initState();
     _confettiController =
         ConfettiController(duration: const Duration(seconds: 2));
     _startTime = DateTime.now();
+
+    _countdownAnimController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _countdownScale = Tween<double>(begin: 1.5, end: 0.8).animate(
+      CurvedAnimation(
+        parent: _countdownAnimController,
+        curve: Curves.easeOut,
+      ),
+    );
   }
 
   @override
@@ -41,21 +61,49 @@ class _ClueScreenState extends State<ClueScreen> {
     if (!_initialized) {
       _hunt = ModalRoute.of(context)!.settings.arguments as Hunt;
       _theme = _hunt.theme;
-      if (_hunt.timerMinutes != null) {
-        _remainingSeconds = _hunt.timerMinutes! * 60;
-        _startTimer();
-      }
+      _startCountdown();
       _initialized = true;
     }
+  }
+
+  void _startCountdown() {
+    _countdownAnimController.forward();
+    HapticFeedback.mediumImpact();
+
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      if (_countdownValue > 1) {
+        setState(() => _countdownValue--);
+        _countdownAnimController.reset();
+        _countdownAnimController.forward();
+        HapticFeedback.mediumImpact();
+      } else {
+        timer.cancel();
+        setState(() => _showCountdown = false);
+        HapticFeedback.heavyImpact();
+        _startTime = DateTime.now();
+        if (_hunt.timerMinutes != null) {
+          _remainingSeconds = _hunt.timerMinutes! * 60;
+          _startTimer();
+        }
+      }
+    });
   }
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_remainingSeconds > 0) {
         setState(() => _remainingSeconds--);
+        if (_remainingSeconds == 59) {
+          HapticFeedback.heavyImpact();
+        }
       } else {
         timer.cancel();
         setState(() => _timerExpired = true);
+        HapticFeedback.heavyImpact();
         _showTimesUpDialog();
       }
     });
@@ -83,6 +131,7 @@ class _ClueScreenState extends State<ClueScreen> {
   }
 
   void _onFoundIt() {
+    HapticFeedback.heavyImpact();
     setState(() => _found = true);
     _confettiController.play();
 
@@ -111,12 +160,14 @@ class _ClueScreenState extends State<ClueScreen> {
 
   void _showHelpDialog() {
     final clue = _hunt.clues[_currentClueIndex];
+    HapticFeedback.lightImpact();
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Help 🆘', style: AppTheme.heading(size: 22)),
         content: Text(
-          clue.wrongAnswerHint ?? 'No extra hint available for this clue. Look more carefully!',
+          clue.wrongAnswerHint ??
+              'No extra hint available for this clue. Look more carefully!',
           style: AppTheme.body(size: 16),
         ),
         actions: [
@@ -134,6 +185,8 @@ class _ClueScreenState extends State<ClueScreen> {
   void dispose() {
     _confettiController.dispose();
     _timer?.cancel();
+    _countdownTimer?.cancel();
+    _countdownAnimController.dispose();
     super.dispose();
   }
 
@@ -145,6 +198,10 @@ class _ClueScreenState extends State<ClueScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_showCountdown) {
+      return _buildCountdownScreen();
+    }
+
     final clue = _hunt.clues[_currentClueIndex];
     final progress = (_currentClueIndex + 1) / _hunt.clues.length;
 
@@ -205,8 +262,8 @@ class _ClueScreenState extends State<ClueScreen> {
                                 value: progress,
                                 backgroundColor:
                                     _theme.accentColor.withOpacity(0.2),
-                                valueColor: AlwaysStoppedAnimation(
-                                    _theme.accentColor),
+                                valueColor:
+                                    AlwaysStoppedAnimation(_theme.accentColor),
                                 minHeight: 8,
                               ),
                             ),
@@ -293,9 +350,8 @@ class _ClueScreenState extends State<ClueScreen> {
                         child: ElevatedButton(
                           onPressed: _found ? null : _onFoundIt,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: _found
-                                ? Colors.green[300]
-                                : _theme.accentColor,
+                            backgroundColor:
+                                _found ? Colors.green[300] : _theme.accentColor,
                             foregroundColor: _theme.backgroundColor,
                             padding: const EdgeInsets.symmetric(vertical: 18),
                             shape: RoundedRectangleBorder(
@@ -347,6 +403,54 @@ class _ClueScreenState extends State<ClueScreen> {
                   Colors.orange,
                 ],
                 numberOfParticles: 30,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCountdownScreen() {
+    final label = _countdownValue > 0 ? '$_countdownValue' : 'GO!';
+    return Scaffold(
+      backgroundColor: _theme.backgroundColor,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              _theme.emoji,
+              style: const TextStyle(fontSize: 64),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              _hunt.name,
+              style: AppTheme.heading(size: 24, color: _theme.accentColor),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 48),
+            AnimatedBuilder(
+              animation: _countdownScale,
+              builder: (context, child) {
+                return Transform.scale(
+                  scale: _countdownScale.value,
+                  child: Text(
+                    label,
+                    style: AppTheme.heading(
+                      size: 96,
+                      color: _theme.accentColor,
+                    ),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Get ready!',
+              style: AppTheme.body(
+                size: 18,
+                color: _theme.accentColor.withOpacity(0.7),
               ),
             ),
           ],
@@ -410,5 +514,20 @@ class _ClueScreenState extends State<ClueScreen> {
           ),
       ],
     );
+  }
+}
+
+class AnimatedBuilder extends AnimatedWidget {
+  final Widget Function(BuildContext, Widget?) builder;
+
+  const AnimatedBuilder({
+    super.key,
+    required Animation<double> animation,
+    required this.builder,
+  }) : super(listenable: animation);
+
+  @override
+  Widget build(BuildContext context) {
+    return builder(context, null);
   }
 }
