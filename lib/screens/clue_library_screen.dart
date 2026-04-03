@@ -14,6 +14,8 @@ class _ClueLibraryScreenState extends State<ClueLibraryScreen>
   late TabController _tabController;
   ClueDifficulty? _difficultyFilter;
   final List<String> _selectedClues = [];
+  String _searchQuery = '';
+  final _searchController = TextEditingController();
 
   static const _categories = [
     ClueCategory.home,
@@ -34,6 +36,7 @@ class _ClueLibraryScreenState extends State<ClueLibraryScreen>
   @override
   void dispose() {
     _tabController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -44,6 +47,13 @@ class _ClueLibraryScreenState extends State<ClueLibraryScreen>
       if (_difficultyFilter != null && c.difficulty != _difficultyFilter) {
         return false;
       }
+      if (_searchQuery.isNotEmpty) {
+        final query = _searchQuery.toLowerCase();
+        if (!c.riddle.toLowerCase().contains(query) &&
+            !c.answer.toLowerCase().contains(query)) {
+          return false;
+        }
+      }
       return true;
     }).toList();
   }
@@ -52,7 +62,7 @@ class _ClueLibraryScreenState extends State<ClueLibraryScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Clue Library 📚'),
+        title: const Text('Clue Library'),
         bottom: TabBar(
           controller: _tabController,
           onTap: (_) => setState(() {}),
@@ -65,6 +75,31 @@ class _ClueLibraryScreenState extends State<ClueLibraryScreen>
       ),
       body: Column(
         children: [
+          // Search bar
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            child: TextField(
+              controller: _searchController,
+              onChanged: (v) => setState(() => _searchQuery = v),
+              decoration: InputDecoration(
+                hintText: 'Search clues or answers...',
+                prefixIcon: const Icon(Icons.search, color: AppTheme.darkGold),
+                suffixIcon: _searchQuery.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          _searchController.clear();
+                          setState(() => _searchQuery = '');
+                        },
+                      )
+                    : null,
+                isDense: true,
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              ),
+            ),
+          ),
+          // Difficulty filters
           Padding(
             padding: const EdgeInsets.all(12),
             child: Row(
@@ -73,11 +108,11 @@ class _ClueLibraryScreenState extends State<ClueLibraryScreen>
                 const SizedBox(width: 8),
                 _buildDifficultyChip(null, 'All'),
                 const SizedBox(width: 6),
-                _buildDifficultyChip(ClueDifficulty.easy, 'Easy 🟢'),
+                _buildDifficultyChip(ClueDifficulty.easy, 'Easy'),
                 const SizedBox(width: 6),
-                _buildDifficultyChip(ClueDifficulty.medium, 'Medium 🟡'),
+                _buildDifficultyChip(ClueDifficulty.medium, 'Med'),
                 const SizedBox(width: 6),
-                _buildDifficultyChip(ClueDifficulty.hard, 'Hard 🔴'),
+                _buildDifficultyChip(ClueDifficulty.hard, 'Hard'),
               ],
             ),
           ),
@@ -89,7 +124,9 @@ class _ClueLibraryScreenState extends State<ClueLibraryScreen>
                 if (clues.isEmpty) {
                   return Center(
                     child: Text(
-                      'No clues match this filter',
+                      _searchQuery.isNotEmpty
+                          ? 'No clues match "$_searchQuery"'
+                          : 'No clues match this filter',
                       style: AppTheme.body(size: 16, color: Colors.grey),
                     ),
                   );
@@ -110,6 +147,7 @@ class _ClueLibraryScreenState extends State<ClueLibraryScreen>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(clue.difficultyEmoji),
                                 const SizedBox(width: 8),
@@ -134,7 +172,7 @@ class _ClueLibraryScreenState extends State<ClueLibraryScreen>
                               alignment: Alignment.centerRight,
                               child: _selectedClues.contains(clue.riddle)
                                   ? Chip(
-                                      label: Text('Added ✓',
+                                      label: Text('Added',
                                           style: AppTheme.body(
                                               size: 13, color: Colors.white)),
                                       backgroundColor: AppTheme.adventureGreen,

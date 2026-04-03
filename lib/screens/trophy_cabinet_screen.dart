@@ -8,17 +8,40 @@ class TrophyCabinetScreen extends StatelessWidget {
   const TrophyCabinetScreen({super.key});
 
   String _milestoneMessage(int count) {
-    if (count >= 25) return '🗺️ Master Explorer! 25+ hunts completed!';
-    if (count >= 10) return '🏆 Trophy Champion! 10+ hunts completed!';
-    if (count >= 5) return '🌟 Rising Star! 5+ hunts completed!';
-    if (count >= 1) return '🎉 First hunt completed!';
+    if (count >= 25) return 'Master Explorer! 25+ hunts completed!';
+    if (count >= 10) return 'Trophy Champion! 10+ hunts completed!';
+    if (count >= 5) return 'Rising Star! 5+ hunts completed!';
+    if (count >= 1) return 'First hunt completed!';
+    return '';
+  }
+
+  String _milestoneEmoji(int count) {
+    if (count >= 25) return '🗺️';
+    if (count >= 10) return '🏆';
+    if (count >= 5) return '🌟';
+    if (count >= 1) return '🎉';
     return '';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Trophy Cabinet 🏆')),
+      appBar: AppBar(
+        title: const Text('Trophy Cabinet'),
+        actions: [
+          ValueListenableBuilder(
+            valueListenable: Hive.box<Trophy>('trophies').listenable(),
+            builder: (context, Box<Trophy> box, _) {
+              if (box.isEmpty) return const SizedBox.shrink();
+              return IconButton(
+                onPressed: () => _showClearAllDialog(context, box),
+                icon: const Icon(Icons.delete_sweep),
+                tooltip: 'Clear all trophies',
+              );
+            },
+          ),
+        ],
+      ),
       body: ValueListenableBuilder(
         valueListenable: Hive.box<Trophy>('trophies').listenable(),
         builder: (context, Box<Trophy> box, _) {
@@ -41,6 +64,7 @@ class TrophyCabinetScreen extends StatelessWidget {
 
           final trophies = box.values.toList().reversed.toList();
           final milestone = _milestoneMessage(trophies.length);
+          final emoji = _milestoneEmoji(trophies.length);
 
           return Column(
             children: [
@@ -57,8 +81,9 @@ class TrophyCabinetScreen extends StatelessWidget {
                     if (milestone.isNotEmpty) ...[
                       const SizedBox(height: 4),
                       Text(
-                        milestone,
-                        style: AppTheme.body(size: 14, color: AppTheme.darkGold),
+                        '$emoji $milestone',
+                        style:
+                            AppTheme.body(size: 14, color: AppTheme.darkGold),
                       ),
                     ],
                   ],
@@ -80,6 +105,7 @@ class TrophyCabinetScreen extends StatelessWidget {
                     final theme = HuntThemeData.fromType(trophy.themeType);
                     return GestureDetector(
                       onTap: () => _showTrophyDetail(context, trophy),
+                      onLongPress: () => _showDeleteTrophy(context, trophy),
                       child: Card(
                         color: theme.backgroundColor,
                         shape: RoundedRectangleBorder(
@@ -138,6 +164,59 @@ class TrophyCabinetScreen extends StatelessWidget {
     return '${date.day}/${date.month}/${date.year}';
   }
 
+  void _showDeleteTrophy(BuildContext context, Trophy trophy) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Delete Trophy?', style: AppTheme.heading(size: 22)),
+        content: Text(
+          'Remove "${trophy.huntName}" from your trophy cabinet?',
+          style: AppTheme.body(size: 16),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              trophy.delete();
+              Navigator.pop(context);
+            },
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showClearAllDialog(BuildContext context, Box<Trophy> box) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Clear All Trophies?', style: AppTheme.heading(size: 22)),
+        content: Text(
+          'This will remove all ${box.length} trophies. This cannot be undone.',
+          style: AppTheme.body(size: 16),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              box.clear();
+              Navigator.pop(context);
+            },
+            child: const Text('Clear All',
+                style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showTrophyDetail(BuildContext context, Trophy trophy) {
     final theme = HuntThemeData.fromType(trophy.themeType);
     showDialog(
@@ -164,6 +243,14 @@ class TrophyCabinetScreen extends StatelessWidget {
           ],
         ),
         actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _showDeleteTrophy(context, trophy);
+            },
+            child: Text('Delete',
+                style: AppTheme.body(size: 14, color: Colors.red[300])),
+          ),
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text('Close',

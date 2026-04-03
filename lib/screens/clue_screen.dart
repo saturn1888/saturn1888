@@ -16,7 +16,7 @@ class ClueScreen extends StatefulWidget {
 }
 
 class _ClueScreenState extends State<ClueScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late Hunt _hunt;
   late HuntThemeData _theme;
   int _currentClueIndex = 0;
@@ -36,6 +36,11 @@ class _ClueScreenState extends State<ClueScreen>
   late AnimationController _countdownAnimController;
   late Animation<double> _countdownScale;
 
+  // Help button pulse
+  Timer? _helpPulseTimer;
+  late AnimationController _helpPulseController;
+  bool _showHelpPulse = false;
+
   @override
   void initState() {
     super.initState();
@@ -53,6 +58,11 @@ class _ClueScreenState extends State<ClueScreen>
         curve: Curves.easeOut,
       ),
     );
+
+    _helpPulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    )..repeat(reverse: true);
   }
 
   @override
@@ -84,6 +94,7 @@ class _ClueScreenState extends State<ClueScreen>
         timer.cancel();
         setState(() => _showCountdown = false);
         HapticFeedback.heavyImpact();
+        _resetHelpPulse();
         _startTime = DateTime.now();
         if (_hunt.timerMinutes != null) {
           _remainingSeconds = _hunt.timerMinutes! * 60;
@@ -130,9 +141,24 @@ class _ClueScreenState extends State<ClueScreen>
     );
   }
 
+  void _resetHelpPulse() {
+    _helpPulseTimer?.cancel();
+    setState(() => _showHelpPulse = false);
+    _helpPulseTimer = Timer(const Duration(seconds: 30), () {
+      if (mounted && !_found) {
+        setState(() => _showHelpPulse = true);
+        HapticFeedback.lightImpact();
+      }
+    });
+  }
+
   void _onFoundIt() {
     HapticFeedback.heavyImpact();
-    setState(() => _found = true);
+    _helpPulseTimer?.cancel();
+    setState(() {
+      _found = true;
+      _showHelpPulse = false;
+    });
     _confettiController.play();
 
     Future.delayed(const Duration(seconds: 2), () {
@@ -143,6 +169,7 @@ class _ClueScreenState extends State<ClueScreen>
           _found = false;
           _hintRevealed = false;
         });
+        _resetHelpPulse();
       } else {
         final totalSeconds = DateTime.now().difference(_startTime).inSeconds;
         _timer?.cancel();
@@ -186,7 +213,9 @@ class _ClueScreenState extends State<ClueScreen>
     _confettiController.dispose();
     _timer?.cancel();
     _countdownTimer?.cancel();
+    _helpPulseTimer?.cancel();
     _countdownAnimController.dispose();
+    _helpPulseController.dispose();
     super.dispose();
   }
 
@@ -368,16 +397,34 @@ class _ClueScreenState extends State<ClueScreen>
                         ),
                       ),
                       const SizedBox(height: 12),
-                      TextButton(
-                        onPressed: _showHelpDialog,
-                        style: TextButton.styleFrom(
-                          minimumSize: const Size(48, 48),
-                        ),
-                        child: Text(
-                          'Help 🆘',
-                          style: AppTheme.body(
-                            size: 16,
-                            color: _theme.accentColor.withOpacity(0.8),
+                      FadeTransition(
+                        opacity: _showHelpPulse
+                            ? Tween<double>(begin: 0.4, end: 1.0)
+                                .animate(_helpPulseController)
+                            : const AlwaysStoppedAnimation(1.0),
+                        child: TextButton(
+                          onPressed: () {
+                            _helpPulseTimer?.cancel();
+                            setState(() => _showHelpPulse = false);
+                            _showHelpDialog();
+                          },
+                          style: TextButton.styleFrom(
+                            minimumSize: const Size(48, 48),
+                            backgroundColor: _showHelpPulse
+                                ? _theme.accentColor.withOpacity(0.15)
+                                : null,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Text(
+                            _showHelpPulse ? 'Need a hint? 🆘' : 'Help 🆘',
+                            style: AppTheme.body(
+                              size: 16,
+                              color: _theme.accentColor.withOpacity(0.8),
+                            ),
                           ),
                         ),
                       ),

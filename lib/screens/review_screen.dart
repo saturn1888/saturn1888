@@ -22,6 +22,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   late int? _timerMinutes;
   late List<Clue> _clues;
   bool _initialized = false;
+  bool _shuffleClues = false;
 
   @override
   void didChangeDependencies() {
@@ -44,11 +45,13 @@ class _ReviewScreenState extends State<ReviewScreen> {
   }
 
   Future<void> _startHunt() async {
+    final clues = List<Clue>.from(_clues);
+    if (_shuffleClues) clues.shuffle();
     final hunt = Hunt(
       id: const Uuid().v4(),
       name: _huntName,
       themeType: _themeType,
-      clues: _clues,
+      clues: clues,
       timerMinutes: _timerMinutes,
       victoryMessage: _victoryController.text.trim(),
     );
@@ -158,7 +161,20 @@ class _ReviewScreenState extends State<ReviewScreen> {
               ),
               textCapitalization: TextCapitalization.sentences,
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 16),
+            SwitchListTile(
+              title: Text('Shuffle clue order', style: AppTheme.body(size: 16)),
+              subtitle: Text(
+                'Randomise the order for replay variety',
+                style: AppTheme.body(size: 13, color: Colors.grey),
+              ),
+              secondary: const Text('🔀', style: TextStyle(fontSize: 24)),
+              value: _shuffleClues,
+              activeColor: AppTheme.darkGold,
+              onChanged: (v) => setState(() => _shuffleClues = v),
+              contentPadding: EdgeInsets.zero,
+            ),
+            const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
