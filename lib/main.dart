@@ -15,6 +15,7 @@ import 'screens/play_select_screen.dart';
 import 'screens/clue_screen.dart';
 import 'screens/victory_screen.dart';
 import 'screens/trophy_cabinet_screen.dart';
+import 'screens/manage_hunts_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,6 +54,7 @@ class OzHuntApp extends StatelessWidget {
         '/play': (context) => const ClueScreen(),
         '/victory': (context) => const VictoryScreen(),
         '/trophies': (context) => const TrophyCabinetScreen(),
+        '/manage': (context) => const ManageHuntsScreen(),
       },
     );
   }

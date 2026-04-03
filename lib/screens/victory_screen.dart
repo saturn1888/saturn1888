@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:confetti/confetti.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:audioplayers/audioplayers.dart';
 import '../models/hunt.dart';
 import '../models/hunt_theme.dart';
 import '../models/trophy.dart';
@@ -13,19 +15,33 @@ class VictoryScreen extends StatefulWidget {
   State<VictoryScreen> createState() => _VictoryScreenState();
 }
 
-class _VictoryScreenState extends State<VictoryScreen> {
+class _VictoryScreenState extends State<VictoryScreen>
+    with SingleTickerProviderStateMixin {
   late ConfettiController _confettiController;
   late Hunt _hunt;
   late int _timeTaken;
   late HuntThemeData _theme;
   bool _saved = false;
   bool _initialized = false;
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  late AnimationController _bounceController;
+  late Animation<double> _bounceAnimation;
 
   @override
   void initState() {
     super.initState();
     _confettiController =
         ConfettiController(duration: const Duration(seconds: 5));
+    _bounceController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    );
+    _bounceAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _bounceController,
+        curve: Curves.elasticOut,
+      ),
+    );
   }
 
   @override
@@ -38,13 +54,26 @@ class _VictoryScreenState extends State<VictoryScreen> {
       _timeTaken = args['timeTaken'] as int;
       _theme = _hunt.theme;
       _confettiController.play();
+      _bounceController.forward();
+      _playVictorySound();
+      HapticFeedback.heavyImpact();
       _initialized = true;
+    }
+  }
+
+  Future<void> _playVictorySound() async {
+    try {
+      await _audioPlayer.play(AssetSource('sounds/victory.wav'));
+    } catch (e) {
+      // Sound file not available — that's fine, celebrate silently
     }
   }
 
   @override
   void dispose() {
     _confettiController.dispose();
+    _bounceController.dispose();
+    _audioPlayer.dispose();
     super.dispose();
   }
 
@@ -64,6 +93,7 @@ class _VictoryScreenState extends State<VictoryScreen> {
     );
     await Hive.box<Trophy>('trophies').add(trophy);
     setState(() => _saved = true);
+    HapticFeedback.mediumImpact();
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -88,17 +118,34 @@ class _VictoryScreenState extends State<VictoryScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      _theme.emoji,
-                      style: const TextStyle(fontSize: 80),
+                    // Animated victory emoji
+                    AnimatedBuilder(
+                      animation: _bounceAnimation,
+                      builder: (context, _) {
+                        return Transform.scale(
+                          scale: _bounceAnimation.value,
+                          child: Text(
+                            _theme.emoji,
+                            style: const TextStyle(fontSize: 80),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 16),
-                    Text(
-                      'Victory!',
-                      style: AppTheme.heading(
-                        size: 42,
-                        color: _theme.accentColor,
-                      ),
+                    AnimatedBuilder(
+                      animation: _bounceAnimation,
+                      builder: (context, _) {
+                        return Opacity(
+                          opacity: _bounceAnimation.value.clamp(0.0, 1.0),
+                          child: Text(
+                            'Victory!',
+                            style: AppTheme.heading(
+                              size: 42,
+                              color: _theme.accentColor,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -145,12 +192,10 @@ class _VictoryScreenState extends State<VictoryScreen> {
                       child: ElevatedButton(
                         onPressed: _saved ? null : _saveTrophy,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _saved
-                              ? Colors.grey
-                              : _theme.accentColor,
+                          backgroundColor:
+                              _saved ? Colors.grey : _theme.accentColor,
                           foregroundColor: _theme.backgroundColor,
-                          padding:
-                              const EdgeInsets.symmetric(vertical: 16),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
                         child: Text(
                           _saved
@@ -240,5 +285,20 @@ class _VictoryScreenState extends State<VictoryScreen> {
         ),
       ),
     );
+  }
+}
+
+class AnimatedBuilder extends AnimatedWidget {
+  final Widget Function(BuildContext, Widget?) builder;
+
+  const AnimatedBuilder({
+    super.key,
+    required Animation<double> animation,
+    required this.builder,
+  }) : super(listenable: animation);
+
+  @override
+  Widget build(BuildContext context) {
+    return builder(context, null);
   }
 }
