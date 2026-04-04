@@ -267,33 +267,70 @@ class _WoodPlankButton extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
           alignment: Alignment.center,
-          // Two text layers for carved/engraved into wood look
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              // Light chisel highlight (light catching the carved edge)
-              Transform.translate(
-                offset: const Offset(0.8, 1.0),
+          child: _CarvedText(label: label),
+        ),
+      ),
+    );
+  }
+}
+
+/// Text that looks roughly hand-carved into wood
+class _CarvedText extends StatelessWidget {
+  final String label;
+  const _CarvedText({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    final rng = Random(label.hashCode);
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        // Shadow inside the carve (deepest layer)
+        Transform.translate(
+          offset: const Offset(1.2, 1.5),
+          child: Text(
+            label,
+            style: AppTheme.heading(
+              size: 24,
+              color: Colors.black.withOpacity(0.35),
+            ),
+          ),
+        ),
+        // Light catching the top edge of the carve
+        Transform.translate(
+          offset: const Offset(-0.5, -0.8),
+          child: Text(
+            label,
+            style: AppTheme.heading(
+              size: 24,
+              color: Colors.white.withOpacity(0.3),
+            ),
+          ),
+        ),
+        // Main carved groove — slightly rough via individual letter offsets
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: label.split('').map((char) {
+            final dy = (rng.nextDouble() - 0.5) * 1.8;
+            final dx = (rng.nextDouble() - 0.5) * 0.6;
+            final rotation = (rng.nextDouble() - 0.5) * 0.03;
+            return Transform.translate(
+              offset: Offset(dx, dy),
+              child: Transform.rotate(
+                angle: rotation,
                 child: Text(
-                  label,
+                  char,
                   style: AppTheme.heading(
-                    size: 22,
-                    color: Colors.white.withOpacity(0.2),
+                    size: 24,
+                    color: const Color(0xFF0E0702),
                   ),
                 ),
               ),
-              // Dark carved groove
-              Text(
-                label,
-                style: AppTheme.heading(
-                  size: 22,
-                  color: const Color(0xFF1A0E05).withOpacity(0.8),
-                ),
-              ),
-            ],
-          ),
+            );
+          }).toList(),
         ),
-      ),
+      ],
     );
   }
 }
