@@ -96,15 +96,17 @@ class HomeScreen extends StatelessWidget {
                       // Wooden sign hanging from logo with rope
                       SizedBox(
                         width: 300,
-                        height: 80,
+                        height: 85,
                         child: CustomPaint(
                           painter: _HangingSignPainter(),
                           child: Padding(
                             padding: const EdgeInsets.only(
-                                top: 28, left: 20, right: 20),
+                                top: 30, left: 16, right: 16),
                             child: Center(
-                              child: _PaintedText(
-                                  text: 'Family Scavenger Hunts!'),
+                              child: _GoldenCarvedText(
+                                  label: 'Welcome to Family Scavenger Hunt',
+                                  seed: 99,
+                                  fontSize: 13),
                             ),
                           ),
                         ),
@@ -272,7 +274,12 @@ class _SignpostPlank extends StatelessWidget {
 class _GoldenCarvedText extends StatelessWidget {
   final String label;
   final int seed;
-  const _GoldenCarvedText({required this.label, required this.seed});
+  final double fontSize;
+  const _GoldenCarvedText({
+    required this.label,
+    required this.seed,
+    this.fontSize = 20,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -286,22 +293,22 @@ class _GoldenCarvedText extends StatelessWidget {
           offset: const Offset(1.0, 1.5),
           child: Text(
             upper,
+            textAlign: TextAlign.center,
             style: GoogleFonts.specialElite(
-              fontSize: 21,
+              fontSize: fontSize,
               color: Colors.black.withOpacity(0.5),
-              letterSpacing: 1.5,
+              letterSpacing: 1.2,
             ),
           ),
         ),
         // Individual letters with slight wobble
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
+        Wrap(
+          alignment: WrapAlignment.center,
           children: upper.split('').map((char) {
             final dy = (rng.nextDouble() - 0.5) * 2.0;
             final dx = (rng.nextDouble() - 0.5) * 0.8;
             final rotation = (rng.nextDouble() - 0.5) * 0.04;
-            final sizeVar = 20.0 + (rng.nextDouble() - 0.5) * 2.5;
+            final sizeVar = fontSize + (rng.nextDouble() - 0.5) * 2.5;
             return Transform.translate(
               offset: Offset(dx, dy),
               child: Transform.rotate(
@@ -570,69 +577,79 @@ class _HangingSignPainter extends CustomPainter {
     final w = size.width;
     final h = size.height;
 
-    // Rope attachment points — top connects to logo, bottom to the plank
-    final ropeTopLeftX = w * 0.2;
-    final ropeTopRightX = w * 0.8;
+    // Rope attachment points — top at logo corners, bottom at plank edges
+    // Logo is 270px wide centred in 300px, so corners at ~15 and ~285
+    final ropeTopLeftX = 15.0;
+    final ropeTopRightX = w - 15.0;
     const ropeTopY = 0.0;
-    final plankTop = h * 0.3;
-    final plankLeftRopeX = w * 0.15;
-    final plankRightRopeX = w * 0.85;
+    final plankTop = h * 0.32;
+    final plankLeftRopeX = 24.0;
+    final plankRightRopeX = w - 24.0;
 
     // — Draw ropes (behind the plank) —
     final ropePaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
-    // Left rope — multiple strands for worn twisted rope look
-    for (int strand = 0; strand < 3; strand++) {
-      final strandOffset = (strand - 1) * 1.2;
+    // Left rope — 5 strands twisted for thick worn rope
+    for (int strand = 0; strand < 5; strand++) {
+      final strandOffset = (strand - 2) * 1.3;
+      // Twist effect — each strand wobbles slightly
+      final twistPhase = strand * 0.8;
       final ropePath = Path()..moveTo(ropeTopLeftX + strandOffset, ropeTopY);
-      // Sag in the middle like real rope
-      ropePath.quadraticBezierTo(
-        ropeTopLeftX - 8 + strandOffset,
-        plankTop * 0.55,
-        plankLeftRopeX + strandOffset,
-        plankTop + 2,
-      );
+      final steps = 12;
+      for (int i = 1; i <= steps; i++) {
+        final t = i / steps;
+        // Lerp from top to bottom with sag
+        final x = ropeTopLeftX + (plankLeftRopeX - ropeTopLeftX) * t +
+            sin(t * pi + twistPhase) * 3 + strandOffset;
+        final y = ropeTopY + (plankTop + 2 - ropeTopY) * t +
+            sin(t * pi) * 6; // sag
+        ropePath.lineTo(x, y);
+      }
       ropePaint
         ..color = Color.lerp(
-          const Color(0xFF8B7355),
-          const Color(0xFF6B5535),
+          const Color(0xFF9B8060),
+          const Color(0xFF6B5030),
           rng.nextDouble(),
-        )!.withOpacity(0.6 + rng.nextDouble() * 0.3)
-        ..strokeWidth = 1.8 - strand * 0.3;
+        )!.withOpacity(0.5 + rng.nextDouble() * 0.4)
+        ..strokeWidth = 2.5 - (strand - 2).abs() * 0.4;
       canvas.drawPath(ropePath, ropePaint);
     }
 
-    // Right rope — multiple strands
-    for (int strand = 0; strand < 3; strand++) {
-      final strandOffset = (strand - 1) * 1.2;
+    // Right rope — 5 strands
+    for (int strand = 0; strand < 5; strand++) {
+      final strandOffset = (strand - 2) * 1.3;
+      final twistPhase = strand * 0.8;
       final ropePath = Path()..moveTo(ropeTopRightX + strandOffset, ropeTopY);
-      ropePath.quadraticBezierTo(
-        ropeTopRightX + 8 + strandOffset,
-        plankTop * 0.55,
-        plankRightRopeX + strandOffset,
-        plankTop + 2,
-      );
+      final steps = 12;
+      for (int i = 1; i <= steps; i++) {
+        final t = i / steps;
+        final x = ropeTopRightX + (plankRightRopeX - ropeTopRightX) * t +
+            sin(t * pi + twistPhase) * 3 + strandOffset;
+        final y = ropeTopY + (plankTop + 2 - ropeTopY) * t +
+            sin(t * pi) * 6;
+        ropePath.lineTo(x, y);
+      }
       ropePaint
         ..color = Color.lerp(
-          const Color(0xFF8B7355),
-          const Color(0xFF6B5535),
+          const Color(0xFF9B8060),
+          const Color(0xFF6B5030),
           rng.nextDouble(),
-        )!.withOpacity(0.6 + rng.nextDouble() * 0.3)
-        ..strokeWidth = 1.8 - strand * 0.3;
+        )!.withOpacity(0.5 + rng.nextDouble() * 0.4)
+        ..strokeWidth = 2.5 - (strand - 2).abs() * 0.4;
       canvas.drawPath(ropePath, ropePaint);
     }
 
     // Frayed rope fibers at attachment points
     final fiberPaint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.4
+      ..strokeWidth = 0.5
       ..strokeCap = StrokeCap.round;
     for (final attachX in [ropeTopLeftX, ropeTopRightX]) {
-      for (int i = 0; i < 5; i++) {
-        fiberPaint.color = const Color(0xFF8B7355).withOpacity(0.2 + rng.nextDouble() * 0.2);
-        final fx = attachX + (rng.nextDouble() - 0.5) * 6;
+      for (int i = 0; i < 8; i++) {
+        fiberPaint.color = const Color(0xFF9B8060).withOpacity(0.2 + rng.nextDouble() * 0.25);
+        final fx = attachX + (rng.nextDouble() - 0.5) * 10;
         canvas.drawLine(
           Offset(fx, ropeTopY),
           Offset(fx + (rng.nextDouble() - 0.5) * 4, ropeTopY + 3 + rng.nextDouble() * 5),
