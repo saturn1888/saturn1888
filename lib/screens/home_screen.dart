@@ -94,16 +94,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 8),
                       // Logo
                       SizedBox(
-                        width: 240,
-                        height: 240,
+                        width: 270,
+                        height: 270,
                         child: CustomPaint(
                           foregroundPainter: _TornEdgeOverlayPainter(),
                           child: ClipPath(
                             clipper: _TornEdgeClipper(),
                             child: Image.asset(
                               'assets/images/ozhunt_logo.png',
-                              width: 240,
-                              height: 240,
+                              width: 270,
+                              height: 270,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
                                 return Container(
@@ -158,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       _SignpostPlank(
                         label: _isMuted ? 'Unmute Music' : 'Mute Music',
                         tilt: -0.008,
-                        arrowDirection: -1,
+                        arrowDirection: 0,
                         seed: _isMuted ? 5 : 4,
                         onTap: _toggleMute,
                       ),
@@ -255,7 +255,7 @@ class _PaintedText extends StatelessWidget {
 class _SignpostPlank extends StatelessWidget {
   final String label;
   final double tilt;
-  final int arrowDirection; // 1 = right, -1 = left
+  final int arrowDirection; // 1 = right, -1 = left, 0 = no arrow
   final int seed;
   final VoidCallback onTap;
 
@@ -379,21 +379,31 @@ class _SignpostPlankPainter extends CustomPainter {
     final arrowDepth = 18.0;
     final midY = size.height / 2;
 
-    if (arrowDirection == 1) {
+    if (arrowDirection == 0) {
+      // Plain rectangular plank — no arrow
+      plank.moveTo(4, rng.nextDouble() * jag);
+      for (double x = 4; x < size.width - 4; x += step) {
+        plank.lineTo(x, rng.nextDouble() * jag);
+      }
+      plank.lineTo(size.width, rng.nextDouble() * jag * 2);
+      plank.lineTo(size.width, size.height - rng.nextDouble() * jag * 2);
+      for (double x = size.width - 4; x > 4; x -= step) {
+        plank.lineTo(x, size.height - rng.nextDouble() * jag);
+      }
+      plank.lineTo(0, size.height - rng.nextDouble() * jag * 2);
+      plank.lineTo(0, rng.nextDouble() * jag * 2);
+    } else if (arrowDirection == 1) {
       // Point on the right side
       plank.moveTo(4, rng.nextDouble() * jag);
       for (double x = 4; x < size.width - arrowDepth; x += step) {
         plank.lineTo(x, rng.nextDouble() * jag);
       }
-      // Arrow point
       plank.lineTo(size.width - arrowDepth, 0);
       plank.lineTo(size.width, midY);
       plank.lineTo(size.width - arrowDepth, size.height);
-      // Bottom edge
       for (double x = size.width - arrowDepth; x > 4; x -= step) {
         plank.lineTo(x, size.height - rng.nextDouble() * jag);
       }
-      // Left edge (straight-ish)
       plank.lineTo(0, size.height - rng.nextDouble() * jag * 2);
       plank.lineTo(0, rng.nextDouble() * jag * 2);
     } else {
@@ -402,14 +412,11 @@ class _SignpostPlankPainter extends CustomPainter {
       for (double x = arrowDepth; x < size.width - 4; x += step) {
         plank.lineTo(x, rng.nextDouble() * jag);
       }
-      // Right edge
       plank.lineTo(size.width, rng.nextDouble() * jag * 2);
       plank.lineTo(size.width, size.height - rng.nextDouble() * jag * 2);
-      // Bottom edge
       for (double x = size.width - 4; x > arrowDepth; x -= step) {
         plank.lineTo(x, size.height - rng.nextDouble() * jag);
       }
-      // Arrow point on left
       plank.lineTo(arrowDepth, size.height);
       plank.lineTo(0, midY);
       plank.lineTo(arrowDepth, 0);
@@ -509,7 +516,9 @@ class _SignpostPlankPainter extends CustomPainter {
     }
 
     // — Nail hole (near the non-arrow end) —
-    final nailX = arrowDirection == 1 ? 14.0 : size.width - 14.0;
+    final nailX = arrowDirection == 0
+        ? size.width / 2
+        : arrowDirection == 1 ? 14.0 : size.width - 14.0;
     final nailY = midY;
     canvas.drawCircle(
       Offset(nailX + 0.5, nailY + 1),
