@@ -2,11 +2,47 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:audioplayers/audioplayers.dart';
 import '../models/trophy.dart';
 import '../theme/app_theme.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final AudioPlayer _musicPlayer = AudioPlayer();
+  bool _isMuted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _startMusic();
+  }
+
+  Future<void> _startMusic() async {
+    try {
+      await _musicPlayer.setReleaseMode(ReleaseMode.loop);
+      await _musicPlayer.setVolume(0.35);
+      await _musicPlayer.play(AssetSource('sounds/adventure_music.wav'));
+    } catch (e) {
+      // Music file not available
+    }
+  }
+
+  void _toggleMute() {
+    setState(() => _isMuted = !_isMuted);
+    _musicPlayer.setVolume(_isMuted ? 0 : 0.35);
+  }
+
+  @override
+  void dispose() {
+    _musicPlayer.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +68,6 @@ class HomeScreen extends StatelessWidget {
               Positioned.fill(
                 child: CustomPaint(painter: _MapTexturePainter()),
               ),
-              // Lighter vignette — just subtle edge darkening
               Positioned.fill(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
@@ -54,26 +89,26 @@ class HomeScreen extends StatelessWidget {
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 16),
-                      // Logo with torn edges
+                      const SizedBox(height: 8),
+                      // Logo
                       SizedBox(
-                        width: 270,
-                        height: 270,
+                        width: 240,
+                        height: 240,
                         child: CustomPaint(
                           foregroundPainter: _TornEdgeOverlayPainter(),
                           child: ClipPath(
                             clipper: _TornEdgeClipper(),
                             child: Image.asset(
                               'assets/images/ozhunt_logo.png',
-                              width: 270,
-                              height: 270,
+                              width: 240,
+                              height: 240,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
                                 return Container(
-                                  width: 270,
-                                  height: 270,
+                                  width: 240,
+                                  height: 240,
                                   color: AppTheme.warmBrown.withOpacity(0.2),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -93,47 +128,11 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      // Wooden sign hanging from logo with rope
-                      SizedBox(
-                        width: 320,
-                        height: 70,
-                        child: CustomPaint(
-                          painter: _HangingSignPainter(),
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 28, left: 24, right: 24, bottom: 4),
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(
-                                'WELCOME TO FAMILY SCAVENGER HUNT',
-                                style: GoogleFonts.specialElite(
-                                  fontSize: 16,
-                                  color: const Color(0xFFFFE0A0),
-                                  letterSpacing: 1.0,
-                                  fontWeight: FontWeight.w400,
-                                  shadows: [
-                                    Shadow(
-                                      color: const Color(0xFFFF8C00).withOpacity(0.5),
-                                      blurRadius: 4,
-                                    ),
-                                    Shadow(
-                                      color: Colors.black.withOpacity(0.6),
-                                      offset: const Offset(1, 1.5),
-                                      blurRadius: 2,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      // Signpost planks — each tilted differently
+                      const SizedBox(height: 14),
                       _SignpostPlank(
                         label: 'Create a Hunt',
                         tilt: 0.02,
-                        arrowDirection: 1, // point right
+                        arrowDirection: 1,
                         seed: 1,
                         onTap: () => Navigator.pushNamed(context, '/setup'),
                       ),
@@ -141,7 +140,7 @@ class HomeScreen extends StatelessWidget {
                       _SignpostPlank(
                         label: 'Play a Hunt',
                         tilt: -0.015,
-                        arrowDirection: -1, // point left
+                        arrowDirection: -1,
                         seed: 2,
                         onTap: () =>
                             Navigator.pushNamed(context, '/play-select'),
@@ -155,7 +154,15 @@ class HomeScreen extends StatelessWidget {
                         onTap: () =>
                             Navigator.pushNamed(context, '/manage'),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 10),
+                      _SignpostPlank(
+                        label: _isMuted ? 'Unmute Music' : 'Mute Music',
+                        tilt: -0.008,
+                        arrowDirection: -1,
+                        seed: _isMuted ? 5 : 4,
+                        onTap: _toggleMute,
+                      ),
+                      const SizedBox(height: 30),
                     ],
                   ),
                 ),
@@ -203,6 +210,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
+
 
 /// Text that looks hand-painted with a brush onto cloth
 class _PaintedText extends StatelessWidget {
