@@ -12,16 +12,15 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          // Parchment/old map gradient background
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
               Color(0xFFD9C4A5),
               Color(0xFFCBB48E),
-              Color(0xFFC1A676),
-              Color(0xFFB89A68),
-              Color(0xFFCBB48E),
+              Color(0xFFB8A070),
+              Color(0xFFAA8E5A),
+              Color(0xFFBFA878),
             ],
             stops: [0.0, 0.2, 0.5, 0.8, 1.0],
           ),
@@ -29,38 +28,38 @@ class HomeScreen extends StatelessWidget {
         child: SafeArea(
           child: Stack(
             children: [
-              // Parchment texture overlay using subtle pattern
               Positioned.fill(
-                child: CustomPaint(
-                  painter: _MapTexturePainter(),
-                ),
+                child: CustomPaint(painter: _MapTexturePainter()),
               ),
-              // Burned / aged edge vignette — heavier at corners
+              // Heavy burned edge vignette
               Positioned.fill(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: RadialGradient(
                       center: Alignment.center,
-                      radius: 0.95,
+                      radius: 0.85,
                       colors: [
                         Colors.transparent,
-                        Colors.brown.withOpacity(0.08),
-                        Colors.brown.withOpacity(0.25),
-                        Colors.brown.withOpacity(0.55),
+                        const Color(0xFF3E2010).withOpacity(0.05),
+                        const Color(0xFF3E2010).withOpacity(0.18),
+                        const Color(0xFF2A1508).withOpacity(0.45),
+                        const Color(0xFF1A0A02).withOpacity(0.75),
                       ],
-                      stops: const [0.4, 0.65, 0.85, 1.0],
+                      stops: const [0.3, 0.5, 0.7, 0.85, 1.0],
                     ),
                   ),
                 ),
               ),
+              // Corner burns
+              ..._buildCornerBurns(),
               Center(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  padding: const EdgeInsets.symmetric(horizontal: 28),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const SizedBox(height: 16),
-                      // Logo image with torn map edges
+                      // Logo with torn edges
                       SizedBox(
                         width: 270,
                         height: 270,
@@ -84,11 +83,10 @@ class HomeScreen extends StatelessWidget {
                                       const Text('🗺️',
                                           style: TextStyle(fontSize: 80)),
                                       const SizedBox(height: 8),
-                                      Text(
-                                        'OzHunt',
-                                        style: AppTheme.heading(
-                                            size: 32, color: AppTheme.warmBrown),
-                                      ),
+                                      Text('OzHunt',
+                                          style: AppTheme.heading(
+                                              size: 32,
+                                              color: AppTheme.warmBrown)),
                                     ],
                                   ),
                                 );
@@ -97,118 +95,75 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 6),
                       Text(
                         'Family Scavenger Hunts!',
-                        style: AppTheme.body(
-                          size: 18,
-                          color: AppTheme.warmBrown,
+                        style: AppTheme.heading(
+                          size: 17,
+                          color: const Color(0xFF4A2E14),
                         ),
                       ),
-                      const SizedBox(height: 32),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () =>
-                              Navigator.pushNamed(context, '/setup'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppTheme.gold,
-                            foregroundColor: AppTheme.warmBrown,
-                            padding: const EdgeInsets.symmetric(vertical: 20),
-                            elevation: 6,
-                            shadowColor: Colors.brown.withOpacity(0.5),
-                          ),
-                          child: Text(
-                            'Create a Hunt 🗺️',
-                            style: AppTheme.heading(
-                                size: 22, color: AppTheme.warmBrown),
-                          ),
-                        ),
+                      const SizedBox(height: 28),
+                      _WornButton(
+                        label: 'Create a Hunt',
+                        icon: '🗺️',
+                        baseColor: const Color(0xFFCB8E1E),
+                        textColor: const Color(0xFF3E1E08),
+                        onTap: () => Navigator.pushNamed(context, '/setup'),
                       ),
-                      const SizedBox(height: 14),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () =>
-                              Navigator.pushNamed(context, '/play-select'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppTheme.adventureGreen,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 20),
-                            elevation: 6,
-                            shadowColor: Colors.brown.withOpacity(0.5),
-                          ),
-                          child: Text(
-                            'Play a Hunt 🎯',
-                            style: AppTheme.heading(
-                                size: 22, color: Colors.white),
-                          ),
-                        ),
+                      const SizedBox(height: 12),
+                      _WornButton(
+                        label: 'Play a Hunt',
+                        icon: '🎯',
+                        baseColor: const Color(0xFF2D6B3F),
+                        textColor: const Color(0xFFD4C9A8),
+                        onTap: () =>
+                            Navigator.pushNamed(context, '/play-select'),
                       ),
-                      const SizedBox(height: 14),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () =>
-                              Navigator.pushNamed(context, '/manage'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppTheme.leather,
-                            foregroundColor: const Color(0xFFF5DEB3),
-                            padding: const EdgeInsets.symmetric(vertical: 18),
-                            elevation: 4,
-                            shadowColor: Colors.brown.withOpacity(0.4),
-                          ),
-                          child: Text(
-                            'Manage Hunts 📋',
-                            style: AppTheme.heading(
-                                size: 20, color: const Color(0xFFF5DEB3)),
-                          ),
-                        ),
+                      const SizedBox(height: 12),
+                      _WornButton(
+                        label: 'Manage Hunts',
+                        icon: '📋',
+                        baseColor: const Color(0xFF6B4A2E),
+                        textColor: const Color(0xFFD4C9A8),
+                        onTap: () =>
+                            Navigator.pushNamed(context, '/manage'),
                       ),
                       const SizedBox(height: 24),
                     ],
                   ),
                 ),
               ),
+              // Trophy badge
               Positioned(
-                top: 16,
-                right: 16,
+                top: 12,
+                right: 12,
                 child: ValueListenableBuilder(
                   valueListenable:
                       Hive.box<Trophy>('trophies').listenable(),
                   builder: (context, Box<Trophy> box, _) {
-                    return InkWell(
+                    return GestureDetector(
                       onTap: () =>
                           Navigator.pushNamed(context, '/trophies'),
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFD9C4A5).withOpacity(0.9),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: AppTheme.warmBrown),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.brown.withOpacity(0.3),
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Text('🏆',
-                                style: TextStyle(fontSize: 24)),
-                            const SizedBox(width: 6),
-                            Text(
-                              '${box.length}',
-                              style: AppTheme.heading(size: 20),
-                            ),
-                          ],
+                      child: CustomPaint(
+                        painter: _WornBadgePainter(),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 10),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text('🏆',
+                                  style: TextStyle(fontSize: 22)),
+                              const SizedBox(width: 5),
+                              Text(
+                                '${box.length}',
+                                style: AppTheme.heading(
+                                    size: 18,
+                                    color: const Color(0xFF4A2E14)),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -221,230 +176,502 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+
+  static List<Widget> _buildCornerBurns() {
+    return [
+      // Top-left
+      Positioned(
+        top: 0, left: 0,
+        child: Container(
+          width: 80, height: 80,
+          decoration: BoxDecoration(
+            gradient: RadialGradient(
+              center: Alignment.topLeft,
+              radius: 1.0,
+              colors: [
+                const Color(0xFF1A0A02).withOpacity(0.5),
+                Colors.transparent,
+              ],
+            ),
+          ),
+        ),
+      ),
+      // Top-right
+      Positioned(
+        top: 0, right: 0,
+        child: Container(
+          width: 80, height: 80,
+          decoration: BoxDecoration(
+            gradient: RadialGradient(
+              center: Alignment.topRight,
+              radius: 1.0,
+              colors: [
+                const Color(0xFF1A0A02).withOpacity(0.45),
+                Colors.transparent,
+              ],
+            ),
+          ),
+        ),
+      ),
+      // Bottom-left
+      Positioned(
+        bottom: 0, left: 0,
+        child: Container(
+          width: 90, height: 90,
+          decoration: BoxDecoration(
+            gradient: RadialGradient(
+              center: Alignment.bottomLeft,
+              radius: 1.0,
+              colors: [
+                const Color(0xFF1A0A02).withOpacity(0.55),
+                Colors.transparent,
+              ],
+            ),
+          ),
+        ),
+      ),
+      // Bottom-right
+      Positioned(
+        bottom: 0, right: 0,
+        child: Container(
+          width: 90, height: 90,
+          decoration: BoxDecoration(
+            gradient: RadialGradient(
+              center: Alignment.bottomRight,
+              radius: 1.0,
+              colors: [
+                const Color(0xFF1A0A02).withOpacity(0.5),
+                Colors.transparent,
+              ],
+            ),
+          ),
+        ),
+      ),
+    ];
+  }
 }
 
-/// Paints creases, stains, grain, and wear to look like a crumpled old treasure map
-class _MapTexturePainter extends CustomPainter {
+/// A button styled like a worn leather/parchment plaque
+class _WornButton extends StatelessWidget {
+  final String label;
+  final String icon;
+  final Color baseColor;
+  final Color textColor;
+  final VoidCallback onTap;
+
+  const _WornButton({
+    required this.label,
+    required this.icon,
+    required this.baseColor,
+    required this.textColor,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: CustomPaint(
+        painter: _WornButtonPainter(baseColor: baseColor),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(icon, style: const TextStyle(fontSize: 24)),
+              const SizedBox(width: 10),
+              Text(
+                label,
+                style: AppTheme.heading(size: 21, color: textColor),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Paints a worn, weathered button background
+class _WornButtonPainter extends CustomPainter {
+  final Color baseColor;
+  _WornButtonPainter({required this.baseColor});
+
   @override
   void paint(Canvas canvas, Size size) {
-    final rng = Random(42); // Fixed seed for consistent texture
+    final rng = Random(baseColor.value);
+    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
 
-    // — Major fold creases (the map was folded in quarters) —
-    final creasePaint = Paint()
-      ..color = const Color(0xFF8B7355).withOpacity(0.12)
-      ..strokeWidth = 2.5
-      ..style = PaintingStyle.stroke;
+    // Base shape with rough rounded rect
+    final basePath = Path();
+    const r = 12.0;
+    const jag = 1.5;
+    const step = 6.0;
 
-    // Horizontal fold
-    final hFold = size.height * 0.48;
-    final hPath = Path()..moveTo(0, hFold - 3);
-    for (double x = 0; x < size.width; x += 8) {
-      hPath.lineTo(x, hFold + rng.nextDouble() * 6 - 3);
+    basePath.moveTo(r, jag * rng.nextDouble());
+    for (double x = r; x < size.width - r; x += step) {
+      basePath.lineTo(x, rng.nextDouble() * jag);
     }
-    canvas.drawPath(hPath, creasePaint);
-    // Shadow below the fold
+    basePath.lineTo(size.width - r, 0);
+    basePath.quadraticBezierTo(size.width, 0, size.width, r);
+    for (double y = r; y < size.height - r; y += step) {
+      basePath.lineTo(size.width - rng.nextDouble() * jag, y);
+    }
+    basePath.quadraticBezierTo(
+        size.width, size.height, size.width - r, size.height);
+    for (double x = size.width - r; x > r; x -= step) {
+      basePath.lineTo(x, size.height - rng.nextDouble() * jag);
+    }
+    basePath.quadraticBezierTo(0, size.height, 0, size.height - r);
+    for (double y = size.height - r; y > r; y -= step) {
+      basePath.lineTo(rng.nextDouble() * jag, y);
+    }
+    basePath.quadraticBezierTo(0, 0, r, 0);
+    basePath.close();
+
+    // Shadow
     canvas.drawPath(
-      hPath.shift(const Offset(0, 2)),
-      Paint()
-        ..color = const Color(0xFF5C3317).withOpacity(0.06)
-        ..strokeWidth = 4
-        ..style = PaintingStyle.stroke,
+      basePath.shift(const Offset(2, 3)),
+      Paint()..color = const Color(0xFF1A0A02).withOpacity(0.3),
     );
 
-    // Vertical fold
-    final vFold = size.width * 0.5;
-    final vPath = Path()..moveTo(vFold - 2, 0);
-    for (double y = 0; y < size.height; y += 8) {
-      vPath.lineTo(vFold + rng.nextDouble() * 5 - 2.5, y);
-    }
-    canvas.drawPath(vPath, creasePaint);
-    canvas.drawPath(
-      vPath.shift(const Offset(2, 0)),
+    // Main fill
+    canvas.save();
+    canvas.clipPath(basePath);
+    canvas.drawRect(rect, Paint()..color = baseColor);
+
+    // Leather grain gradient
+    canvas.drawRect(
+      rect,
       Paint()
-        ..color = const Color(0xFF5C3317).withOpacity(0.05)
-        ..strokeWidth = 3
-        ..style = PaintingStyle.stroke,
+        ..shader = LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.12),
+            Colors.transparent,
+            Colors.black.withOpacity(0.08),
+            Colors.transparent,
+            Colors.white.withOpacity(0.06),
+          ],
+        ).createShader(rect),
     );
 
-    // — Diagonal crumple creases —
-    final crumplePaint = Paint()
-      ..color = const Color(0xFF8B7355).withOpacity(0.07)
-      ..strokeWidth = 1.5
-      ..style = PaintingStyle.stroke;
-
-    for (int i = 0; i < 8; i++) {
+    // Wear scratches
+    final scratchPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.5;
+    for (int i = 0; i < 6; i++) {
       final x1 = rng.nextDouble() * size.width;
       final y1 = rng.nextDouble() * size.height;
-      final x2 = x1 + (rng.nextDouble() - 0.5) * size.width * 0.6;
-      final y2 = y1 + (rng.nextDouble() - 0.5) * size.height * 0.4;
-      final path = Path()..moveTo(x1, y1);
-      final cx = (x1 + x2) / 2 + (rng.nextDouble() - 0.5) * 30;
-      final cy = (y1 + y2) / 2 + (rng.nextDouble() - 0.5) * 30;
-      path.quadraticBezierTo(cx, cy, x2, y2);
-      canvas.drawPath(path, crumplePaint);
+      final x2 = x1 + (rng.nextDouble() - 0.5) * 40;
+      final y2 = y1 + (rng.nextDouble() - 0.5) * 8;
+      scratchPaint.color = Colors.white.withOpacity(0.06 + rng.nextDouble() * 0.08);
+      canvas.drawLine(Offset(x1, y1), Offset(x2, y2), scratchPaint);
     }
 
-    // — Water / tea stains —
-    for (int i = 0; i < 12; i++) {
-      final cx = rng.nextDouble() * size.width;
-      final cy = rng.nextDouble() * size.height;
-      final r = 15.0 + rng.nextDouble() * 40;
-      final stainPaint = Paint()
-        ..color = Color.lerp(
-          const Color(0xFF8B6914),
-          const Color(0xFF6B4226),
-          rng.nextDouble(),
-        )!.withOpacity(0.03 + rng.nextDouble() * 0.04);
-      canvas.drawOval(
-        Rect.fromCenter(
-          center: Offset(cx, cy),
-          width: r * (1.0 + rng.nextDouble() * 0.5),
-          height: r * (0.7 + rng.nextDouble() * 0.6),
-        ),
-        stainPaint,
-      );
-    }
-
-    // — Ring stain (like a coffee/tea cup was placed on the map) —
-    final ringPaint = Paint()
-      ..color = const Color(0xFF7B5B3A).withOpacity(0.08)
-      ..strokeWidth = 2.5
-      ..style = PaintingStyle.stroke;
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: Offset(size.width * 0.75, size.height * 0.2),
-        width: 60,
-        height: 55,
-      ),
-      ringPaint,
+    // Edge darkening
+    canvas.drawRect(
+      rect,
+      Paint()
+        ..shader = RadialGradient(
+          center: Alignment.center,
+          radius: 1.0,
+          colors: [
+            Colors.transparent,
+            Colors.black.withOpacity(0.15),
+          ],
+        ).createShader(rect),
     );
 
-    // — Paper grain (tiny dots scattered everywhere) —
-    final grainPaint = Paint()..style = PaintingStyle.fill;
-    for (int i = 0; i < 200; i++) {
-      final x = rng.nextDouble() * size.width;
-      final y = rng.nextDouble() * size.height;
-      grainPaint.color = Color.lerp(
-        const Color(0xFF8B7355),
-        const Color(0xFF5C3317),
-        rng.nextDouble(),
-      )!.withOpacity(0.02 + rng.nextDouble() * 0.03);
-      canvas.drawCircle(Offset(x, y), 0.5 + rng.nextDouble() * 1.5, grainPaint);
-    }
+    canvas.restore();
 
-    // — Worn edge marks (darker strokes near all 4 edges) —
-    final edgeWearPaint = Paint()
-      ..style = PaintingStyle.fill;
-    // Top edge
-    for (int i = 0; i < 30; i++) {
-      final x = rng.nextDouble() * size.width;
-      final w = 5.0 + rng.nextDouble() * 20;
-      final h = 2.0 + rng.nextDouble() * 8;
-      edgeWearPaint.color = const Color(0xFF5C3317).withOpacity(0.04 + rng.nextDouble() * 0.06);
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(x, 0, w, h),
-          const Radius.circular(2),
-        ),
-        edgeWearPaint,
-      );
-    }
-    // Bottom edge
-    for (int i = 0; i < 30; i++) {
-      final x = rng.nextDouble() * size.width;
-      final w = 5.0 + rng.nextDouble() * 20;
-      final h = 2.0 + rng.nextDouble() * 8;
-      edgeWearPaint.color = const Color(0xFF5C3317).withOpacity(0.04 + rng.nextDouble() * 0.06);
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(x, size.height - h, w, h),
-          const Radius.circular(2),
-        ),
-        edgeWearPaint,
-      );
-    }
-    // Left edge
-    for (int i = 0; i < 20; i++) {
-      final y = rng.nextDouble() * size.height;
-      final w = 2.0 + rng.nextDouble() * 6;
-      final h = 5.0 + rng.nextDouble() * 15;
-      edgeWearPaint.color = const Color(0xFF5C3317).withOpacity(0.03 + rng.nextDouble() * 0.05);
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(0, y, w, h),
-          const Radius.circular(2),
-        ),
-        edgeWearPaint,
-      );
-    }
-    // Right edge
-    for (int i = 0; i < 20; i++) {
-      final y = rng.nextDouble() * size.height;
-      final w = 2.0 + rng.nextDouble() * 6;
-      final h = 5.0 + rng.nextDouble() * 15;
-      edgeWearPaint.color = const Color(0xFF5C3317).withOpacity(0.03 + rng.nextDouble() * 0.05);
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(size.width - w, y, w, h),
-          const Radius.circular(2),
-        ),
-        edgeWearPaint,
-      );
-    }
-
-    // — Faded "compass rose" hint in corner —
-    final compassPaint = Paint()
-      ..color = const Color(0xFF8B7355).withOpacity(0.06)
-      ..strokeWidth = 1.0
-      ..style = PaintingStyle.stroke;
-    final cc = Offset(size.width * 0.12, size.height * 0.88);
-    const cr = 28.0;
-    canvas.drawCircle(cc, cr, compassPaint);
-    canvas.drawCircle(cc, cr * 0.6, compassPaint);
-    // N-S-E-W lines
-    canvas.drawLine(cc - const Offset(0, cr + 5), cc + const Offset(0, cr + 5), compassPaint);
-    canvas.drawLine(cc - const Offset(cr + 5, 0), cc + const Offset(cr + 5, 0), compassPaint);
-    // Diagonal lines
-    final diag = cr * 0.7;
-    canvas.drawLine(cc - Offset(diag, diag), cc + Offset(diag, diag), compassPaint..strokeWidth = 0.5);
-    canvas.drawLine(cc - Offset(-diag, diag), cc + Offset(-diag, diag), compassPaint);
+    // Outline
+    canvas.drawPath(
+      basePath,
+      Paint()
+        ..color = Color.lerp(baseColor, const Color(0xFF1A0A02), 0.5)!
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5,
+    );
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-/// Clips the logo with jagged torn-paper edges
+/// Paints a weathered badge background for the trophy counter
+class _WornBadgePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rng = Random(55);
+    final rect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      const Radius.circular(10),
+    );
+
+    // Shadow
+    canvas.drawRRect(
+      rect.shift(const Offset(1, 2)),
+      Paint()..color = const Color(0xFF1A0A02).withOpacity(0.25),
+    );
+
+    // Base fill — aged parchment
+    canvas.drawRRect(rect, Paint()..color = const Color(0xFFCBB48E));
+
+    // Age spots
+    canvas.save();
+    canvas.clipRRect(rect);
+    for (int i = 0; i < 5; i++) {
+      canvas.drawCircle(
+        Offset(rng.nextDouble() * size.width, rng.nextDouble() * size.height),
+        3 + rng.nextDouble() * 5,
+        Paint()..color = const Color(0xFF8B6914).withOpacity(0.06),
+      );
+    }
+    // Dark edges
+    canvas.drawRRect(
+      rect,
+      Paint()
+        ..shader = RadialGradient(
+          colors: [
+            Colors.transparent,
+            const Color(0xFF3E2010).withOpacity(0.2),
+          ],
+        ).createShader(Rect.fromLTWH(0, 0, size.width, size.height)),
+    );
+    canvas.restore();
+
+    // Border
+    canvas.drawRRect(
+      rect,
+      Paint()
+        ..color = const Color(0xFF5C3317).withOpacity(0.5)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.2,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// ============================================================
+// Background texture and logo edge painters
+// ============================================================
+
+class _MapTexturePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rng = Random(42);
+
+    // — Major fold creases (folded in thirds both ways) —
+    final creasePaint = Paint()
+      ..color = const Color(0xFF6B4A2E).withOpacity(0.15)
+      ..strokeWidth = 2.5
+      ..style = PaintingStyle.stroke;
+    final creaseShadow = Paint()
+      ..color = const Color(0xFF3E2010).withOpacity(0.08)
+      ..strokeWidth = 5
+      ..style = PaintingStyle.stroke;
+
+    for (final frac in [0.33, 0.5, 0.67]) {
+      final y = size.height * frac;
+      final p = Path()..moveTo(0, y);
+      for (double x = 0; x < size.width; x += 6) {
+        p.lineTo(x, y + rng.nextDouble() * 8 - 4);
+      }
+      canvas.drawPath(p.shift(const Offset(0, 2)), creaseShadow);
+      canvas.drawPath(p, creasePaint);
+    }
+    for (final frac in [0.35, 0.5, 0.65]) {
+      final x = size.width * frac;
+      final p = Path()..moveTo(x, 0);
+      for (double y = 0; y < size.height; y += 6) {
+        p.lineTo(x + rng.nextDouble() * 7 - 3.5, y);
+      }
+      canvas.drawPath(p.shift(const Offset(2, 0)), creaseShadow);
+      canvas.drawPath(p, creasePaint);
+    }
+
+    // — Diagonal crumple creases (more of them, varying weight) —
+    for (int i = 0; i < 15; i++) {
+      final x1 = rng.nextDouble() * size.width;
+      final y1 = rng.nextDouble() * size.height;
+      final len = 50 + rng.nextDouble() * size.width * 0.5;
+      final angle = rng.nextDouble() * pi;
+      final x2 = x1 + cos(angle) * len;
+      final y2 = y1 + sin(angle) * len;
+      final path = Path()..moveTo(x1, y1);
+      path.quadraticBezierTo(
+        (x1 + x2) / 2 + (rng.nextDouble() - 0.5) * 40,
+        (y1 + y2) / 2 + (rng.nextDouble() - 0.5) * 40,
+        x2, y2,
+      );
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = const Color(0xFF6B4A2E).withOpacity(0.04 + rng.nextDouble() * 0.06)
+          ..strokeWidth = 0.8 + rng.nextDouble() * 1.5
+          ..style = PaintingStyle.stroke,
+      );
+    }
+
+    // — Water / tea stains (more, bigger, varied) —
+    for (int i = 0; i < 20; i++) {
+      final cx = rng.nextDouble() * size.width;
+      final cy = rng.nextDouble() * size.height;
+      final r = 12.0 + rng.nextDouble() * 55;
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: Offset(cx, cy),
+          width: r * (0.8 + rng.nextDouble() * 0.8),
+          height: r * (0.5 + rng.nextDouble() * 0.7),
+        ),
+        Paint()
+          ..color = Color.lerp(
+            const Color(0xFF8B6914),
+            const Color(0xFF5C3317),
+            rng.nextDouble(),
+          )!.withOpacity(0.03 + rng.nextDouble() * 0.05),
+      );
+    }
+
+    // — Ring stains (two, different sizes) —
+    final ringPaint = Paint()
+      ..color = const Color(0xFF6B4226).withOpacity(0.09)
+      ..strokeWidth = 2.5
+      ..style = PaintingStyle.stroke;
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(size.width * 0.78, size.height * 0.18),
+        width: 55, height: 50,
+      ),
+      ringPaint,
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(size.width * 0.2, size.height * 0.75),
+        width: 40, height: 38,
+      ),
+      ringPaint..strokeWidth = 2.0,
+    );
+
+    // — Heavy paper grain (more dots, varied) —
+    final grainPaint = Paint()..style = PaintingStyle.fill;
+    for (int i = 0; i < 400; i++) {
+      grainPaint.color = Color.lerp(
+        const Color(0xFF8B7355),
+        const Color(0xFF3E2010),
+        rng.nextDouble(),
+      )!.withOpacity(0.02 + rng.nextDouble() * 0.04);
+      canvas.drawCircle(
+        Offset(rng.nextDouble() * size.width, rng.nextDouble() * size.height),
+        0.3 + rng.nextDouble() * 2.0,
+        grainPaint,
+      );
+    }
+
+    // — Worn edge marks (heavier, more numerous) —
+    final edgeWearPaint = Paint()..style = PaintingStyle.fill;
+    for (int edge = 0; edge < 4; edge++) {
+      for (int i = 0; i < 40; i++) {
+        edgeWearPaint.color =
+            const Color(0xFF3E2010).withOpacity(0.05 + rng.nextDouble() * 0.08);
+        final w = 4.0 + rng.nextDouble() * 25;
+        final h = 2.0 + rng.nextDouble() * 10;
+        Rect r;
+        switch (edge) {
+          case 0: r = Rect.fromLTWH(rng.nextDouble() * size.width, 0, w, h); break;
+          case 1: r = Rect.fromLTWH(rng.nextDouble() * size.width, size.height - h, w, h); break;
+          case 2: r = Rect.fromLTWH(0, rng.nextDouble() * size.height, h, w); break;
+          default: r = Rect.fromLTWH(size.width - h, rng.nextDouble() * size.height, h, w);
+        }
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(r, const Radius.circular(2)),
+          edgeWearPaint,
+        );
+      }
+    }
+
+    // — Ink bleed marks (like old pen dripped) —
+    for (int i = 0; i < 8; i++) {
+      final x = rng.nextDouble() * size.width;
+      final y = rng.nextDouble() * size.height;
+      canvas.drawCircle(
+        Offset(x, y),
+        1.5 + rng.nextDouble() * 3,
+        Paint()..color = const Color(0xFF2A1508).withOpacity(0.04 + rng.nextDouble() * 0.04),
+      );
+      // Drip trail
+      canvas.drawLine(
+        Offset(x, y),
+        Offset(x + (rng.nextDouble() - 0.5) * 5, y + 3 + rng.nextDouble() * 12),
+        Paint()
+          ..color = const Color(0xFF2A1508).withOpacity(0.03)
+          ..strokeWidth = 0.8,
+      );
+    }
+
+    // — Compass rose (bigger, more detailed) —
+    final cp = Paint()
+      ..color = const Color(0xFF6B4A2E).withOpacity(0.08)
+      ..strokeWidth = 1.0
+      ..style = PaintingStyle.stroke;
+    final cc = Offset(size.width * 0.12, size.height * 0.9);
+    const cr = 32.0;
+    canvas.drawCircle(cc, cr, cp);
+    canvas.drawCircle(cc, cr * 0.6, cp);
+    canvas.drawCircle(cc, cr * 0.25, cp..strokeWidth = 0.5);
+    // Cardinal lines
+    for (final angle in [0.0, pi / 2, pi, 3 * pi / 2]) {
+      canvas.drawLine(
+        cc + Offset(cos(angle) * cr * 0.2, sin(angle) * cr * 0.2),
+        cc + Offset(cos(angle) * (cr + 6), sin(angle) * (cr + 6)),
+        cp..strokeWidth = 1.0,
+      );
+    }
+    // Intercardinal lines
+    for (final angle in [pi / 4, 3 * pi / 4, 5 * pi / 4, 7 * pi / 4]) {
+      canvas.drawLine(
+        cc + Offset(cos(angle) * cr * 0.3, sin(angle) * cr * 0.3),
+        cc + Offset(cos(angle) * cr * 0.85, sin(angle) * cr * 0.85),
+        cp..strokeWidth = 0.5,
+      );
+    }
+    // N arrow
+    final nTip = cc + Offset(0, -(cr + 6));
+    canvas.drawLine(nTip, nTip + const Offset(-3, 6), cp..strokeWidth = 0.8);
+    canvas.drawLine(nTip, nTip + const Offset(3, 6), cp);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
 class _TornEdgeClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final rng = Random(77);
     final path = Path();
-    const inset = 6.0;   // How far in from the edge the tears start
-    const jag = 5.0;     // Max depth of each tear
-    const step = 4.0;    // Distance between tear points
+    const inset = 6.0;
+    const jag = 5.0;
+    const step = 4.0;
 
-    // Top edge: left to right
     path.moveTo(inset + rng.nextDouble() * jag, inset + rng.nextDouble() * jag);
     for (double x = inset; x < size.width - inset; x += step) {
       path.lineTo(x, inset + rng.nextDouble() * jag * 2);
     }
-
-    // Right edge: top to bottom
     for (double y = inset; y < size.height - inset; y += step) {
       path.lineTo(size.width - inset - rng.nextDouble() * jag * 2, y);
     }
-
-    // Bottom edge: right to left
     for (double x = size.width - inset; x > inset; x -= step) {
       path.lineTo(x, size.height - inset - rng.nextDouble() * jag * 2);
     }
-
-    // Left edge: bottom to top
     for (double y = size.height - inset; y > inset; y -= step) {
       path.lineTo(inset + rng.nextDouble() * jag * 2, y);
     }
-
     path.close();
     return path;
   }
@@ -453,33 +680,33 @@ class _TornEdgeClipper extends CustomClipper<Path> {
   bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
 
-/// Paints burned/darkened edges and wear marks on top of the clipped logo
 class _TornEdgeOverlayPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final rng = Random(99);
+    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
 
-    // Dark burned border vignette
-    final borderPaint = Paint()
-      ..shader = RadialGradient(
-        center: Alignment.center,
-        radius: 0.75,
-        colors: [
-          Colors.transparent,
-          Colors.transparent,
-          const Color(0xFF3E2010).withOpacity(0.3),
-          const Color(0xFF2A1508).withOpacity(0.7),
-        ],
-        stops: const [0.0, 0.55, 0.8, 1.0],
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), borderPaint);
+    canvas.drawRect(
+      rect,
+      Paint()
+        ..shader = RadialGradient(
+          center: Alignment.center,
+          radius: 0.75,
+          colors: [
+            Colors.transparent,
+            Colors.transparent,
+            const Color(0xFF3E2010).withOpacity(0.3),
+            const Color(0xFF2A1508).withOpacity(0.7),
+          ],
+          stops: const [0.0, 0.55, 0.8, 1.0],
+        ).createShader(rect),
+    );
 
-    // Scorch marks near edges
     final scorchPaint = Paint()..style = PaintingStyle.fill;
     for (int i = 0; i < 20; i++) {
-      final onEdge = rng.nextInt(4);
+      final edge = rng.nextInt(4);
       double x, y;
-      switch (onEdge) {
+      switch (edge) {
         case 0: x = rng.nextDouble() * size.width; y = rng.nextDouble() * 12; break;
         case 1: x = rng.nextDouble() * size.width; y = size.height - rng.nextDouble() * 12; break;
         case 2: x = rng.nextDouble() * 12; y = rng.nextDouble() * size.height; break;
