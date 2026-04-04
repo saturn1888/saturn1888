@@ -93,17 +93,23 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
-                      // Flag banner below logo
-                      CustomPaint(
-                        painter: _FlagBannerPainter(),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 12),
-                          child: _PaintedText(text: 'Family Scavenger Hunts!'),
+                      // Wooden sign hanging from logo with rope
+                      SizedBox(
+                        width: 300,
+                        height: 80,
+                        child: CustomPaint(
+                          painter: _HangingSignPainter(),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 28, left: 20, right: 20),
+                            child: Center(
+                              child: _PaintedText(
+                                  text: 'Family Scavenger Hunts!'),
+                            ),
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 16),
                       // Signpost planks — each tilted differently
                       _SignpostPlank(
                         label: 'Create a Hunt',
@@ -556,99 +562,180 @@ class _WornBadgePainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-/// Paints a white cloth flag/banner with slight wave and worn edges
-class _FlagBannerPainter extends CustomPainter {
+/// Paints a wooden sign hanging from two worn ropes connected to the logo above
+class _HangingSignPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final rng = Random(88);
     final w = size.width;
     final h = size.height;
 
-    // Banner shape — rectangle with wavy bottom and notched ends
-    final banner = Path();
-    // Top edge (slightly wavy)
-    banner.moveTo(0, 2);
-    for (double x = 0; x < w; x += 8) {
-      banner.lineTo(x, 1 + rng.nextDouble() * 2);
+    // Rope attachment points — top connects to logo, bottom to the plank
+    final ropeTopLeftX = w * 0.2;
+    final ropeTopRightX = w * 0.8;
+    const ropeTopY = 0.0;
+    final plankTop = h * 0.3;
+    final plankLeftRopeX = w * 0.15;
+    final plankRightRopeX = w * 0.85;
+
+    // — Draw ropes (behind the plank) —
+    final ropePaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    // Left rope — multiple strands for worn twisted rope look
+    for (int strand = 0; strand < 3; strand++) {
+      final strandOffset = (strand - 1) * 1.2;
+      final ropePath = Path()..moveTo(ropeTopLeftX + strandOffset, ropeTopY);
+      // Sag in the middle like real rope
+      ropePath.quadraticBezierTo(
+        ropeTopLeftX - 8 + strandOffset,
+        plankTop * 0.55,
+        plankLeftRopeX + strandOffset,
+        plankTop + 2,
+      );
+      ropePaint
+        ..color = Color.lerp(
+          const Color(0xFF8B7355),
+          const Color(0xFF6B5535),
+          rng.nextDouble(),
+        )!.withOpacity(0.6 + rng.nextDouble() * 0.3)
+        ..strokeWidth = 1.8 - strand * 0.3;
+      canvas.drawPath(ropePath, ropePaint);
     }
-    banner.lineTo(w, 2);
 
-    // Right edge with triangle notch
-    banner.lineTo(w, h * 0.35);
-    banner.lineTo(w - 8, h * 0.5);
-    banner.lineTo(w, h * 0.65);
-    banner.lineTo(w, h - 2);
-
-    // Bottom edge (wavy, like cloth hanging)
-    for (double x = w; x > 0; x -= 6) {
-      banner.lineTo(x, h - 1 + sin(x * 0.08) * 3 + rng.nextDouble() * 1.5);
+    // Right rope — multiple strands
+    for (int strand = 0; strand < 3; strand++) {
+      final strandOffset = (strand - 1) * 1.2;
+      final ropePath = Path()..moveTo(ropeTopRightX + strandOffset, ropeTopY);
+      ropePath.quadraticBezierTo(
+        ropeTopRightX + 8 + strandOffset,
+        plankTop * 0.55,
+        plankRightRopeX + strandOffset,
+        plankTop + 2,
+      );
+      ropePaint
+        ..color = Color.lerp(
+          const Color(0xFF8B7355),
+          const Color(0xFF6B5535),
+          rng.nextDouble(),
+        )!.withOpacity(0.6 + rng.nextDouble() * 0.3)
+        ..strokeWidth = 1.8 - strand * 0.3;
+      canvas.drawPath(ropePath, ropePaint);
     }
 
-    // Left edge with triangle notch
-    banner.lineTo(0, h - 2);
-    banner.lineTo(0, h * 0.65);
-    banner.lineTo(8, h * 0.5);
-    banner.lineTo(0, h * 0.35);
-    banner.close();
+    // Frayed rope fibers at attachment points
+    final fiberPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.4
+      ..strokeCap = StrokeCap.round;
+    for (final attachX in [ropeTopLeftX, ropeTopRightX]) {
+      for (int i = 0; i < 5; i++) {
+        fiberPaint.color = const Color(0xFF8B7355).withOpacity(0.2 + rng.nextDouble() * 0.2);
+        final fx = attachX + (rng.nextDouble() - 0.5) * 6;
+        canvas.drawLine(
+          Offset(fx, ropeTopY),
+          Offset(fx + (rng.nextDouble() - 0.5) * 4, ropeTopY + 3 + rng.nextDouble() * 5),
+          fiberPaint,
+        );
+      }
+    }
+
+    // — Draw wooden plank sign —
+    final plankRect = Rect.fromLTWH(8, plankTop, w - 16, h - plankTop - 4);
+    final plank = Path();
+    const jag = 1.5;
+    const step = 5.0;
+
+    // Rough edges
+    plank.moveTo(plankRect.left + 3, plankRect.top + rng.nextDouble() * jag);
+    for (double x = plankRect.left + 3; x < plankRect.right - 3; x += step) {
+      plank.lineTo(x, plankRect.top + rng.nextDouble() * jag);
+    }
+    for (double y = plankRect.top; y < plankRect.bottom; y += step) {
+      plank.lineTo(plankRect.right - rng.nextDouble() * jag, y);
+    }
+    for (double x = plankRect.right; x > plankRect.left + 3; x -= step) {
+      plank.lineTo(x, plankRect.bottom - rng.nextDouble() * jag);
+    }
+    for (double y = plankRect.bottom; y > plankRect.top; y -= step) {
+      plank.lineTo(plankRect.left + rng.nextDouble() * jag, y);
+    }
+    plank.close();
 
     // Shadow
     canvas.drawPath(
-      banner.shift(const Offset(2, 3)),
-      Paint()..color = const Color(0xFF3E2010).withOpacity(0.15),
+      plank.shift(const Offset(2, 3)),
+      Paint()..color = const Color(0xFF1A0A02).withOpacity(0.25),
     );
 
-    // White cloth fill
+    // Wood fill
     canvas.save();
-    canvas.clipPath(banner);
+    canvas.clipPath(plank);
+    canvas.drawRect(plankRect, Paint()..color = const Color(0xFFA07040));
+
+    // Wood grain
+    final grainPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+    for (int i = 0; i < 15; i++) {
+      final y = plankRect.top + rng.nextDouble() * plankRect.height;
+      final path = Path()..moveTo(plankRect.left, y);
+      for (double x = plankRect.left; x < plankRect.right; x += 8) {
+        path.lineTo(x, y + (rng.nextDouble() - 0.5) * 2);
+      }
+      grainPaint
+        ..color = rng.nextBool()
+            ? const Color(0xFF5C3A1E).withOpacity(0.08 + rng.nextDouble() * 0.08)
+            : const Color(0xFFC09560).withOpacity(0.06 + rng.nextDouble() * 0.08)
+        ..strokeWidth = 0.4 + rng.nextDouble() * 1.0;
+      canvas.drawPath(path, grainPaint);
+    }
+
+    // Bevel highlight top
     canvas.drawRect(
-      Rect.fromLTWH(0, 0, w, h),
-      Paint()..color = const Color(0xFFF5F0E6),
+      Rect.fromLTWH(plankRect.left, plankRect.top, plankRect.width, plankRect.height * 0.35),
+      Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.white.withOpacity(0.12), Colors.transparent],
+        ).createShader(plankRect),
     );
-
-    // Subtle cloth texture — faint horizontal threads
-    final threadPaint = Paint()
-      ..strokeWidth = 0.3
-      ..style = PaintingStyle.stroke;
-    for (double y = 0; y < h; y += 2) {
-      threadPaint.color = const Color(0xFFCBB48E).withOpacity(0.06 + rng.nextDouble() * 0.04);
-      canvas.drawLine(Offset(0, y), Offset(w, y + rng.nextDouble() * 0.5), threadPaint);
-    }
-    for (double x = 0; x < w; x += 3) {
-      threadPaint.color = const Color(0xFFCBB48E).withOpacity(0.04 + rng.nextDouble() * 0.03);
-      canvas.drawLine(Offset(x, 0), Offset(x + rng.nextDouble() * 0.5, h), threadPaint);
-    }
-
-    // A few dirt/age spots
-    for (int i = 0; i < 6; i++) {
-      canvas.drawCircle(
-        Offset(rng.nextDouble() * w, rng.nextDouble() * h),
-        1.5 + rng.nextDouble() * 3,
-        Paint()..color = const Color(0xFF8B7355).withOpacity(0.03 + rng.nextDouble() * 0.03),
-      );
-    }
+    // Shadow bottom
+    canvas.drawRect(
+      Rect.fromLTWH(plankRect.left, plankRect.bottom - plankRect.height * 0.25,
+          plankRect.width, plankRect.height * 0.25),
+      Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.transparent, Colors.black.withOpacity(0.12)],
+        ).createShader(plankRect),
+    );
 
     canvas.restore();
 
-    // Outline
+    // Plank outline
     canvas.drawPath(
-      banner,
+      plank,
       Paint()
-        ..color = const Color(0xFF8B7355).withOpacity(0.25)
+        ..color = const Color(0xFF5C3A1E).withOpacity(0.4)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 0.8,
+        ..strokeWidth = 1.0,
     );
 
-    // Tiny holes where it's nailed/pinned (top corners)
-    for (final nx in [12.0, w - 12.0]) {
+    // Rope holes on the plank (where rope threads through)
+    for (final hx in [plankLeftRopeX, plankRightRopeX]) {
       canvas.drawCircle(
-        Offset(nx, 6),
-        2.5,
-        Paint()..color = const Color(0xFF5C3317).withOpacity(0.3),
+        Offset(hx, plankTop + 5),
+        3,
+        Paint()..color = const Color(0xFF2A1508).withOpacity(0.4),
       );
       canvas.drawCircle(
-        Offset(nx - 0.5, 5.5),
-        1,
-        Paint()..color = Colors.white.withOpacity(0.3),
+        Offset(hx - 0.5, plankTop + 4.5),
+        1.2,
+        Paint()..color = Colors.white.withOpacity(0.1),
       );
     }
   }
