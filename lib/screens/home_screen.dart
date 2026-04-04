@@ -60,38 +60,41 @@ class HomeScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const SizedBox(height: 16),
-                      // Logo image
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.asset(
-                          'assets/images/ozhunt_logo.png',
-                          width: 260,
-                          height: 260,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            // Fallback if image not found
-                            return Container(
-                              width: 260,
-                              height: 260,
-                              decoration: BoxDecoration(
-                                color: AppTheme.warmBrown.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text('🗺️',
-                                      style: TextStyle(fontSize: 80)),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'OzHunt',
-                                    style: AppTheme.heading(
-                                        size: 32, color: AppTheme.warmBrown),
+                      // Logo image with torn map edges
+                      SizedBox(
+                        width: 270,
+                        height: 270,
+                        child: CustomPaint(
+                          foregroundPainter: _TornEdgeOverlayPainter(),
+                          child: ClipPath(
+                            clipper: _TornEdgeClipper(),
+                            child: Image.asset(
+                              'assets/images/ozhunt_logo.png',
+                              width: 270,
+                              height: 270,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  width: 270,
+                                  height: 270,
+                                  color: AppTheme.warmBrown.withOpacity(0.2),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text('🗺️',
+                                          style: TextStyle(fontSize: 80)),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        'OzHunt',
+                                        style: AppTheme.heading(
+                                            size: 32, color: AppTheme.warmBrown),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            );
-                          },
+                                );
+                              },
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -405,6 +408,93 @@ class _MapTexturePainter extends CustomPainter {
     final diag = cr * 0.7;
     canvas.drawLine(cc - Offset(diag, diag), cc + Offset(diag, diag), compassPaint..strokeWidth = 0.5);
     canvas.drawLine(cc - Offset(-diag, diag), cc + Offset(-diag, diag), compassPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+/// Clips the logo with jagged torn-paper edges
+class _TornEdgeClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final rng = Random(77);
+    final path = Path();
+    const inset = 6.0;   // How far in from the edge the tears start
+    const jag = 5.0;     // Max depth of each tear
+    const step = 4.0;    // Distance between tear points
+
+    // Top edge: left to right
+    path.moveTo(inset + rng.nextDouble() * jag, inset + rng.nextDouble() * jag);
+    for (double x = inset; x < size.width - inset; x += step) {
+      path.lineTo(x, inset + rng.nextDouble() * jag * 2);
+    }
+
+    // Right edge: top to bottom
+    for (double y = inset; y < size.height - inset; y += step) {
+      path.lineTo(size.width - inset - rng.nextDouble() * jag * 2, y);
+    }
+
+    // Bottom edge: right to left
+    for (double x = size.width - inset; x > inset; x -= step) {
+      path.lineTo(x, size.height - inset - rng.nextDouble() * jag * 2);
+    }
+
+    // Left edge: bottom to top
+    for (double y = size.height - inset; y > inset; y -= step) {
+      path.lineTo(inset + rng.nextDouble() * jag * 2, y);
+    }
+
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
+
+/// Paints burned/darkened edges and wear marks on top of the clipped logo
+class _TornEdgeOverlayPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rng = Random(99);
+
+    // Dark burned border vignette
+    final borderPaint = Paint()
+      ..shader = RadialGradient(
+        center: Alignment.center,
+        radius: 0.75,
+        colors: [
+          Colors.transparent,
+          Colors.transparent,
+          const Color(0xFF3E2010).withOpacity(0.3),
+          const Color(0xFF2A1508).withOpacity(0.7),
+        ],
+        stops: const [0.0, 0.55, 0.8, 1.0],
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), borderPaint);
+
+    // Scorch marks near edges
+    final scorchPaint = Paint()..style = PaintingStyle.fill;
+    for (int i = 0; i < 20; i++) {
+      final onEdge = rng.nextInt(4);
+      double x, y;
+      switch (onEdge) {
+        case 0: x = rng.nextDouble() * size.width; y = rng.nextDouble() * 12; break;
+        case 1: x = rng.nextDouble() * size.width; y = size.height - rng.nextDouble() * 12; break;
+        case 2: x = rng.nextDouble() * 12; y = rng.nextDouble() * size.height; break;
+        default: x = size.width - rng.nextDouble() * 12; y = rng.nextDouble() * size.height;
+      }
+      scorchPaint.color = const Color(0xFF1A0E05).withOpacity(0.1 + rng.nextDouble() * 0.15);
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: Offset(x, y),
+          width: 8 + rng.nextDouble() * 15,
+          height: 4 + rng.nextDouble() * 10,
+        ),
+        scorchPaint,
+      );
+    }
   }
 
   @override
