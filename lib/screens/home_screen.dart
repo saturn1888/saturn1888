@@ -104,28 +104,22 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 28),
-                      _WornButton(
+                      _WoodPlankButton(
                         label: 'Create a Hunt',
-                        icon: '🗺️',
-                        baseColor: const Color(0xFFCB8E1E),
-                        textColor: const Color(0xFF3E1E08),
+                        seed: 1,
                         onTap: () => Navigator.pushNamed(context, '/setup'),
                       ),
-                      const SizedBox(height: 12),
-                      _WornButton(
+                      const SizedBox(height: 14),
+                      _WoodPlankButton(
                         label: 'Play a Hunt',
-                        icon: '🎯',
-                        baseColor: const Color(0xFF2D6B3F),
-                        textColor: const Color(0xFFD4C9A8),
+                        seed: 2,
                         onTap: () =>
                             Navigator.pushNamed(context, '/play-select'),
                       ),
-                      const SizedBox(height: 12),
-                      _WornButton(
+                      const SizedBox(height: 14),
+                      _WoodPlankButton(
                         label: 'Manage Hunts',
-                        icon: '📋',
-                        baseColor: const Color(0xFF6B4A2E),
-                        textColor: const Color(0xFFD4C9A8),
+                        seed: 3,
                         onTap: () =>
                             Navigator.pushNamed(context, '/manage'),
                       ),
@@ -251,19 +245,15 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-/// A button styled like a worn leather/parchment plaque
-class _WornButton extends StatelessWidget {
+/// A button that looks like a rough-cut wooden plank with carved text
+class _WoodPlankButton extends StatelessWidget {
   final String label;
-  final String icon;
-  final Color baseColor;
-  final Color textColor;
+  final int seed;
   final VoidCallback onTap;
 
-  const _WornButton({
+  const _WoodPlankButton({
     required this.label,
-    required this.icon,
-    required this.baseColor,
-    required this.textColor,
+    required this.seed,
     required this.onTap,
   });
 
@@ -272,18 +262,33 @@ class _WornButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: CustomPaint(
-        painter: _WornButtonPainter(baseColor: baseColor),
+        painter: _WoodPlankPainter(seed: seed),
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+          alignment: Alignment.center,
+          // Two text layers for carved/engraved into wood look
+          child: Stack(
+            alignment: Alignment.center,
             children: [
-              Text(icon, style: const TextStyle(fontSize: 24)),
-              const SizedBox(width: 10),
+              // Light chisel highlight (light catching the carved edge)
+              Transform.translate(
+                offset: const Offset(0.8, 1.0),
+                child: Text(
+                  label,
+                  style: AppTheme.heading(
+                    size: 22,
+                    color: Colors.white.withOpacity(0.2),
+                  ),
+                ),
+              ),
+              // Dark carved groove
               Text(
                 label,
-                style: AppTheme.heading(size: 21, color: textColor),
+                style: AppTheme.heading(
+                  size: 22,
+                  color: const Color(0xFF1A0E05).withOpacity(0.8),
+                ),
               ),
             ],
           ),
@@ -293,105 +298,195 @@ class _WornButton extends StatelessWidget {
   }
 }
 
-/// Paints a worn, weathered button background
-class _WornButtonPainter extends CustomPainter {
-  final Color baseColor;
-  _WornButtonPainter({required this.baseColor});
+/// Paints a rough-cut wooden plank with grain, knots, nails, and weathering
+class _WoodPlankPainter extends CustomPainter {
+  final int seed;
+  _WoodPlankPainter({required this.seed});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final rng = Random(baseColor.value);
+    final rng = Random(seed * 7919);
     final rect = Rect.fromLTWH(0, 0, size.width, size.height);
 
-    // Base shape with rough rounded rect
-    final basePath = Path();
-    const r = 12.0;
-    const jag = 1.5;
-    const step = 6.0;
+    // — Rough plank outline (not perfectly rectangular) —
+    final plank = Path();
+    const jag = 2.0;
+    const step = 5.0;
+    const cornerR = 4.0;
 
-    basePath.moveTo(r, jag * rng.nextDouble());
-    for (double x = r; x < size.width - r; x += step) {
-      basePath.lineTo(x, rng.nextDouble() * jag);
+    // Top edge
+    plank.moveTo(cornerR, rng.nextDouble() * jag);
+    for (double x = cornerR; x < size.width - cornerR; x += step) {
+      plank.lineTo(x, rng.nextDouble() * jag);
     }
-    basePath.lineTo(size.width - r, 0);
-    basePath.quadraticBezierTo(size.width, 0, size.width, r);
-    for (double y = r; y < size.height - r; y += step) {
-      basePath.lineTo(size.width - rng.nextDouble() * jag, y);
+    // Right edge
+    for (double y = 0; y < size.height; y += step) {
+      plank.lineTo(size.width - rng.nextDouble() * jag, y);
     }
-    basePath.quadraticBezierTo(
-        size.width, size.height, size.width - r, size.height);
-    for (double x = size.width - r; x > r; x -= step) {
-      basePath.lineTo(x, size.height - rng.nextDouble() * jag);
+    // Bottom edge
+    for (double x = size.width; x > cornerR; x -= step) {
+      plank.lineTo(x, size.height - rng.nextDouble() * jag);
     }
-    basePath.quadraticBezierTo(0, size.height, 0, size.height - r);
-    for (double y = size.height - r; y > r; y -= step) {
-      basePath.lineTo(rng.nextDouble() * jag, y);
+    // Left edge
+    for (double y = size.height; y > 0; y -= step) {
+      plank.lineTo(rng.nextDouble() * jag, y);
     }
-    basePath.quadraticBezierTo(0, 0, r, 0);
-    basePath.close();
+    plank.close();
 
-    // Shadow
+    // — Drop shadow —
     canvas.drawPath(
-      basePath.shift(const Offset(2, 3)),
-      Paint()..color = const Color(0xFF1A0A02).withOpacity(0.3),
+      plank.shift(const Offset(3, 4)),
+      Paint()..color = const Color(0xFF0A0502).withOpacity(0.35),
     );
 
-    // Main fill
+    // — Wood base colour —
     canvas.save();
-    canvas.clipPath(basePath);
-    canvas.drawRect(rect, Paint()..color = baseColor);
+    canvas.clipPath(plank);
 
-    // Leather grain gradient
+    // Base warm wood
+    final woodBase = Color.lerp(
+      const Color(0xFF8B6240),
+      const Color(0xFF7A5535),
+      rng.nextDouble(),
+    )!;
+    canvas.drawRect(rect, Paint()..color = woodBase);
+
+    // — Horizontal wood grain lines —
+    final grainPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+    for (int i = 0; i < 25; i++) {
+      final y = rng.nextDouble() * size.height;
+      final path = Path()..moveTo(0, y);
+      for (double x = 0; x < size.width; x += 12) {
+        path.lineTo(x, y + (rng.nextDouble() - 0.5) * 3);
+      }
+      path.lineTo(size.width, y + (rng.nextDouble() - 0.5) * 2);
+      final isDark = rng.nextBool();
+      grainPaint
+        ..color = isDark
+            ? const Color(0xFF5C3A1E).withOpacity(0.08 + rng.nextDouble() * 0.12)
+            : const Color(0xFFAA8555).withOpacity(0.06 + rng.nextDouble() * 0.08)
+        ..strokeWidth = 0.5 + rng.nextDouble() * 1.5;
+      canvas.drawPath(path, grainPaint);
+    }
+
+    // — Knot holes (1-2 per plank) —
+    final knotCount = 1 + rng.nextInt(2);
+    for (int i = 0; i < knotCount; i++) {
+      final kx = 20 + rng.nextDouble() * (size.width - 40);
+      final ky = 8 + rng.nextDouble() * (size.height - 16);
+      final kr = 4.0 + rng.nextDouble() * 5;
+      // Dark center
+      canvas.drawOval(
+        Rect.fromCenter(center: Offset(kx, ky), width: kr * 2, height: kr * 1.5),
+        Paint()..color = const Color(0xFF3A2210).withOpacity(0.25),
+      );
+      // Ring around knot
+      canvas.drawOval(
+        Rect.fromCenter(center: Offset(kx, ky), width: kr * 3, height: kr * 2.2),
+        Paint()
+          ..color = const Color(0xFF5C3A1E).withOpacity(0.12)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5,
+      );
+      // Second ring
+      canvas.drawOval(
+        Rect.fromCenter(center: Offset(kx, ky), width: kr * 4.5, height: kr * 3.2),
+        Paint()
+          ..color = const Color(0xFF5C3A1E).withOpacity(0.06)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.8,
+      );
+    }
+
+    // — Light reflection on top half (bevel) —
     canvas.drawRect(
-      rect,
+      Rect.fromLTWH(0, 0, size.width, size.height * 0.45),
       Paint()
         ..shader = LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
           colors: [
-            Colors.white.withOpacity(0.12),
+            Colors.white.withOpacity(0.10),
             Colors.transparent,
-            Colors.black.withOpacity(0.08),
-            Colors.transparent,
-            Colors.white.withOpacity(0.06),
           ],
         ).createShader(rect),
     );
 
-    // Wear scratches
+    // — Dark bottom edge (thickness shadow) —
+    canvas.drawRect(
+      Rect.fromLTWH(0, size.height * 0.8, size.width, size.height * 0.2),
+      Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.transparent,
+            Colors.black.withOpacity(0.18),
+          ],
+        ).createShader(rect),
+    );
+
+    // — Weathering/wear scratches —
     final scratchPaint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.5;
-    for (int i = 0; i < 6; i++) {
+      ..strokeCap = StrokeCap.round;
+    for (int i = 0; i < 8; i++) {
       final x1 = rng.nextDouble() * size.width;
       final y1 = rng.nextDouble() * size.height;
-      final x2 = x1 + (rng.nextDouble() - 0.5) * 40;
-      final y2 = y1 + (rng.nextDouble() - 0.5) * 8;
-      scratchPaint.color = Colors.white.withOpacity(0.06 + rng.nextDouble() * 0.08);
+      final x2 = x1 + (rng.nextDouble() - 0.5) * 50;
+      final y2 = y1 + (rng.nextDouble() - 0.5) * 4;
+      scratchPaint
+        ..color = Colors.white.withOpacity(0.04 + rng.nextDouble() * 0.06)
+        ..strokeWidth = 0.3 + rng.nextDouble() * 0.6;
       canvas.drawLine(Offset(x1, y1), Offset(x2, y2), scratchPaint);
     }
 
-    // Edge darkening
+    // — Nail heads (one on each end) —
+    for (final nx in [18.0, size.width - 18.0]) {
+      final ny = size.height / 2 + (rng.nextDouble() - 0.5) * 6;
+      // Nail shadow
+      canvas.drawCircle(
+        Offset(nx + 0.5, ny + 1),
+        4.5,
+        Paint()..color = const Color(0xFF1A0A02).withOpacity(0.3),
+      );
+      // Nail head
+      canvas.drawCircle(
+        Offset(nx, ny),
+        4,
+        Paint()..color = const Color(0xFF4A4040),
+      );
+      // Nail highlight
+      canvas.drawCircle(
+        Offset(nx - 1, ny - 1),
+        1.5,
+        Paint()..color = Colors.white.withOpacity(0.15),
+      );
+    }
+
+    // — Edge darkening all around —
     canvas.drawRect(
       rect,
       Paint()
         ..shader = RadialGradient(
           center: Alignment.center,
-          radius: 1.0,
+          radius: 0.9,
           colors: [
             Colors.transparent,
-            Colors.black.withOpacity(0.15),
+            const Color(0xFF1A0A02).withOpacity(0.12),
           ],
         ).createShader(rect),
     );
 
     canvas.restore();
 
-    // Outline
+    // — Outline —
     canvas.drawPath(
-      basePath,
+      plank,
       Paint()
-        ..color = Color.lerp(baseColor, const Color(0xFF1A0A02), 0.5)!
+        ..color = const Color(0xFF3A2210).withOpacity(0.6)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.5,
     );
