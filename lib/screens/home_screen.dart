@@ -50,13 +50,37 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
+              // White flag banner at top
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: CustomPaint(
+                    painter: _FlagBannerPainter(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 10),
+                      child: Text(
+                        'Family Scavenger Hunts!',
+                        style: GoogleFonts.specialElite(
+                          fontSize: 16,
+                          color: const Color(0xFF4A2E14),
+                          letterSpacing: 1.2,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               Center(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 40),
                       // Logo with torn edges
                       SizedBox(
                         width: 270,
@@ -93,15 +117,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 6),
-                      Text(
-                        'Family Scavenger Hunts!',
-                        style: AppTheme.heading(
-                          size: 17,
-                          color: const Color(0xFF5C3317),
-                        ),
-                      ),
-                      const SizedBox(height: 28),
+                      const SizedBox(height: 20),
                       // Signpost planks — each tilted differently
                       _SignpostPlank(
                         label: 'Create a Hunt',
@@ -509,6 +525,107 @@ class _WornBadgePainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.0,
     );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+/// Paints a white cloth flag/banner with slight wave and worn edges
+class _FlagBannerPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rng = Random(88);
+    final w = size.width;
+    final h = size.height;
+
+    // Banner shape — rectangle with wavy bottom and notched ends
+    final banner = Path();
+    // Top edge (slightly wavy)
+    banner.moveTo(0, 2);
+    for (double x = 0; x < w; x += 8) {
+      banner.lineTo(x, 1 + rng.nextDouble() * 2);
+    }
+    banner.lineTo(w, 2);
+
+    // Right edge with triangle notch
+    banner.lineTo(w, h * 0.35);
+    banner.lineTo(w - 8, h * 0.5);
+    banner.lineTo(w, h * 0.65);
+    banner.lineTo(w, h - 2);
+
+    // Bottom edge (wavy, like cloth hanging)
+    for (double x = w; x > 0; x -= 6) {
+      banner.lineTo(x, h - 1 + sin(x * 0.08) * 3 + rng.nextDouble() * 1.5);
+    }
+
+    // Left edge with triangle notch
+    banner.lineTo(0, h - 2);
+    banner.lineTo(0, h * 0.65);
+    banner.lineTo(8, h * 0.5);
+    banner.lineTo(0, h * 0.35);
+    banner.close();
+
+    // Shadow
+    canvas.drawPath(
+      banner.shift(const Offset(2, 3)),
+      Paint()..color = const Color(0xFF3E2010).withOpacity(0.15),
+    );
+
+    // White cloth fill
+    canvas.save();
+    canvas.clipPath(banner);
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, w, h),
+      Paint()..color = const Color(0xFFF5F0E6),
+    );
+
+    // Subtle cloth texture — faint horizontal threads
+    final threadPaint = Paint()
+      ..strokeWidth = 0.3
+      ..style = PaintingStyle.stroke;
+    for (double y = 0; y < h; y += 2) {
+      threadPaint.color = const Color(0xFFCBB48E).withOpacity(0.06 + rng.nextDouble() * 0.04);
+      canvas.drawLine(Offset(0, y), Offset(w, y + rng.nextDouble() * 0.5), threadPaint);
+    }
+    for (double x = 0; x < w; x += 3) {
+      threadPaint.color = const Color(0xFFCBB48E).withOpacity(0.04 + rng.nextDouble() * 0.03);
+      canvas.drawLine(Offset(x, 0), Offset(x + rng.nextDouble() * 0.5, h), threadPaint);
+    }
+
+    // A few dirt/age spots
+    for (int i = 0; i < 6; i++) {
+      canvas.drawCircle(
+        Offset(rng.nextDouble() * w, rng.nextDouble() * h),
+        1.5 + rng.nextDouble() * 3,
+        Paint()..color = const Color(0xFF8B7355).withOpacity(0.03 + rng.nextDouble() * 0.03),
+      );
+    }
+
+    canvas.restore();
+
+    // Outline
+    canvas.drawPath(
+      banner,
+      Paint()
+        ..color = const Color(0xFF8B7355).withOpacity(0.25)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.8,
+    );
+
+    // Tiny holes where it's nailed/pinned (top corners)
+    for (final nx in [12.0, w - 12.0]) {
+      canvas.drawCircle(
+        Offset(nx, 6),
+        2.5,
+        Paint()..color = const Color(0xFF5C3317).withOpacity(0.3),
+      );
+      canvas.drawCircle(
+        Offset(nx - 0.5, 5.5),
+        1,
+        Paint()..color = Colors.white.withOpacity(0.3),
+      );
+    }
   }
 
   @override
