@@ -50,37 +50,13 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              // White flag banner at top
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: CustomPaint(
-                    painter: _FlagBannerPainter(),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30, vertical: 10),
-                      child: Text(
-                        'Family Scavenger Hunts!',
-                        style: GoogleFonts.specialElite(
-                          fontSize: 16,
-                          color: const Color(0xFF4A2E14),
-                          letterSpacing: 1.2,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
               Center(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 16),
                       // Logo with torn edges
                       SizedBox(
                         width: 270,
@@ -115,6 +91,16 @@ class HomeScreen extends StatelessWidget {
                               },
                             ),
                           ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      // Flag banner below logo
+                      CustomPaint(
+                        painter: _FlagBannerPainter(),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 12),
+                          child: _PaintedText(text: 'Family Scavenger Hunts!'),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -189,6 +175,45 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Text that looks hand-painted with a brush onto cloth
+class _PaintedText extends StatelessWidget {
+  final String text;
+  const _PaintedText({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    final rng = Random(text.hashCode);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: text.split('').map((char) {
+        final dy = (rng.nextDouble() - 0.5) * 1.5;
+        final dx = (rng.nextDouble() - 0.5) * 0.4;
+        final rotation = (rng.nextDouble() - 0.5) * 0.03;
+        final sizeVar = 17.0 + (rng.nextDouble() - 0.5) * 2.0;
+        // Vary opacity like paint thickness — some strokes heavier than others
+        final opacity = 0.7 + rng.nextDouble() * 0.3;
+
+        return Transform.translate(
+          offset: Offset(dx, dy),
+          child: Transform.rotate(
+            angle: rotation,
+            child: Text(
+              char,
+              style: GoogleFonts.caveat(
+                fontSize: sizeVar,
+                fontWeight: FontWeight.w700,
+                color: Color.fromRGBO(80, 30, 10, opacity),
+                height: 1.0,
+              ),
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 }
