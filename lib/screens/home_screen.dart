@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/trophy.dart';
 import '../theme/app_theme.dart';
@@ -274,56 +275,56 @@ class _WoodPlankButton extends StatelessWidget {
   }
 }
 
-/// Text that looks roughly hand-carved into wood
+/// Text that looks knife-carved into wood
 class _CarvedText extends StatelessWidget {
   final String label;
   const _CarvedText({required this.label});
 
+  TextStyle _carveStyle(double size, Color color) {
+    return GoogleFonts.specialElite(
+      fontSize: size,
+      color: color,
+      fontWeight: FontWeight.w400,
+      letterSpacing: 1.5,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final rng = Random(label.hashCode);
+    final upper = label.toUpperCase();
     return Stack(
       alignment: Alignment.center,
       children: [
-        // Shadow inside the carve (deepest layer)
+        // Deep gouge shadow
         Transform.translate(
-          offset: const Offset(1.2, 1.5),
-          child: Text(
-            label,
-            style: AppTheme.heading(
-              size: 24,
-              color: Colors.black.withOpacity(0.35),
-            ),
-          ),
+          offset: const Offset(1.0, 1.8),
+          child: Text(upper, style: _carveStyle(22, Colors.black.withOpacity(0.4))),
         ),
-        // Light catching the top edge of the carve
+        // Light catching the chisel edge
         Transform.translate(
-          offset: const Offset(-0.5, -0.8),
-          child: Text(
-            label,
-            style: AppTheme.heading(
-              size: 24,
-              color: Colors.white.withOpacity(0.3),
-            ),
-          ),
+          offset: const Offset(-0.6, -0.6),
+          child: Text(upper, style: _carveStyle(22, Colors.white.withOpacity(0.25))),
         ),
-        // Main carved groove — slightly rough via individual letter offsets
+        // Each letter individually carved — wobble, tilt, varied depth
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
-          children: label.split('').map((char) {
-            final dy = (rng.nextDouble() - 0.5) * 1.8;
-            final dx = (rng.nextDouble() - 0.5) * 0.6;
-            final rotation = (rng.nextDouble() - 0.5) * 0.03;
+          children: upper.split('').map((char) {
+            final dy = (rng.nextDouble() - 0.5) * 2.5;
+            final dx = (rng.nextDouble() - 0.5) * 1.0;
+            final rotation = (rng.nextDouble() - 0.5) * 0.06;
+            final sizeVar = 21.0 + (rng.nextDouble() - 0.5) * 3.0;
+            final depthVar = 0.7 + rng.nextDouble() * 0.3;
             return Transform.translate(
               offset: Offset(dx, dy),
               child: Transform.rotate(
                 angle: rotation,
                 child: Text(
                   char,
-                  style: AppTheme.heading(
-                    size: 24,
-                    color: const Color(0xFF0E0702),
+                  style: _carveStyle(
+                    sizeVar,
+                    Color.fromRGBO(14, 7, 2, depthVar),
                   ),
                 ),
               ),
