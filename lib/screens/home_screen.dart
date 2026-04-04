@@ -17,13 +17,13 @@ class HomeScreen extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFFD9C4A5),
-              Color(0xFFCBB48E),
-              Color(0xFFB8A070),
-              Color(0xFFAA8E5A),
-              Color(0xFFBFA878),
+              Color(0xFFE8D5B8),
+              Color(0xFFDCC8A8),
+              Color(0xFFD4BC98),
+              Color(0xFFCBB08A),
+              Color(0xFFD4BC98),
             ],
-            stops: [0.0, 0.2, 0.5, 0.8, 1.0],
+            stops: [0.0, 0.25, 0.5, 0.8, 1.0],
           ),
         ),
         child: SafeArea(
@@ -32,30 +32,27 @@ class HomeScreen extends StatelessWidget {
               Positioned.fill(
                 child: CustomPaint(painter: _MapTexturePainter()),
               ),
-              // Heavy burned edge vignette
+              // Lighter vignette — just subtle edge darkening
               Positioned.fill(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: RadialGradient(
                       center: Alignment.center,
-                      radius: 0.85,
+                      radius: 0.95,
                       colors: [
                         Colors.transparent,
-                        const Color(0xFF3E2010).withOpacity(0.05),
-                        const Color(0xFF3E2010).withOpacity(0.18),
-                        const Color(0xFF2A1508).withOpacity(0.45),
-                        const Color(0xFF1A0A02).withOpacity(0.75),
+                        Colors.brown.withOpacity(0.03),
+                        Colors.brown.withOpacity(0.12),
+                        Colors.brown.withOpacity(0.3),
                       ],
-                      stops: const [0.3, 0.5, 0.7, 0.85, 1.0],
+                      stops: const [0.5, 0.7, 0.85, 1.0],
                     ),
                   ),
                 ),
               ),
-              // Corner burns
-              ..._buildCornerBurns(),
               Center(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 28),
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -101,25 +98,32 @@ class HomeScreen extends StatelessWidget {
                         'Family Scavenger Hunts!',
                         style: AppTheme.heading(
                           size: 17,
-                          color: const Color(0xFF4A2E14),
+                          color: const Color(0xFF5C3317),
                         ),
                       ),
                       const SizedBox(height: 28),
-                      _WoodPlankButton(
+                      // Signpost planks — each tilted differently
+                      _SignpostPlank(
                         label: 'Create a Hunt',
+                        tilt: 0.02,
+                        arrowDirection: 1, // point right
                         seed: 1,
                         onTap: () => Navigator.pushNamed(context, '/setup'),
                       ),
-                      const SizedBox(height: 14),
-                      _WoodPlankButton(
+                      const SizedBox(height: 10),
+                      _SignpostPlank(
                         label: 'Play a Hunt',
+                        tilt: -0.015,
+                        arrowDirection: -1, // point left
                         seed: 2,
                         onTap: () =>
                             Navigator.pushNamed(context, '/play-select'),
                       ),
-                      const SizedBox(height: 14),
-                      _WoodPlankButton(
+                      const SizedBox(height: 10),
+                      _SignpostPlank(
                         label: 'Manage Hunts',
+                        tilt: 0.01,
+                        arrowDirection: 1,
                         seed: 3,
                         onTap: () =>
                             Navigator.pushNamed(context, '/manage'),
@@ -171,89 +175,20 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-
-  static List<Widget> _buildCornerBurns() {
-    return [
-      // Top-left
-      Positioned(
-        top: 0, left: 0,
-        child: Container(
-          width: 80, height: 80,
-          decoration: BoxDecoration(
-            gradient: RadialGradient(
-              center: Alignment.topLeft,
-              radius: 1.0,
-              colors: [
-                const Color(0xFF1A0A02).withOpacity(0.5),
-                Colors.transparent,
-              ],
-            ),
-          ),
-        ),
-      ),
-      // Top-right
-      Positioned(
-        top: 0, right: 0,
-        child: Container(
-          width: 80, height: 80,
-          decoration: BoxDecoration(
-            gradient: RadialGradient(
-              center: Alignment.topRight,
-              radius: 1.0,
-              colors: [
-                const Color(0xFF1A0A02).withOpacity(0.45),
-                Colors.transparent,
-              ],
-            ),
-          ),
-        ),
-      ),
-      // Bottom-left
-      Positioned(
-        bottom: 0, left: 0,
-        child: Container(
-          width: 90, height: 90,
-          decoration: BoxDecoration(
-            gradient: RadialGradient(
-              center: Alignment.bottomLeft,
-              radius: 1.0,
-              colors: [
-                const Color(0xFF1A0A02).withOpacity(0.55),
-                Colors.transparent,
-              ],
-            ),
-          ),
-        ),
-      ),
-      // Bottom-right
-      Positioned(
-        bottom: 0, right: 0,
-        child: Container(
-          width: 90, height: 90,
-          decoration: BoxDecoration(
-            gradient: RadialGradient(
-              center: Alignment.bottomRight,
-              radius: 1.0,
-              colors: [
-                const Color(0xFF1A0A02).withOpacity(0.5),
-                Colors.transparent,
-              ],
-            ),
-          ),
-        ),
-      ),
-    ];
-  }
 }
 
-/// A button that looks like a rough-cut wooden plank with carved text
-class _WoodPlankButton extends StatelessWidget {
+/// A tilted wooden signpost plank with golden text
+class _SignpostPlank extends StatelessWidget {
   final String label;
+  final double tilt;
+  final int arrowDirection; // 1 = right, -1 = left
   final int seed;
   final VoidCallback onTap;
 
-  const _WoodPlankButton({
+  const _SignpostPlank({
     required this.label,
+    required this.tilt,
+    required this.arrowDirection,
     required this.seed,
     required this.onTap,
   });
@@ -262,69 +197,80 @@ class _WoodPlankButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: CustomPaint(
-        painter: _WoodPlankPainter(seed: seed),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-          alignment: Alignment.center,
-          child: _CarvedText(label: label),
+      child: Transform.rotate(
+        angle: tilt,
+        child: CustomPaint(
+          painter: _SignpostPlankPainter(
+            seed: seed,
+            arrowDirection: arrowDirection,
+          ),
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.only(
+              top: 16,
+              bottom: 16,
+              left: arrowDirection == -1 ? 32 : 20,
+              right: arrowDirection == 1 ? 32 : 20,
+            ),
+            alignment: Alignment.center,
+            child: _GoldenCarvedText(label: label, seed: seed),
+          ),
         ),
       ),
     );
   }
 }
 
-/// Text that looks knife-carved into wood
-class _CarvedText extends StatelessWidget {
+/// Golden text with slight roughness — like painted/burned onto wood
+class _GoldenCarvedText extends StatelessWidget {
   final String label;
-  const _CarvedText({required this.label});
-
-  TextStyle _carveStyle(double size, Color color) {
-    return GoogleFonts.specialElite(
-      fontSize: size,
-      color: color,
-      fontWeight: FontWeight.w400,
-      letterSpacing: 1.5,
-    );
-  }
+  final int seed;
+  const _GoldenCarvedText({required this.label, required this.seed});
 
   @override
   Widget build(BuildContext context) {
-    final rng = Random(label.hashCode);
+    final rng = Random(seed * 31 + label.hashCode);
     final upper = label.toUpperCase();
     return Stack(
       alignment: Alignment.center,
       children: [
-        // Deep gouge shadow
+        // Dark shadow behind text
         Transform.translate(
-          offset: const Offset(1.0, 1.8),
-          child: Text(upper, style: _carveStyle(22, Colors.black.withOpacity(0.4))),
+          offset: const Offset(1.0, 1.5),
+          child: Text(
+            upper,
+            style: GoogleFonts.specialElite(
+              fontSize: 21,
+              color: Colors.black.withOpacity(0.5),
+              letterSpacing: 1.5,
+            ),
+          ),
         ),
-        // Light catching the chisel edge
-        Transform.translate(
-          offset: const Offset(-0.6, -0.6),
-          child: Text(upper, style: _carveStyle(22, Colors.white.withOpacity(0.25))),
-        ),
-        // Each letter individually carved — wobble, tilt, varied depth
+        // Individual letters with slight wobble
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: upper.split('').map((char) {
-            final dy = (rng.nextDouble() - 0.5) * 2.5;
-            final dx = (rng.nextDouble() - 0.5) * 1.0;
-            final rotation = (rng.nextDouble() - 0.5) * 0.06;
-            final sizeVar = 21.0 + (rng.nextDouble() - 0.5) * 3.0;
-            final depthVar = 0.7 + rng.nextDouble() * 0.3;
+            final dy = (rng.nextDouble() - 0.5) * 2.0;
+            final dx = (rng.nextDouble() - 0.5) * 0.8;
+            final rotation = (rng.nextDouble() - 0.5) * 0.04;
+            final sizeVar = 20.0 + (rng.nextDouble() - 0.5) * 2.5;
             return Transform.translate(
               offset: Offset(dx, dy),
               child: Transform.rotate(
                 angle: rotation,
                 child: Text(
                   char,
-                  style: _carveStyle(
-                    sizeVar,
-                    Color.fromRGBO(14, 7, 2, depthVar),
+                  style: GoogleFonts.specialElite(
+                    fontSize: sizeVar,
+                    color: const Color(0xFFFFD480),
+                    letterSpacing: 1.5,
+                    shadows: [
+                      Shadow(
+                        color: const Color(0xFFFF8C00).withOpacity(0.4),
+                        blurRadius: 3,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -336,184 +282,182 @@ class _CarvedText extends StatelessWidget {
   }
 }
 
-/// Paints a rough-cut wooden plank with grain, knots, nails, and weathering
-class _WoodPlankPainter extends CustomPainter {
+/// Paints a wooden signpost plank with arrow-shaped end, grain, and nail
+class _SignpostPlankPainter extends CustomPainter {
   final int seed;
-  _WoodPlankPainter({required this.seed});
+  final int arrowDirection;
+  _SignpostPlankPainter({required this.seed, required this.arrowDirection});
 
   @override
   void paint(Canvas canvas, Size size) {
     final rng = Random(seed * 7919);
     final rect = Rect.fromLTWH(0, 0, size.width, size.height);
 
-    // — Rough plank outline (not perfectly rectangular) —
+    // — Build plank shape with pointed arrow end —
     final plank = Path();
-    const jag = 2.0;
+    const jag = 1.5;
     const step = 5.0;
-    const cornerR = 4.0;
+    final arrowDepth = 18.0;
+    final midY = size.height / 2;
 
-    // Top edge
-    plank.moveTo(cornerR, rng.nextDouble() * jag);
-    for (double x = cornerR; x < size.width - cornerR; x += step) {
-      plank.lineTo(x, rng.nextDouble() * jag);
-    }
-    // Right edge
-    for (double y = 0; y < size.height; y += step) {
-      plank.lineTo(size.width - rng.nextDouble() * jag, y);
-    }
-    // Bottom edge
-    for (double x = size.width; x > cornerR; x -= step) {
-      plank.lineTo(x, size.height - rng.nextDouble() * jag);
-    }
-    // Left edge
-    for (double y = size.height; y > 0; y -= step) {
-      plank.lineTo(rng.nextDouble() * jag, y);
+    if (arrowDirection == 1) {
+      // Point on the right side
+      plank.moveTo(4, rng.nextDouble() * jag);
+      for (double x = 4; x < size.width - arrowDepth; x += step) {
+        plank.lineTo(x, rng.nextDouble() * jag);
+      }
+      // Arrow point
+      plank.lineTo(size.width - arrowDepth, 0);
+      plank.lineTo(size.width, midY);
+      plank.lineTo(size.width - arrowDepth, size.height);
+      // Bottom edge
+      for (double x = size.width - arrowDepth; x > 4; x -= step) {
+        plank.lineTo(x, size.height - rng.nextDouble() * jag);
+      }
+      // Left edge (straight-ish)
+      plank.lineTo(0, size.height - rng.nextDouble() * jag * 2);
+      plank.lineTo(0, rng.nextDouble() * jag * 2);
+    } else {
+      // Point on the left side
+      plank.moveTo(arrowDepth, rng.nextDouble() * jag);
+      for (double x = arrowDepth; x < size.width - 4; x += step) {
+        plank.lineTo(x, rng.nextDouble() * jag);
+      }
+      // Right edge
+      plank.lineTo(size.width, rng.nextDouble() * jag * 2);
+      plank.lineTo(size.width, size.height - rng.nextDouble() * jag * 2);
+      // Bottom edge
+      for (double x = size.width - 4; x > arrowDepth; x -= step) {
+        plank.lineTo(x, size.height - rng.nextDouble() * jag);
+      }
+      // Arrow point on left
+      plank.lineTo(arrowDepth, size.height);
+      plank.lineTo(0, midY);
+      plank.lineTo(arrowDepth, 0);
     }
     plank.close();
 
     // — Drop shadow —
     canvas.drawPath(
       plank.shift(const Offset(3, 4)),
-      Paint()..color = const Color(0xFF0A0502).withOpacity(0.35),
+      Paint()..color = const Color(0xFF1A0A02).withOpacity(0.3),
     );
 
-    // — Wood base colour —
+    // — Wood fill —
     canvas.save();
     canvas.clipPath(plank);
 
-    // Base warm wood
+    // Warm bright wood base
     final woodBase = Color.lerp(
-      const Color(0xFF8B6240),
-      const Color(0xFF7A5535),
+      const Color(0xFFA87840),
+      const Color(0xFF9A6B35),
       rng.nextDouble(),
     )!;
     canvas.drawRect(rect, Paint()..color = woodBase);
 
-    // — Horizontal wood grain lines —
+    // — Horizontal wood grain —
     final grainPaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
-    for (int i = 0; i < 25; i++) {
+    for (int i = 0; i < 20; i++) {
       final y = rng.nextDouble() * size.height;
       final path = Path()..moveTo(0, y);
-      for (double x = 0; x < size.width; x += 12) {
-        path.lineTo(x, y + (rng.nextDouble() - 0.5) * 3);
+      for (double x = 0; x < size.width; x += 10) {
+        path.lineTo(x, y + (rng.nextDouble() - 0.5) * 2.5);
       }
-      path.lineTo(size.width, y + (rng.nextDouble() - 0.5) * 2);
       final isDark = rng.nextBool();
       grainPaint
         ..color = isDark
-            ? const Color(0xFF5C3A1E).withOpacity(0.08 + rng.nextDouble() * 0.12)
-            : const Color(0xFFAA8555).withOpacity(0.06 + rng.nextDouble() * 0.08)
-        ..strokeWidth = 0.5 + rng.nextDouble() * 1.5;
+            ? const Color(0xFF6B4A2E).withOpacity(0.10 + rng.nextDouble() * 0.10)
+            : const Color(0xFFC09560).withOpacity(0.08 + rng.nextDouble() * 0.10)
+        ..strokeWidth = 0.5 + rng.nextDouble() * 1.2;
       canvas.drawPath(path, grainPaint);
     }
 
-    // — Knot holes (1-2 per plank) —
-    final knotCount = 1 + rng.nextInt(2);
-    for (int i = 0; i < knotCount; i++) {
-      final kx = 20 + rng.nextDouble() * (size.width - 40);
-      final ky = 8 + rng.nextDouble() * (size.height - 16);
-      final kr = 4.0 + rng.nextDouble() * 5;
-      // Dark center
-      canvas.drawOval(
-        Rect.fromCenter(center: Offset(kx, ky), width: kr * 2, height: kr * 1.5),
-        Paint()..color = const Color(0xFF3A2210).withOpacity(0.25),
-      );
-      // Ring around knot
-      canvas.drawOval(
-        Rect.fromCenter(center: Offset(kx, ky), width: kr * 3, height: kr * 2.2),
-        Paint()
-          ..color = const Color(0xFF5C3A1E).withOpacity(0.12)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.5,
-      );
-      // Second ring
-      canvas.drawOval(
-        Rect.fromCenter(center: Offset(kx, ky), width: kr * 4.5, height: kr * 3.2),
-        Paint()
-          ..color = const Color(0xFF5C3A1E).withOpacity(0.06)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 0.8,
-      );
-    }
+    // — Knot (one per plank) —
+    final kx = 30 + rng.nextDouble() * (size.width - 60);
+    final ky = 6 + rng.nextDouble() * (size.height - 12);
+    final kr = 3.0 + rng.nextDouble() * 4;
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(kx, ky), width: kr * 2, height: kr * 1.4),
+      Paint()..color = const Color(0xFF5C3A1E).withOpacity(0.2),
+    );
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(kx, ky), width: kr * 3.5, height: kr * 2.5),
+      Paint()
+        ..color = const Color(0xFF5C3A1E).withOpacity(0.08)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1,
+    );
 
-    // — Light reflection on top half (bevel) —
+    // — Top bevel highlight —
     canvas.drawRect(
-      Rect.fromLTWH(0, 0, size.width, size.height * 0.45),
+      Rect.fromLTWH(0, 0, size.width, size.height * 0.4),
       Paint()
         ..shader = LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.white.withOpacity(0.10),
+            Colors.white.withOpacity(0.15),
             Colors.transparent,
           ],
         ).createShader(rect),
     );
 
-    // — Dark bottom edge (thickness shadow) —
+    // — Bottom shadow for thickness —
     canvas.drawRect(
-      Rect.fromLTWH(0, size.height * 0.8, size.width, size.height * 0.2),
+      Rect.fromLTWH(0, size.height * 0.75, size.width, size.height * 0.25),
       Paint()
         ..shader = LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
             Colors.transparent,
-            Colors.black.withOpacity(0.18),
+            Colors.black.withOpacity(0.15),
           ],
         ).createShader(rect),
     );
 
-    // — Weathering/wear scratches —
-    final scratchPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-    for (int i = 0; i < 8; i++) {
-      final x1 = rng.nextDouble() * size.width;
-      final y1 = rng.nextDouble() * size.height;
-      final x2 = x1 + (rng.nextDouble() - 0.5) * 50;
-      final y2 = y1 + (rng.nextDouble() - 0.5) * 4;
-      scratchPaint
-        ..color = Colors.white.withOpacity(0.04 + rng.nextDouble() * 0.06)
-        ..strokeWidth = 0.3 + rng.nextDouble() * 0.6;
-      canvas.drawLine(Offset(x1, y1), Offset(x2, y2), scratchPaint);
-    }
-
-    // — Nail heads (one on each end) —
-    for (final nx in [18.0, size.width - 18.0]) {
-      final ny = size.height / 2 + (rng.nextDouble() - 0.5) * 6;
-      // Nail shadow
-      canvas.drawCircle(
-        Offset(nx + 0.5, ny + 1),
-        4.5,
-        Paint()..color = const Color(0xFF1A0A02).withOpacity(0.3),
-      );
-      // Nail head
-      canvas.drawCircle(
-        Offset(nx, ny),
-        4,
-        Paint()..color = const Color(0xFF4A4040),
-      );
-      // Nail highlight
-      canvas.drawCircle(
-        Offset(nx - 1, ny - 1),
-        1.5,
-        Paint()..color = Colors.white.withOpacity(0.15),
+    // — Scratches —
+    for (int i = 0; i < 5; i++) {
+      canvas.drawLine(
+        Offset(rng.nextDouble() * size.width, rng.nextDouble() * size.height),
+        Offset(rng.nextDouble() * size.width, rng.nextDouble() * size.height),
+        Paint()
+          ..color = Colors.white.withOpacity(0.04 + rng.nextDouble() * 0.05)
+          ..strokeWidth = 0.4,
       );
     }
 
-    // — Edge darkening all around —
+    // — Nail hole (near the non-arrow end) —
+    final nailX = arrowDirection == 1 ? 14.0 : size.width - 14.0;
+    final nailY = midY;
+    canvas.drawCircle(
+      Offset(nailX + 0.5, nailY + 1),
+      4.5,
+      Paint()..color = const Color(0xFF1A0A02).withOpacity(0.35),
+    );
+    canvas.drawCircle(
+      Offset(nailX, nailY),
+      4,
+      Paint()..color = const Color(0xFF3A3535),
+    );
+    canvas.drawCircle(
+      Offset(nailX - 1, nailY - 1),
+      1.5,
+      Paint()..color = Colors.white.withOpacity(0.18),
+    );
+
+    // — Edge vignette —
     canvas.drawRect(
       rect,
       Paint()
         ..shader = RadialGradient(
           center: Alignment.center,
-          radius: 0.9,
+          radius: 0.85,
           colors: [
             Colors.transparent,
-            const Color(0xFF1A0A02).withOpacity(0.12),
+            const Color(0xFF3E2010).withOpacity(0.10),
           ],
         ).createShader(rect),
     );
@@ -524,9 +468,9 @@ class _WoodPlankPainter extends CustomPainter {
     canvas.drawPath(
       plank,
       Paint()
-        ..color = const Color(0xFF3A2210).withOpacity(0.6)
+        ..color = const Color(0xFF5C3A1E).withOpacity(0.5)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5,
+        ..strokeWidth = 1.2,
     );
   }
 
@@ -534,7 +478,7 @@ class _WoodPlankPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-/// Paints a weathered badge background for the trophy counter
+/// Weathered badge for trophy counter
 class _WornBadgePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -543,17 +487,11 @@ class _WornBadgePainter extends CustomPainter {
       Rect.fromLTWH(0, 0, size.width, size.height),
       const Radius.circular(10),
     );
-
-    // Shadow
     canvas.drawRRect(
       rect.shift(const Offset(1, 2)),
-      Paint()..color = const Color(0xFF1A0A02).withOpacity(0.25),
+      Paint()..color = const Color(0xFF1A0A02).withOpacity(0.2),
     );
-
-    // Base fill — aged parchment
-    canvas.drawRRect(rect, Paint()..color = const Color(0xFFCBB48E));
-
-    // Age spots
+    canvas.drawRRect(rect, Paint()..color = const Color(0xFFD9C4A5));
     canvas.save();
     canvas.clipRRect(rect);
     for (int i = 0; i < 5; i++) {
@@ -563,26 +501,13 @@ class _WornBadgePainter extends CustomPainter {
         Paint()..color = const Color(0xFF8B6914).withOpacity(0.06),
       );
     }
-    // Dark edges
-    canvas.drawRRect(
-      rect,
-      Paint()
-        ..shader = RadialGradient(
-          colors: [
-            Colors.transparent,
-            const Color(0xFF3E2010).withOpacity(0.2),
-          ],
-        ).createShader(Rect.fromLTWH(0, 0, size.width, size.height)),
-    );
     canvas.restore();
-
-    // Border
     canvas.drawRRect(
       rect,
       Paint()
-        ..color = const Color(0xFF5C3317).withOpacity(0.5)
+        ..color = const Color(0xFF5C3317).withOpacity(0.4)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.2,
+        ..strokeWidth = 1.0,
     );
   }
 
@@ -599,184 +524,108 @@ class _MapTexturePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final rng = Random(42);
 
-    // — Major fold creases (folded in thirds both ways) —
+    // Fold creases
     final creasePaint = Paint()
-      ..color = const Color(0xFF6B4A2E).withOpacity(0.15)
-      ..strokeWidth = 2.5
+      ..color = const Color(0xFF8B7355).withOpacity(0.10)
+      ..strokeWidth = 2.0
       ..style = PaintingStyle.stroke;
     final creaseShadow = Paint()
-      ..color = const Color(0xFF3E2010).withOpacity(0.08)
-      ..strokeWidth = 5
+      ..color = const Color(0xFF5C3317).withOpacity(0.05)
+      ..strokeWidth = 4
       ..style = PaintingStyle.stroke;
 
     for (final frac in [0.33, 0.5, 0.67]) {
       final y = size.height * frac;
       final p = Path()..moveTo(0, y);
       for (double x = 0; x < size.width; x += 6) {
-        p.lineTo(x, y + rng.nextDouble() * 8 - 4);
+        p.lineTo(x, y + rng.nextDouble() * 6 - 3);
       }
-      canvas.drawPath(p.shift(const Offset(0, 2)), creaseShadow);
+      canvas.drawPath(p.shift(const Offset(0, 1.5)), creaseShadow);
       canvas.drawPath(p, creasePaint);
     }
     for (final frac in [0.35, 0.5, 0.65]) {
       final x = size.width * frac;
       final p = Path()..moveTo(x, 0);
       for (double y = 0; y < size.height; y += 6) {
-        p.lineTo(x + rng.nextDouble() * 7 - 3.5, y);
+        p.lineTo(x + rng.nextDouble() * 5 - 2.5, y);
       }
-      canvas.drawPath(p.shift(const Offset(2, 0)), creaseShadow);
+      canvas.drawPath(p.shift(const Offset(1.5, 0)), creaseShadow);
       canvas.drawPath(p, creasePaint);
     }
 
-    // — Diagonal crumple creases (more of them, varying weight) —
-    for (int i = 0; i < 15; i++) {
+    // Diagonal crumples
+    for (int i = 0; i < 10; i++) {
       final x1 = rng.nextDouble() * size.width;
       final y1 = rng.nextDouble() * size.height;
-      final len = 50 + rng.nextDouble() * size.width * 0.5;
+      final len = 40 + rng.nextDouble() * size.width * 0.4;
       final angle = rng.nextDouble() * pi;
-      final x2 = x1 + cos(angle) * len;
-      final y2 = y1 + sin(angle) * len;
       final path = Path()..moveTo(x1, y1);
       path.quadraticBezierTo(
-        (x1 + x2) / 2 + (rng.nextDouble() - 0.5) * 40,
-        (y1 + y2) / 2 + (rng.nextDouble() - 0.5) * 40,
-        x2, y2,
+        x1 + cos(angle) * len * 0.5 + (rng.nextDouble() - 0.5) * 30,
+        y1 + sin(angle) * len * 0.5 + (rng.nextDouble() - 0.5) * 30,
+        x1 + cos(angle) * len,
+        y1 + sin(angle) * len,
       );
       canvas.drawPath(
         path,
         Paint()
-          ..color = const Color(0xFF6B4A2E).withOpacity(0.04 + rng.nextDouble() * 0.06)
-          ..strokeWidth = 0.8 + rng.nextDouble() * 1.5
+          ..color = const Color(0xFF8B7355).withOpacity(0.03 + rng.nextDouble() * 0.04)
+          ..strokeWidth = 0.6 + rng.nextDouble() * 1.0
           ..style = PaintingStyle.stroke,
       );
     }
 
-    // — Water / tea stains (more, bigger, varied) —
-    for (int i = 0; i < 20; i++) {
-      final cx = rng.nextDouble() * size.width;
-      final cy = rng.nextDouble() * size.height;
-      final r = 12.0 + rng.nextDouble() * 55;
+    // Tea stains
+    for (int i = 0; i < 15; i++) {
       canvas.drawOval(
         Rect.fromCenter(
-          center: Offset(cx, cy),
-          width: r * (0.8 + rng.nextDouble() * 0.8),
-          height: r * (0.5 + rng.nextDouble() * 0.7),
+          center: Offset(rng.nextDouble() * size.width, rng.nextDouble() * size.height),
+          width: (10 + rng.nextDouble() * 40) * (0.8 + rng.nextDouble() * 0.6),
+          height: (10 + rng.nextDouble() * 40) * (0.5 + rng.nextDouble() * 0.5),
         ),
         Paint()
           ..color = Color.lerp(
             const Color(0xFF8B6914),
-            const Color(0xFF5C3317),
+            const Color(0xFF6B4226),
             rng.nextDouble(),
-          )!.withOpacity(0.03 + rng.nextDouble() * 0.05),
+          )!.withOpacity(0.02 + rng.nextDouble() * 0.03),
       );
     }
 
-    // — Ring stains (two, different sizes) —
-    final ringPaint = Paint()
-      ..color = const Color(0xFF6B4226).withOpacity(0.09)
-      ..strokeWidth = 2.5
-      ..style = PaintingStyle.stroke;
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: Offset(size.width * 0.78, size.height * 0.18),
-        width: 55, height: 50,
-      ),
-      ringPaint,
-    );
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: Offset(size.width * 0.2, size.height * 0.75),
-        width: 40, height: 38,
-      ),
-      ringPaint..strokeWidth = 2.0,
-    );
-
-    // — Heavy paper grain (more dots, varied) —
+    // Paper grain
     final grainPaint = Paint()..style = PaintingStyle.fill;
-    for (int i = 0; i < 400; i++) {
-      grainPaint.color = Color.lerp(
-        const Color(0xFF8B7355),
-        const Color(0xFF3E2010),
-        rng.nextDouble(),
-      )!.withOpacity(0.02 + rng.nextDouble() * 0.04);
+    for (int i = 0; i < 250; i++) {
+      grainPaint.color = const Color(0xFF8B7355).withOpacity(0.015 + rng.nextDouble() * 0.025);
       canvas.drawCircle(
         Offset(rng.nextDouble() * size.width, rng.nextDouble() * size.height),
-        0.3 + rng.nextDouble() * 2.0,
+        0.3 + rng.nextDouble() * 1.5,
         grainPaint,
       );
     }
 
-    // — Worn edge marks (heavier, more numerous) —
-    final edgeWearPaint = Paint()..style = PaintingStyle.fill;
-    for (int edge = 0; edge < 4; edge++) {
-      for (int i = 0; i < 40; i++) {
-        edgeWearPaint.color =
-            const Color(0xFF3E2010).withOpacity(0.05 + rng.nextDouble() * 0.08);
-        final w = 4.0 + rng.nextDouble() * 25;
-        final h = 2.0 + rng.nextDouble() * 10;
-        Rect r;
-        switch (edge) {
-          case 0: r = Rect.fromLTWH(rng.nextDouble() * size.width, 0, w, h); break;
-          case 1: r = Rect.fromLTWH(rng.nextDouble() * size.width, size.height - h, w, h); break;
-          case 2: r = Rect.fromLTWH(0, rng.nextDouble() * size.height, h, w); break;
-          default: r = Rect.fromLTWH(size.width - h, rng.nextDouble() * size.height, h, w);
-        }
-        canvas.drawRRect(
-          RRect.fromRectAndRadius(r, const Radius.circular(2)),
-          edgeWearPaint,
-        );
-      }
-    }
-
-    // — Ink bleed marks (like old pen dripped) —
-    for (int i = 0; i < 8; i++) {
-      final x = rng.nextDouble() * size.width;
-      final y = rng.nextDouble() * size.height;
-      canvas.drawCircle(
-        Offset(x, y),
-        1.5 + rng.nextDouble() * 3,
-        Paint()..color = const Color(0xFF2A1508).withOpacity(0.04 + rng.nextDouble() * 0.04),
-      );
-      // Drip trail
-      canvas.drawLine(
-        Offset(x, y),
-        Offset(x + (rng.nextDouble() - 0.5) * 5, y + 3 + rng.nextDouble() * 12),
-        Paint()
-          ..color = const Color(0xFF2A1508).withOpacity(0.03)
-          ..strokeWidth = 0.8,
-      );
-    }
-
-    // — Compass rose (bigger, more detailed) —
+    // Compass rose
     final cp = Paint()
-      ..color = const Color(0xFF6B4A2E).withOpacity(0.08)
-      ..strokeWidth = 1.0
+      ..color = const Color(0xFF8B7355).withOpacity(0.07)
+      ..strokeWidth = 0.8
       ..style = PaintingStyle.stroke;
     final cc = Offset(size.width * 0.12, size.height * 0.9);
-    const cr = 32.0;
+    const cr = 28.0;
     canvas.drawCircle(cc, cr, cp);
-    canvas.drawCircle(cc, cr * 0.6, cp);
-    canvas.drawCircle(cc, cr * 0.25, cp..strokeWidth = 0.5);
-    // Cardinal lines
-    for (final angle in [0.0, pi / 2, pi, 3 * pi / 2]) {
+    canvas.drawCircle(cc, cr * 0.55, cp);
+    for (final a in [0.0, pi / 2, pi, 3 * pi / 2]) {
       canvas.drawLine(
-        cc + Offset(cos(angle) * cr * 0.2, sin(angle) * cr * 0.2),
-        cc + Offset(cos(angle) * (cr + 6), sin(angle) * (cr + 6)),
-        cp..strokeWidth = 1.0,
+        cc + Offset(cos(a) * cr * 0.2, sin(a) * cr * 0.2),
+        cc + Offset(cos(a) * (cr + 4), sin(a) * (cr + 4)),
+        cp,
       );
     }
-    // Intercardinal lines
-    for (final angle in [pi / 4, 3 * pi / 4, 5 * pi / 4, 7 * pi / 4]) {
+    for (final a in [pi / 4, 3 * pi / 4, 5 * pi / 4, 7 * pi / 4]) {
       canvas.drawLine(
-        cc + Offset(cos(angle) * cr * 0.3, sin(angle) * cr * 0.3),
-        cc + Offset(cos(angle) * cr * 0.85, sin(angle) * cr * 0.85),
-        cp..strokeWidth = 0.5,
+        cc + Offset(cos(a) * cr * 0.3, sin(a) * cr * 0.3),
+        cc + Offset(cos(a) * cr * 0.8, sin(a) * cr * 0.8),
+        cp..strokeWidth = 0.4,
       );
     }
-    // N arrow
-    final nTip = cc + Offset(0, -(cr + 6));
-    canvas.drawLine(nTip, nTip + const Offset(-3, 6), cp..strokeWidth = 0.8);
-    canvas.drawLine(nTip, nTip + const Offset(3, 6), cp);
   }
 
   @override
@@ -791,7 +640,6 @@ class _TornEdgeClipper extends CustomClipper<Path> {
     const inset = 6.0;
     const jag = 5.0;
     const step = 4.0;
-
     path.moveTo(inset + rng.nextDouble() * jag, inset + rng.nextDouble() * jag);
     for (double x = inset; x < size.width - inset; x += step) {
       path.lineTo(x, inset + rng.nextDouble() * jag * 2);
@@ -818,7 +666,6 @@ class _TornEdgeOverlayPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final rng = Random(99);
     final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-
     canvas.drawRect(
       rect,
       Paint()
@@ -828,29 +675,28 @@ class _TornEdgeOverlayPainter extends CustomPainter {
           colors: [
             Colors.transparent,
             Colors.transparent,
-            const Color(0xFF3E2010).withOpacity(0.3),
-            const Color(0xFF2A1508).withOpacity(0.7),
+            const Color(0xFF3E2010).withOpacity(0.25),
+            const Color(0xFF2A1508).withOpacity(0.6),
           ],
           stops: const [0.0, 0.55, 0.8, 1.0],
         ).createShader(rect),
     );
-
     final scorchPaint = Paint()..style = PaintingStyle.fill;
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 15; i++) {
       final edge = rng.nextInt(4);
       double x, y;
       switch (edge) {
-        case 0: x = rng.nextDouble() * size.width; y = rng.nextDouble() * 12; break;
-        case 1: x = rng.nextDouble() * size.width; y = size.height - rng.nextDouble() * 12; break;
-        case 2: x = rng.nextDouble() * 12; y = rng.nextDouble() * size.height; break;
-        default: x = size.width - rng.nextDouble() * 12; y = rng.nextDouble() * size.height;
+        case 0: x = rng.nextDouble() * size.width; y = rng.nextDouble() * 10; break;
+        case 1: x = rng.nextDouble() * size.width; y = size.height - rng.nextDouble() * 10; break;
+        case 2: x = rng.nextDouble() * 10; y = rng.nextDouble() * size.height; break;
+        default: x = size.width - rng.nextDouble() * 10; y = rng.nextDouble() * size.height;
       }
-      scorchPaint.color = const Color(0xFF1A0E05).withOpacity(0.1 + rng.nextDouble() * 0.15);
+      scorchPaint.color = const Color(0xFF1A0E05).withOpacity(0.08 + rng.nextDouble() * 0.1);
       canvas.drawOval(
         Rect.fromCenter(
           center: Offset(x, y),
-          width: 8 + rng.nextDouble() * 15,
-          height: 4 + rng.nextDouble() * 10,
+          width: 6 + rng.nextDouble() * 12,
+          height: 3 + rng.nextDouble() * 8,
         ),
         scorchPaint,
       );
