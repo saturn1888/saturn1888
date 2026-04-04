@@ -95,18 +95,35 @@ class HomeScreen extends StatelessWidget {
                       ),
                       // Wooden sign hanging from logo with rope
                       SizedBox(
-                        width: 300,
-                        height: 85,
+                        width: 320,
+                        height: 70,
                         child: CustomPaint(
                           painter: _HangingSignPainter(),
                           child: Padding(
                             padding: const EdgeInsets.only(
-                                top: 30, left: 16, right: 16),
-                            child: Center(
-                              child: _GoldenCarvedText(
-                                  label: 'Welcome to Family Scavenger Hunt',
-                                  seed: 99,
-                                  fontSize: 13),
+                                top: 28, left: 24, right: 24, bottom: 4),
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                'WELCOME TO FAMILY SCAVENGER HUNT',
+                                style: GoogleFonts.specialElite(
+                                  fontSize: 16,
+                                  color: const Color(0xFFFFE0A0),
+                                  letterSpacing: 1.0,
+                                  fontWeight: FontWeight.w400,
+                                  shadows: [
+                                    Shadow(
+                                      color: const Color(0xFFFF8C00).withOpacity(0.5),
+                                      blurRadius: 4,
+                                    ),
+                                    Shadow(
+                                      color: Colors.black.withOpacity(0.6),
+                                      offset: const Offset(1, 1.5),
+                                      blurRadius: 2,
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -582,7 +599,7 @@ class _HangingSignPainter extends CustomPainter {
     final ropeTopLeftX = 15.0;
     final ropeTopRightX = w - 15.0;
     const ropeTopY = 0.0;
-    final plankTop = h * 0.32;
+    final plankTop = h * 0.22;
     final plankLeftRopeX = 24.0;
     final plankRightRopeX = w - 24.0;
 
