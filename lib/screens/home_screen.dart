@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/trophy.dart';
@@ -34,17 +35,20 @@ class HomeScreen extends StatelessWidget {
                   painter: _MapTexturePainter(),
                 ),
               ),
-              // Darkened edges for old map look
+              // Burned / aged edge vignette — heavier at corners
               Positioned.fill(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: RadialGradient(
                       center: Alignment.center,
-                      radius: 1.2,
+                      radius: 0.95,
                       colors: [
                         Colors.transparent,
-                        Colors.brown.withOpacity(0.3),
+                        Colors.brown.withOpacity(0.08),
+                        Colors.brown.withOpacity(0.25),
+                        Colors.brown.withOpacity(0.55),
                       ],
+                      stops: const [0.4, 0.65, 0.85, 1.0],
                     ),
                   ),
                 ),
@@ -216,54 +220,191 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-/// Paints subtle lines and spots to simulate aged parchment/map texture
+/// Paints creases, stains, grain, and wear to look like a crumpled old treasure map
 class _MapTexturePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.brown.withOpacity(0.06)
-      ..strokeWidth = 1;
+    final rng = Random(42); // Fixed seed for consistent texture
 
-    // Horizontal creases
-    for (double y = 0; y < size.height; y += size.height / 5) {
-      canvas.drawLine(
-        Offset(0, y + 10),
-        Offset(size.width, y - 5),
-        paint..color = Colors.brown.withOpacity(0.08),
+    // — Major fold creases (the map was folded in quarters) —
+    final creasePaint = Paint()
+      ..color = const Color(0xFF8B7355).withOpacity(0.12)
+      ..strokeWidth = 2.5
+      ..style = PaintingStyle.stroke;
+
+    // Horizontal fold
+    final hFold = size.height * 0.48;
+    final hPath = Path()..moveTo(0, hFold - 3);
+    for (double x = 0; x < size.width; x += 8) {
+      hPath.lineTo(x, hFold + rng.nextDouble() * 6 - 3);
+    }
+    canvas.drawPath(hPath, creasePaint);
+    // Shadow below the fold
+    canvas.drawPath(
+      hPath.shift(const Offset(0, 2)),
+      Paint()
+        ..color = const Color(0xFF5C3317).withOpacity(0.06)
+        ..strokeWidth = 4
+        ..style = PaintingStyle.stroke,
+    );
+
+    // Vertical fold
+    final vFold = size.width * 0.5;
+    final vPath = Path()..moveTo(vFold - 2, 0);
+    for (double y = 0; y < size.height; y += 8) {
+      vPath.lineTo(vFold + rng.nextDouble() * 5 - 2.5, y);
+    }
+    canvas.drawPath(vPath, creasePaint);
+    canvas.drawPath(
+      vPath.shift(const Offset(2, 0)),
+      Paint()
+        ..color = const Color(0xFF5C3317).withOpacity(0.05)
+        ..strokeWidth = 3
+        ..style = PaintingStyle.stroke,
+    );
+
+    // — Diagonal crumple creases —
+    final crumplePaint = Paint()
+      ..color = const Color(0xFF8B7355).withOpacity(0.07)
+      ..strokeWidth = 1.5
+      ..style = PaintingStyle.stroke;
+
+    for (int i = 0; i < 8; i++) {
+      final x1 = rng.nextDouble() * size.width;
+      final y1 = rng.nextDouble() * size.height;
+      final x2 = x1 + (rng.nextDouble() - 0.5) * size.width * 0.6;
+      final y2 = y1 + (rng.nextDouble() - 0.5) * size.height * 0.4;
+      final path = Path()..moveTo(x1, y1);
+      final cx = (x1 + x2) / 2 + (rng.nextDouble() - 0.5) * 30;
+      final cy = (y1 + y2) / 2 + (rng.nextDouble() - 0.5) * 30;
+      path.quadraticBezierTo(cx, cy, x2, y2);
+      canvas.drawPath(path, crumplePaint);
+    }
+
+    // — Water / tea stains —
+    for (int i = 0; i < 12; i++) {
+      final cx = rng.nextDouble() * size.width;
+      final cy = rng.nextDouble() * size.height;
+      final r = 15.0 + rng.nextDouble() * 40;
+      final stainPaint = Paint()
+        ..color = Color.lerp(
+          const Color(0xFF8B6914),
+          const Color(0xFF6B4226),
+          rng.nextDouble(),
+        )!.withOpacity(0.03 + rng.nextDouble() * 0.04);
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: Offset(cx, cy),
+          width: r * (1.0 + rng.nextDouble() * 0.5),
+          height: r * (0.7 + rng.nextDouble() * 0.6),
+        ),
+        stainPaint,
       );
     }
 
-    // Vertical creases
-    for (double x = 0; x < size.width; x += size.width / 4) {
-      canvas.drawLine(
-        Offset(x + 5, 0),
-        Offset(x - 8, size.height),
-        paint..color = Colors.brown.withOpacity(0.06),
+    // — Ring stain (like a coffee/tea cup was placed on the map) —
+    final ringPaint = Paint()
+      ..color = const Color(0xFF7B5B3A).withOpacity(0.08)
+      ..strokeWidth = 2.5
+      ..style = PaintingStyle.stroke;
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(size.width * 0.75, size.height * 0.2),
+        width: 60,
+        height: 55,
+      ),
+      ringPaint,
+    );
+
+    // — Paper grain (tiny dots scattered everywhere) —
+    final grainPaint = Paint()..style = PaintingStyle.fill;
+    for (int i = 0; i < 200; i++) {
+      final x = rng.nextDouble() * size.width;
+      final y = rng.nextDouble() * size.height;
+      grainPaint.color = Color.lerp(
+        const Color(0xFF8B7355),
+        const Color(0xFF5C3317),
+        rng.nextDouble(),
+      )!.withOpacity(0.02 + rng.nextDouble() * 0.03);
+      canvas.drawCircle(Offset(x, y), 0.5 + rng.nextDouble() * 1.5, grainPaint);
+    }
+
+    // — Worn edge marks (darker strokes near all 4 edges) —
+    final edgeWearPaint = Paint()
+      ..style = PaintingStyle.fill;
+    // Top edge
+    for (int i = 0; i < 30; i++) {
+      final x = rng.nextDouble() * size.width;
+      final w = 5.0 + rng.nextDouble() * 20;
+      final h = 2.0 + rng.nextDouble() * 8;
+      edgeWearPaint.color = const Color(0xFF5C3317).withOpacity(0.04 + rng.nextDouble() * 0.06);
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(x, 0, w, h),
+          const Radius.circular(2),
+        ),
+        edgeWearPaint,
+      );
+    }
+    // Bottom edge
+    for (int i = 0; i < 30; i++) {
+      final x = rng.nextDouble() * size.width;
+      final w = 5.0 + rng.nextDouble() * 20;
+      final h = 2.0 + rng.nextDouble() * 8;
+      edgeWearPaint.color = const Color(0xFF5C3317).withOpacity(0.04 + rng.nextDouble() * 0.06);
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(x, size.height - h, w, h),
+          const Radius.circular(2),
+        ),
+        edgeWearPaint,
+      );
+    }
+    // Left edge
+    for (int i = 0; i < 20; i++) {
+      final y = rng.nextDouble() * size.height;
+      final w = 2.0 + rng.nextDouble() * 6;
+      final h = 5.0 + rng.nextDouble() * 15;
+      edgeWearPaint.color = const Color(0xFF5C3317).withOpacity(0.03 + rng.nextDouble() * 0.05);
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(0, y, w, h),
+          const Radius.circular(2),
+        ),
+        edgeWearPaint,
+      );
+    }
+    // Right edge
+    for (int i = 0; i < 20; i++) {
+      final y = rng.nextDouble() * size.height;
+      final w = 2.0 + rng.nextDouble() * 6;
+      final h = 5.0 + rng.nextDouble() * 15;
+      edgeWearPaint.color = const Color(0xFF5C3317).withOpacity(0.03 + rng.nextDouble() * 0.05);
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(size.width - w, y, w, h),
+          const Radius.circular(2),
+        ),
+        edgeWearPaint,
       );
     }
 
-    // Aged spots
-    final spotPaint = Paint()..color = Colors.brown.withOpacity(0.04);
-    final spots = [
-      Offset(size.width * 0.1, size.height * 0.15),
-      Offset(size.width * 0.85, size.height * 0.25),
-      Offset(size.width * 0.3, size.height * 0.7),
-      Offset(size.width * 0.7, size.height * 0.8),
-      Offset(size.width * 0.5, size.height * 0.4),
-      Offset(size.width * 0.15, size.height * 0.9),
-      Offset(size.width * 0.9, size.height * 0.6),
-    ];
-    for (final spot in spots) {
-      canvas.drawCircle(spot, 25, spotPaint);
-    }
-
-    // Edge darkening strokes
-    final edgePaint = Paint()
-      ..color = Colors.brown.withOpacity(0.1)
-      ..strokeWidth = 2;
-    canvas.drawLine(Offset(0, 0), Offset(size.width, 0), edgePaint);
-    canvas.drawLine(
-        Offset(0, size.height), Offset(size.width, size.height), edgePaint);
+    // — Faded "compass rose" hint in corner —
+    final compassPaint = Paint()
+      ..color = const Color(0xFF8B7355).withOpacity(0.06)
+      ..strokeWidth = 1.0
+      ..style = PaintingStyle.stroke;
+    final cc = Offset(size.width * 0.12, size.height * 0.88);
+    const cr = 28.0;
+    canvas.drawCircle(cc, cr, compassPaint);
+    canvas.drawCircle(cc, cr * 0.6, compassPaint);
+    // N-S-E-W lines
+    canvas.drawLine(cc - const Offset(0, cr + 5), cc + const Offset(0, cr + 5), compassPaint);
+    canvas.drawLine(cc - const Offset(cr + 5, 0), cc + const Offset(cr + 5, 0), compassPaint);
+    // Diagonal lines
+    final diag = cr * 0.7;
+    canvas.drawLine(cc - Offset(diag, diag), cc + Offset(diag, diag), compassPaint..strokeWidth = 0.5);
+    canvas.drawLine(cc - Offset(-diag, diag), cc + Offset(-diag, diag), compassPaint);
   }
 
   @override
