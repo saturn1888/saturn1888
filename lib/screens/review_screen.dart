@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import '../models/clue.dart';
 import '../models/hunt.dart';
 import '../models/hunt_theme.dart';
+import '../models/treasure_item.dart';
 import '../theme/app_theme.dart';
 import '../widgets/parchment_background.dart';
 import '../widgets/mute_button.dart';
@@ -25,6 +26,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   late List<Clue> _clues;
   String? _prizeDescription;
   String? _prizePhotoPath;
+  List<TreasureItem> _treasureItems = [];
   bool _initialized = false;
   bool _shuffleClues = false;
 
@@ -40,6 +42,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
       _clues = args['clues'] as List<Clue>;
       _prizeDescription = args['prizeDescription'] as String?;
       _prizePhotoPath = args['prizePhotoPath'] as String?;
+      _treasureItems = List<TreasureItem>.from(
+          (args['treasureItems'] as List<TreasureItem>?) ?? []);
       _initialized = true;
     }
   }
@@ -62,6 +66,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
       victoryMessage: _victoryController.text.trim(),
       prizeDescription: _prizeDescription,
       prizePhotoPath: _prizePhotoPath,
+      treasureItems: _treasureItems.isEmpty ? null : _treasureItems,
     );
 
     final box = Hive.box<Hunt>('hunts');

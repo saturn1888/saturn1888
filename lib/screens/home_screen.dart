@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/trophy.dart';
@@ -19,6 +20,29 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     MusicController.instance.start();
+  }
+
+  void _showExitConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Leave OzHunt?', style: AppTheme.heading(size: 22)),
+        content: Text(
+          'Are you sure you want to exit the app?',
+          style: AppTheme.body(size: 16),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Stay', style: AppTheme.body(size: 16, color: AppTheme.darkGold)),
+          ),
+          TextButton(
+            onPressed: () => SystemNavigator.pop(),
+            child: const Text('Exit', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -68,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 4),
                       // Logo
                       SizedBox(
                         width: 270,
@@ -131,20 +155,46 @@ class _HomeScreenState extends State<HomeScreen> {
                         onTap: () =>
                             Navigator.pushNamed(context, '/manage'),
                       ),
+                      const SizedBox(height: 10),
+                      // Exit plank — shorter, no arrow
+                      SizedBox(
+                        width: 180,
+                        child: _SignpostPlank(
+                          label: 'Exit',
+                          tilt: 0.0,
+                          arrowDirection: 0,
+                          seed: 7,
+                          onTap: () => _showExitConfirmation(context),
+                        ),
+                      ),
                       const SizedBox(height: 30),
                     ],
                   ),
                 ),
               ),
-              // Mute button top-left
+              // Mute button top-left — bigger, more visible
               Positioned(
-                top: 12,
-                left: 12,
-                child: CustomPaint(
-                  painter: _WornBadgePainter(),
-                  child: const Padding(
-                    padding: EdgeInsets.all(4),
-                    child: MuteButton(),
+                top: 10,
+                left: 10,
+                child: GestureDetector(
+                  onTap: () => MusicController.instance.toggleMute(),
+                  child: ListenableBuilder(
+                    listenable: MusicController.instance,
+                    builder: (context, _) {
+                      final muted = MusicController.instance.isMuted;
+                      return CustomPaint(
+                        painter: _WornBadgePainter(),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
+                          child: Icon(
+                            muted ? Icons.volume_off : Icons.volume_up,
+                            color: const Color(0xFF4A2E14),
+                            size: 26,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),

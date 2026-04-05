@@ -19,7 +19,7 @@ class MusicController extends ChangeNotifier {
     _started = true;
     try {
       await _player.setReleaseMode(ReleaseMode.loop);
-      await _player.setVolume(0.35);
+      await _player.setVolume(0.7);
       await _player.play(AssetSource('sounds/adventure_music.wav'));
     } catch (e) {
       // Music file not available
@@ -28,7 +28,7 @@ class MusicController extends ChangeNotifier {
 
   void toggleMute() {
     _isMuted = !_isMuted;
-    _player.setVolume(_isMuted ? 0 : 0.35);
+    _player.setVolume(_isMuted ? 0 : 0.7);
     notifyListeners();
   }
 

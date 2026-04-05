@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 import 'clue.dart';
 import 'hunt_theme.dart';
+import 'treasure_item.dart';
 
 part 'hunt.g.dart';
 
@@ -33,6 +34,9 @@ class Hunt extends HiveObject {
   @HiveField(8)
   String? prizePhotoPath;
 
+  @HiveField(9)
+  List<TreasureItem>? treasureItems;
+
   Hunt({
     required this.id,
     required this.name,
@@ -42,6 +46,7 @@ class Hunt extends HiveObject {
     this.victoryMessage = 'You did it! Amazing treasure hunters! 🎉',
     this.prizeDescription,
     this.prizePhotoPath,
+    this.treasureItems,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 

@@ -4,6 +4,7 @@ import 'models/hunt_theme.dart';
 import 'models/clue.dart';
 import 'models/hunt.dart';
 import 'models/trophy.dart';
+import 'models/treasure_item.dart';
 import 'theme/app_theme.dart';
 import 'screens/home_screen.dart';
 import 'screens/hunt_setup_screen.dart';
@@ -16,6 +17,7 @@ import 'screens/clue_screen.dart';
 import 'screens/victory_screen.dart';
 import 'screens/trophy_cabinet_screen.dart';
 import 'screens/manage_hunts_screen.dart';
+import 'screens/treasure_items_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +28,7 @@ void main() async {
   Hive.registerAdapter(ClueAdapter());
   Hive.registerAdapter(HuntAdapter());
   Hive.registerAdapter(TrophyAdapter());
+  Hive.registerAdapter(TreasureItemAdapter());
 
   await Hive.openBox<Hunt>('hunts');
   await Hive.openBox<Trophy>('trophies');
@@ -55,6 +58,7 @@ class OzHuntApp extends StatelessWidget {
         '/victory': (context) => const VictoryScreen(),
         '/trophies': (context) => const TrophyCabinetScreen(),
         '/manage': (context) => const ManageHuntsScreen(),
+        '/treasure-items': (context) => const TreasureItemsScreen(),
       },
     );
   }

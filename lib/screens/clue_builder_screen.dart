@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/clue.dart';
 import '../models/hunt_theme.dart';
+import '../models/treasure_item.dart';
 import '../theme/app_theme.dart';
 import 'dart:io';
 import '../widgets/parchment_background.dart';
@@ -20,6 +21,7 @@ class _ClueBuilderScreenState extends State<ClueBuilderScreen> {
   late int? _timerMinutes;
   String? _prizeDescription;
   String? _prizePhotoPath;
+  List<TreasureItem> _treasureItems = [];
   bool _initialized = false;
 
   @override
@@ -32,6 +34,8 @@ class _ClueBuilderScreenState extends State<ClueBuilderScreen> {
       _timerMinutes = args['timer'] as int?;
       _prizeDescription = args['prizeDescription'] as String?;
       _prizePhotoPath = args['prizePhotoPath'] as String?;
+      _treasureItems = List<TreasureItem>.from(
+          (args['treasureItems'] as List<TreasureItem>?) ?? []);
       _timerMinutes = args['timer'] as int?;
       _initialized = true;
     }
@@ -135,6 +139,39 @@ class _ClueBuilderScreenState extends State<ClueBuilderScreen> {
               ),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: OutlinedButton.icon(
+              onPressed: () async {
+                final result = await Navigator.pushNamed(
+                  context,
+                  '/treasure-items',
+                  arguments: {
+                    'treasureItems': _treasureItems,
+                    'clues': _clues,
+                  },
+                );
+                if (result != null && result is List<TreasureItem>) {
+                  setState(() => _treasureItems = result);
+                }
+              },
+              icon: const Text('🎁', style: TextStyle(fontSize: 20)),
+              label: Text(
+                _treasureItems.isEmpty
+                    ? 'Add Treasure Items'
+                    : 'Treasure Items (${_treasureItems.length})',
+                style: AppTheme.body(size: 16, color: AppTheme.darkGold),
+              ),
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 48),
+                side: const BorderSide(color: AppTheme.darkGold),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
           Expanded(
             child: _clues.isEmpty
                 ? Center(
@@ -227,6 +264,7 @@ class _ClueBuilderScreenState extends State<ClueBuilderScreen> {
                             'clues': _clues,
                             'prizeDescription': _prizeDescription,
                             'prizePhotoPath': _prizePhotoPath,
+                            'treasureItems': _treasureItems,
                           },
                         );
                       }
