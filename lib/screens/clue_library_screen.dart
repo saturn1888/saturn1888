@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../data/clue_library.dart';
 import '../theme/app_theme.dart';
 import '../widgets/parchment_background.dart';
+import '../widgets/mute_button.dart';
 
 class ClueLibraryScreen extends StatefulWidget {
   const ClueLibraryScreen({super.key});
@@ -64,6 +65,7 @@ class _ClueLibraryScreenState extends State<ClueLibraryScreen>
     return ParchmentBackground(child: Scaffold(
       appBar: AppBar(
         title: const Text('Clue Library'),
+        actions: const [MuteButton()],
         bottom: TabBar(
           controller: _tabController,
           onTap: (_) => setState(() {}),

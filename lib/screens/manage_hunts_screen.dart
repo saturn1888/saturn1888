@@ -4,6 +4,7 @@ import '../models/hunt.dart';
 import '../models/hunt_theme.dart';
 import '../theme/app_theme.dart';
 import '../widgets/parchment_background.dart';
+import '../widgets/mute_button.dart';
 
 class ManageHuntsScreen extends StatelessWidget {
   const ManageHuntsScreen({super.key});
@@ -14,6 +15,7 @@ class ManageHuntsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Manage Hunts'),
         actions: [
+          const MuteButton(),
           ValueListenableBuilder(
             valueListenable: Hive.box<Hunt>('hunts').listenable(),
             builder: (context, Box<Hunt> box, _) {

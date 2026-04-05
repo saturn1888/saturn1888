@@ -4,6 +4,7 @@ import '../models/hunt.dart';
 import '../models/hunt_theme.dart';
 import '../theme/app_theme.dart';
 import '../widgets/parchment_background.dart';
+import '../widgets/mute_button.dart';
 
 class PlaySelectScreen extends StatelessWidget {
   const PlaySelectScreen({super.key});
@@ -11,7 +12,7 @@ class PlaySelectScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ParchmentBackground(child: Scaffold(
-      appBar: AppBar(title: const Text('Choose a Hunt')),
+      appBar: AppBar(title: const Text('Choose a Hunt'), actions: [const MuteButton()]),
       body: ValueListenableBuilder(
         valueListenable: Hive.box<Hunt>('hunts').listenable(),
         builder: (context, Box<Hunt> box, _) {

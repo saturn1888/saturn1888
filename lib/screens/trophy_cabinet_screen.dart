@@ -4,6 +4,7 @@ import '../models/trophy.dart';
 import '../models/hunt_theme.dart';
 import '../theme/app_theme.dart';
 import '../widgets/parchment_background.dart';
+import '../widgets/mute_button.dart';
 
 class TrophyCabinetScreen extends StatelessWidget {
   const TrophyCabinetScreen({super.key});
@@ -30,6 +31,7 @@ class TrophyCabinetScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Trophy Cabinet'),
         actions: [
+          const MuteButton(),
           ValueListenableBuilder(
             valueListenable: Hive.box<Trophy>('trophies').listenable(),
             builder: (context, Box<Trophy> box, _) {

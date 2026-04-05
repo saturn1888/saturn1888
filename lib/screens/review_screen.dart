@@ -6,6 +6,7 @@ import '../models/hunt.dart';
 import '../models/hunt_theme.dart';
 import '../theme/app_theme.dart';
 import '../widgets/parchment_background.dart';
+import '../widgets/mute_button.dart';
 
 class ReviewScreen extends StatefulWidget {
   const ReviewScreen({super.key});
@@ -81,7 +82,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
     final theme = HuntThemeData.fromType(_themeType);
 
     return ParchmentBackground(child: Scaffold(
-      appBar: AppBar(title: const Text('Review Hunt')),
+      appBar: AppBar(title: const Text('Review Hunt'), actions: [const MuteButton()]),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

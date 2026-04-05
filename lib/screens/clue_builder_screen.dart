@@ -4,6 +4,7 @@ import '../models/hunt_theme.dart';
 import '../theme/app_theme.dart';
 import 'dart:io';
 import '../widgets/parchment_background.dart';
+import '../widgets/mute_button.dart';
 
 class ClueBuilderScreen extends StatefulWidget {
   const ClueBuilderScreen({super.key});
@@ -91,7 +92,7 @@ class _ClueBuilderScreenState extends State<ClueBuilderScreen> {
     final hasWarning = _clues.length < 2 || _clues.length > 10;
 
     return ParchmentBackground(child: Scaffold(
-      appBar: AppBar(title: const Text('Build Clues')),
+      appBar: AppBar(title: const Text('Build Clues'), actions: [const MuteButton()]),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _openClueEditor(),
         child: const Icon(Icons.add, size: 32),

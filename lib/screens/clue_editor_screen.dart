@@ -4,6 +4,7 @@ import 'dart:io';
 import '../models/clue.dart';
 import '../theme/app_theme.dart';
 import '../widgets/parchment_background.dart';
+import '../widgets/mute_button.dart';
 
 class ClueEditorScreen extends StatefulWidget {
   const ClueEditorScreen({super.key});
@@ -91,6 +92,7 @@ class _ClueEditorScreenState extends State<ClueEditorScreen> {
     return ParchmentBackground(child: Scaffold(
       appBar: AppBar(
         title: Text(_isEditing ? 'Edit Clue' : 'New Clue'),
+        actions: const [MuteButton()],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

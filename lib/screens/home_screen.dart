@@ -2,9 +2,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:audioplayers/audioplayers.dart';
 import '../models/trophy.dart';
 import '../theme/app_theme.dart';
+import '../widgets/music_controller.dart';
+import '../widgets/mute_button.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,34 +15,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final AudioPlayer _musicPlayer = AudioPlayer();
-  bool _isMuted = false;
-
   @override
   void initState() {
     super.initState();
-    _startMusic();
-  }
-
-  Future<void> _startMusic() async {
-    try {
-      await _musicPlayer.setReleaseMode(ReleaseMode.loop);
-      await _musicPlayer.setVolume(0.35);
-      await _musicPlayer.play(AssetSource('sounds/adventure_music.wav'));
-    } catch (e) {
-      // Music file not available
-    }
-  }
-
-  void _toggleMute() {
-    setState(() => _isMuted = !_isMuted);
-    _musicPlayer.setVolume(_isMuted ? 0 : 0.35);
-  }
-
-  @override
-  void dispose() {
-    _musicPlayer.dispose();
-    super.dispose();
+    MusicController.instance.start();
   }
 
   @override
@@ -154,16 +131,20 @@ class _HomeScreenState extends State<HomeScreen> {
                         onTap: () =>
                             Navigator.pushNamed(context, '/manage'),
                       ),
-                      const SizedBox(height: 10),
-                      _SignpostPlank(
-                        label: _isMuted ? 'Unmute Music' : 'Mute Music',
-                        tilt: -0.008,
-                        arrowDirection: 0,
-                        seed: _isMuted ? 5 : 4,
-                        onTap: _toggleMute,
-                      ),
                       const SizedBox(height: 30),
                     ],
+                  ),
+                ),
+              ),
+              // Mute button top-left
+              Positioned(
+                top: 12,
+                left: 12,
+                child: CustomPaint(
+                  painter: _WornBadgePainter(),
+                  child: const Padding(
+                    padding: EdgeInsets.all(4),
+                    child: MuteButton(),
                   ),
                 ),
               ),

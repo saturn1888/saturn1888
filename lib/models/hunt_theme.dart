@@ -17,6 +17,8 @@ enum HuntThemeType {
   halloween,
   @HiveField(5)
   christmas,
+  @HiveField(6)
+  custom,
 }
 
 class HuntThemeData {
@@ -84,6 +86,14 @@ class HuntThemeData {
       accentColor: Color(0xFF81C784),
       cardColor: Color(0xFF9B2020),
       type: HuntThemeType.christmas,
+    ),
+    HuntThemeData(
+      name: 'Create Your Own',
+      emoji: '🎨',
+      backgroundColor: Color(0xFF3E2723),
+      accentColor: Color(0xFFE8A817),
+      cardColor: Color(0xFF5C3317),
+      type: HuntThemeType.custom,
     ),
   ];
 
