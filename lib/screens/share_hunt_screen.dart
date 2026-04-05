@@ -126,14 +126,6 @@ class _ShareHuntScreenState extends State<ShareHuntScreen> {
               version: QrVersions.auto,
               size: 200,
               backgroundColor: Colors.white,
-              eyeStyle: const QrEyeStyle(
-                eyeShape: QrEyeShape.roundedOuter,
-                color: Color(0xFF3E2723),
-              ),
-              dataModuleStyle: const QrDataModuleStyle(
-                dataModuleShape: QrDataModuleShape.roundedOuter,
-                color: Color(0xFF3E2723),
-              ),
             ),
           ),
         ),
