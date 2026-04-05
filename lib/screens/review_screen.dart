@@ -50,10 +50,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
     super.dispose();
   }
 
-  Future<void> _startHunt() async {
+  Hunt _buildHunt() {
     final clues = List<Clue>.from(_clues);
     if (_shuffleClues) clues.shuffle();
-    final hunt = Hunt(
+    return Hunt(
       id: const Uuid().v4(),
       name: _huntName,
       themeType: _themeType,
@@ -62,9 +62,17 @@ class _ReviewScreenState extends State<ReviewScreen> {
       victoryMessage: _victoryController.text.trim(),
       treasureItems: _treasureItems.isEmpty ? null : _treasureItems,
     );
+  }
 
+  Future<Hunt> _saveHunt() async {
+    final hunt = _buildHunt();
     final box = Hive.box<Hunt>('hunts');
     await box.put(hunt.id, hunt);
+    return hunt;
+  }
+
+  Future<void> _startHunt() async {
+    final hunt = await _saveHunt();
 
     if (mounted) {
       Navigator.pushNamedAndRemoveUntil(
@@ -182,6 +190,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
               contentPadding: EdgeInsets.zero,
             ),
             const SizedBox(height: 24),
+            // Start hunt button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -194,6 +203,63 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 child: Text(
                   'Start Hunt 🎯',
                   style: AppTheme.heading(size: 22, color: Colors.white),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            // Save & Share button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () async {
+                  final hunt = await _saveHunt();
+                  if (mounted) {
+                    Navigator.pushNamed(
+                      context,
+                      '/share-hunt',
+                      arguments: hunt,
+                    );
+                  }
+                },
+                icon: const Icon(Icons.share, size: 20),
+                label: Text(
+                  'Save & Share Code',
+                  style: AppTheme.heading(size: 18, color: AppTheme.warmBrown),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.gold,
+                  foregroundColor: AppTheme.warmBrown,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            // Save only button
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: () async {
+                  await _saveHunt();
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Hunt saved! You can play or share it later.'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                    Navigator.popUntil(context, (route) => route.isFirst);
+                  }
+                },
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: AppTheme.leather.withOpacity(0.4)),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                child: Text(
+                  'Save for Later',
+                  style: AppTheme.body(size: 16, color: AppTheme.warmBrown),
                 ),
               ),
             ),
