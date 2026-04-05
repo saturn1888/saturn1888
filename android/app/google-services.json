@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "456711647018",
+    "project_id": "ozhunt",
+    "storage_bucket": "ozhunt.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:456711647018:android:2db6d369979e6045a83853",
+        "android_client_info": {
+          "package_name": "com.ozhunt.ozhunt"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhJ-QLcvyn1HQXKWSezw2Vw4MwsrNyXnw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
