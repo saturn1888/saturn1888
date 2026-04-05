@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../models/trophy.dart';
 import '../models/hunt_theme.dart';
 import '../theme/app_theme.dart';
+import '../widgets/parchment_background.dart';
 
 class TrophyCabinetScreen extends StatelessWidget {
   const TrophyCabinetScreen({super.key});
@@ -25,7 +26,7 @@ class TrophyCabinetScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ParchmentBackground(child: Scaffold(
       appBar: AppBar(
         title: const Text('Trophy Cabinet'),
         actions: [
@@ -157,7 +158,7 @@ class TrophyCabinetScreen extends StatelessWidget {
           );
         },
       ),
-    );
+    ));
   }
 
   String _formatDate(DateTime date) {

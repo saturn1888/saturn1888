@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../models/hunt_theme.dart';
 import '../theme/app_theme.dart';
+import '../widgets/parchment_background.dart';
 
 class HuntSetupScreen extends StatefulWidget {
   const HuntSetupScreen({super.key});
@@ -78,7 +79,7 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ParchmentBackground(child: Scaffold(
       appBar: AppBar(title: const Text('Hunt Setup')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -274,7 +275,7 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
           ],
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildPrizePhoto() {

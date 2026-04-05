@@ -3,6 +3,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../models/clue.dart';
 import '../theme/app_theme.dart';
+import '../widgets/parchment_background.dart';
 
 class ClueEditorScreen extends StatefulWidget {
   const ClueEditorScreen({super.key});
@@ -87,7 +88,7 @@ class _ClueEditorScreenState extends State<ClueEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ParchmentBackground(child: Scaffold(
       appBar: AppBar(
         title: Text(_isEditing ? 'Edit Clue' : 'New Clue'),
       ),
@@ -211,7 +212,7 @@ class _ClueEditorScreenState extends State<ClueEditorScreen> {
           ],
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildPhoto() {

@@ -3,13 +3,14 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../models/hunt.dart';
 import '../models/hunt_theme.dart';
 import '../theme/app_theme.dart';
+import '../widgets/parchment_background.dart';
 
 class ManageHuntsScreen extends StatelessWidget {
   const ManageHuntsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ParchmentBackground(child: Scaffold(
       appBar: AppBar(
         title: const Text('Manage Hunts'),
         actions: [
@@ -159,7 +160,7 @@ class ManageHuntsScreen extends StatelessWidget {
           );
         },
       ),
-    );
+    ));
   }
 
   void _showDeleteDialog(BuildContext context, Hunt hunt) {

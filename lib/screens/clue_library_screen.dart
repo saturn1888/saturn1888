@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../data/clue_library.dart';
 import '../theme/app_theme.dart';
+import '../widgets/parchment_background.dart';
 
 class ClueLibraryScreen extends StatefulWidget {
   const ClueLibraryScreen({super.key});
@@ -60,7 +61,7 @@ class _ClueLibraryScreenState extends State<ClueLibraryScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ParchmentBackground(child: Scaffold(
       appBar: AppBar(
         title: const Text('Clue Library'),
         bottom: TabBar(
@@ -234,7 +235,7 @@ class _ClueLibraryScreenState extends State<ClueLibraryScreen>
             ),
         ],
       ),
-    );
+    ));
   }
 
   Widget _buildDifficultyChip(ClueDifficulty? difficulty, String label) {

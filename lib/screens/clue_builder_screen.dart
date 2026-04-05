@@ -3,6 +3,7 @@ import '../models/clue.dart';
 import '../models/hunt_theme.dart';
 import '../theme/app_theme.dart';
 import 'dart:io';
+import '../widgets/parchment_background.dart';
 
 class ClueBuilderScreen extends StatefulWidget {
   const ClueBuilderScreen({super.key});
@@ -89,7 +90,7 @@ class _ClueBuilderScreenState extends State<ClueBuilderScreen> {
   Widget build(BuildContext context) {
     final hasWarning = _clues.length < 2 || _clues.length > 10;
 
-    return Scaffold(
+    return ParchmentBackground(child: Scaffold(
       appBar: AppBar(title: const Text('Build Clues')),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _openClueEditor(),
@@ -243,7 +244,7 @@ class _ClueBuilderScreenState extends State<ClueBuilderScreen> {
           ),
         ],
       ),
-    );
+    ));
   }
 
   Widget _buildPhotoThumbnail(String path) {

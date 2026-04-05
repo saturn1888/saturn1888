@@ -5,6 +5,7 @@ import '../models/clue.dart';
 import '../models/hunt.dart';
 import '../models/hunt_theme.dart';
 import '../theme/app_theme.dart';
+import '../widgets/parchment_background.dart';
 
 class ReviewScreen extends StatefulWidget {
   const ReviewScreen({super.key});
@@ -79,7 +80,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   Widget build(BuildContext context) {
     final theme = HuntThemeData.fromType(_themeType);
 
-    return Scaffold(
+    return ParchmentBackground(child: Scaffold(
       appBar: AppBar(title: const Text('Review Hunt')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -200,6 +201,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
           ],
         ),
       ),
-    );
+    ));
   }
 }

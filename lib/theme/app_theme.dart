@@ -23,11 +23,12 @@ class AppTheme {
         secondary: adventureGreen,
         surface: parchment,
       ),
-      scaffoldBackgroundColor: parchment,
+      scaffoldBackgroundColor: Colors.transparent, // Let ParchmentBackground show through
       appBarTheme: AppBarTheme(
-        backgroundColor: warmBrown,
-        foregroundColor: const Color(0xFFF5DEB3), // Wheat
-        elevation: 2,
+        backgroundColor: const Color(0xFF4A2810),
+        foregroundColor: const Color(0xFFF5DEB3),
+        elevation: 0,
+        scrolledUnderElevation: 2,
         shadowColor: Colors.brown.withOpacity(0.5),
         titleTextStyle: GoogleFonts.fredoka(
           fontWeight: FontWeight.w700,
@@ -52,8 +53,9 @@ class AppTheme {
         shadowColor: Colors.brown.withOpacity(0.3),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14),
+          side: BorderSide(color: leather.withOpacity(0.15)),
         ),
-        color: Colors.white,
+        color: const Color(0xFFF5EDE0),
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -66,7 +68,7 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Colors.white,
+        fillColor: const Color(0xFFFAF5ED),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: leather.withOpacity(0.4)),
