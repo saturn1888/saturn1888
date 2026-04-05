@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import '../models/hunt_theme.dart';
 import '../theme/app_theme.dart';
 import '../widgets/parchment_background.dart';
@@ -16,68 +14,17 @@ class HuntSetupScreen extends StatefulWidget {
 
 class _HuntSetupScreenState extends State<HuntSetupScreen> {
   final _nameController = TextEditingController();
-  final _prizeController = TextEditingController();
   HuntThemeType _selectedTheme = HuntThemeType.pirate;
   int? _timerMinutes;
-  String? _prizePhotoPath;
-  final _picker = ImagePicker();
 
   static const List<int?> _timerOptions = [null, 5, 10, 15, 20, 30];
 
   @override
   void dispose() {
     _nameController.dispose();
-    _prizeController.dispose();
     super.dispose();
   }
 
-  Future<void> _pickPrizePhoto(ImageSource source) async {
-    try {
-      final picked = await _picker.pickImage(
-        source: source,
-        maxWidth: 1024,
-        maxHeight: 1024,
-        imageQuality: 80,
-      );
-      if (picked != null) {
-        setState(() => _prizePhotoPath = picked.path);
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not pick image: $e')),
-        );
-      }
-    }
-  }
-
-  void _showPrizePhotoOptions() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => SafeArea(
-        child: Wrap(
-          children: [
-            ListTile(
-              leading: const Icon(Icons.camera_alt),
-              title: const Text('Take Photo'),
-              onTap: () {
-                Navigator.pop(context);
-                _pickPrizePhoto(ImageSource.camera);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: const Text('Choose from Gallery'),
-              onTap: () {
-                Navigator.pop(context);
-                _pickPrizePhoto(ImageSource.gallery);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -161,45 +108,6 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
               },
             ),
 
-            const SizedBox(height: 24),
-            Text('What are hunters looking for?',
-                style: AppTheme.heading(size: 20)),
-            const SizedBox(height: 4),
-            Text(
-              'Tell hunters what\'s hidden at each clue spot',
-              style: AppTheme.body(size: 13, color: Colors.grey),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _prizeController,
-              decoration: const InputDecoration(
-                hintText: 'e.g. Golden coins, stickers, puzzle pieces...',
-              ),
-              textCapitalization: TextCapitalization.sentences,
-            ),
-            const SizedBox(height: 12),
-            if (_prizePhotoPath != null) ...[
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: _buildPrizePhoto(),
-              ),
-              const SizedBox(height: 8),
-              TextButton.icon(
-                onPressed: () => setState(() => _prizePhotoPath = null),
-                icon: const Icon(Icons.delete, color: Colors.red, size: 18),
-                label: const Text('Remove photo',
-                    style: TextStyle(color: Colors.red, fontSize: 13)),
-              ),
-            ] else
-              OutlinedButton.icon(
-                onPressed: _showPrizePhotoOptions,
-                icon: const Icon(Icons.add_a_photo, size: 18),
-                label: const Text('Add prize photo'),
-                style: OutlinedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 48),
-                  side: BorderSide(color: AppTheme.darkGold.withOpacity(0.5)),
-                ),
-              ),
 
             const SizedBox(height: 24),
             Text('Timer', style: AppTheme.heading(size: 20)),
@@ -239,16 +147,13 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
                   }
                   Navigator.pushNamed(
                     context,
-                    '/clue-builder',
+                    '/treasure-items',
                     arguments: {
                       'name': name,
                       'theme': _selectedTheme,
                       'timer': _timerMinutes,
-                      'prizeDescription':
-                          _prizeController.text.trim().isEmpty
-                              ? null
-                              : _prizeController.text.trim(),
-                      'prizePhotoPath': _prizePhotoPath,
+                      'treasureItems': <dynamic>[],
+                      'clues': <dynamic>[],
                     },
                   );
                 },
@@ -268,23 +173,6 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
     ));
   }
 
-  Widget _buildPrizePhoto() {
-    final file = File(_prizePhotoPath!);
-    if (file.existsSync()) {
-      return Image.file(
-        file,
-        width: double.infinity,
-        height: 150,
-        fit: BoxFit.cover,
-      );
-    }
-    return Container(
-      width: double.infinity,
-      height: 150,
-      color: Colors.grey[300],
-      child: const Icon(Icons.broken_image, size: 48, color: Colors.grey),
-    );
-  }
 }
 
 /// Paints a theme card that looks like a beaten-up old map piece
