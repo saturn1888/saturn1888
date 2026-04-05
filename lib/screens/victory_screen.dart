@@ -209,6 +209,33 @@ class _VictoryScreenState extends State<VictoryScreen>
                       ),
                     ),
                     const SizedBox(height: 12),
+                    // Share hunt button
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/share-hunt',
+                            arguments: _hunt,
+                          );
+                        },
+                        icon: Icon(Icons.share,
+                            color: _theme.accentColor, size: 20),
+                        label: Text(
+                          'Share Hunt with Friends',
+                          style: AppTheme.body(
+                              size: 16, color: _theme.accentColor),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: _theme.accentColor),
+                          padding:
+                              const EdgeInsets.symmetric(vertical: 14),
+                          minimumSize: const Size(48, 48),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
                     Row(
                       children: [
                         Expanded(

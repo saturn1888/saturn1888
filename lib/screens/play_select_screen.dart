@@ -118,8 +118,25 @@ class PlaySelectScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    trailing: Icon(Icons.play_arrow,
-                        color: theme.accentColor, size: 32),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/share-hunt',
+                              arguments: hunt,
+                            );
+                          },
+                          icon: Icon(Icons.share,
+                              color: theme.accentColor.withOpacity(0.7),
+                              size: 22),
+                        ),
+                        Icon(Icons.play_arrow,
+                            color: theme.accentColor, size: 32),
+                      ],
+                    ),
                     onTap: () {
                       Navigator.pushNamed(
                         context,

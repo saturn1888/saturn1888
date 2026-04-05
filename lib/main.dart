@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'models/hunt_theme.dart';
 import 'models/clue.dart';
 import 'models/hunt.dart';
@@ -19,6 +20,8 @@ import 'screens/trophy_cabinet_screen.dart';
 import 'screens/manage_hunts_screen.dart';
 import 'screens/treasure_items_screen.dart';
 import 'screens/match_clues_screen.dart';
+import 'screens/share_hunt_screen.dart';
+import 'screens/join_hunt_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +36,13 @@ void main() async {
 
   await Hive.openBox<Hunt>('hunts');
   await Hive.openBox<Trophy>('trophies');
+
+  // Initialize Firebase (will fail gracefully if not configured)
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    debugPrint('Firebase not configured: $e');
+  }
 
   runApp(const OzHuntApp());
 }
@@ -61,6 +71,8 @@ class OzHuntApp extends StatelessWidget {
         '/manage': (context) => const ManageHuntsScreen(),
         '/treasure-items': (context) => const TreasureItemsScreen(),
         '/match-clues': (context) => const MatchCluesScreen(),
+        '/share-hunt': (context) => const ShareHuntScreen(),
+        '/join-hunt': (context) => const JoinHuntScreen(),
       },
     );
   }
