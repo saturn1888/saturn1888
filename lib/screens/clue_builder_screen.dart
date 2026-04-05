@@ -227,9 +227,12 @@ class _ClueBuilderScreenState extends State<ClueBuilderScreen> {
               child: ElevatedButton(
                 onPressed: _clues.length >= 2
                     ? () {
+                        final nextRoute = _treasureItems.isNotEmpty
+                            ? '/match-clues'
+                            : '/review';
                         Navigator.pushNamed(
                           context,
-                          '/review',
+                          nextRoute,
                           arguments: {
                             'name': _huntName,
                             'theme': _themeType,

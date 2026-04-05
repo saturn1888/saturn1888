@@ -18,6 +18,7 @@ import 'screens/victory_screen.dart';
 import 'screens/trophy_cabinet_screen.dart';
 import 'screens/manage_hunts_screen.dart';
 import 'screens/treasure_items_screen.dart';
+import 'screens/match_clues_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,6 +60,7 @@ class OzHuntApp extends StatelessWidget {
         '/trophies': (context) => const TrophyCabinetScreen(),
         '/manage': (context) => const ManageHuntsScreen(),
         '/treasure-items': (context) => const TreasureItemsScreen(),
+        '/match-clues': (context) => const MatchCluesScreen(),
       },
     );
   }
