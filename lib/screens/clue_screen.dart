@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import '../widgets/sound_effects.dart';
 import 'package:confetti/confetti.dart';
+import '../models/clue.dart';
 import '../models/hunt.dart';
 import '../models/hunt_theme.dart';
 import '../theme/app_theme.dart';
