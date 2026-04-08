@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:record/record.dart';
+import 'package:flutter/services.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:path_provider/path_provider.dart';
 import '../theme/app_theme.dart';
 
-/// Widget for recording and playing back voice clues
+/// Voice clue recorder using platform method channel (Android only)
 class VoiceClueRecorder extends StatefulWidget {
   final String? existingPath;
   final ValueChanged<String?> onChanged;
@@ -21,12 +21,12 @@ class VoiceClueRecorder extends StatefulWidget {
 }
 
 class _VoiceClueRecorderState extends State<VoiceClueRecorder> {
-  final _recorder = AudioRecorder();
+  static const _channel = MethodChannel('com.ozhunt.ozhunt/recorder');
   final _player = AudioPlayer();
   bool _isRecording = false;
   bool _isPlaying = false;
   String? _recordedPath;
-  Duration _recordDuration = Duration.zero;
+  bool _recorderAvailable = true;
 
   @override
   void initState() {
@@ -39,60 +39,32 @@ class _VoiceClueRecorderState extends State<VoiceClueRecorder> {
 
   @override
   void dispose() {
-    _recorder.dispose();
     _player.dispose();
     super.dispose();
   }
 
   Future<void> _startRecording() async {
     try {
-      if (await _recorder.hasPermission()) {
-        final dir = await getApplicationDocumentsDirectory();
-        final path =
-            '${dir.path}/voice_clues/voice_${DateTime.now().millisecondsSinceEpoch}.m4a';
-        await Directory('${dir.path}/voice_clues').create(recursive: true);
+      final dir = await getApplicationDocumentsDirectory();
+      final path =
+          '${dir.path}/voice_clues/voice_${DateTime.now().millisecondsSinceEpoch}.m4a';
+      await Directory('${dir.path}/voice_clues').create(recursive: true);
 
-        await _recorder.start(
-          const RecordConfig(encoder: AudioEncoder.aacLc),
-          path: path,
-        );
-        setState(() => _isRecording = true);
-
-        // Track duration
-        _recordDuration = Duration.zero;
-        Future.doWhile(() async {
-          await Future.delayed(const Duration(seconds: 1));
-          if (_isRecording && mounted) {
-            setState(() => _recordDuration += const Duration(seconds: 1));
-            return true;
-          }
-          return false;
-        });
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text('Microphone permission needed to record')),
-          );
-        }
-      }
+      await _channel.invokeMethod('startRecording', {'path': path});
+      setState(() {
+        _isRecording = true;
+        _recordedPath = path;
+      });
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not start recording: $e')),
-        );
-      }
+      setState(() => _recorderAvailable = false);
     }
   }
 
   Future<void> _stopRecording() async {
     try {
-      final path = await _recorder.stop();
-      setState(() {
-        _isRecording = false;
-        _recordedPath = path;
-      });
-      widget.onChanged(path);
+      await _channel.invokeMethod('stopRecording');
+      setState(() => _isRecording = false);
+      widget.onChanged(_recordedPath);
     } catch (e) {
       setState(() => _isRecording = false);
     }
@@ -118,16 +90,15 @@ class _VoiceClueRecorderState extends State<VoiceClueRecorder> {
     widget.onChanged(null);
   }
 
-  String get _durationText {
-    final secs = _recordDuration.inSeconds;
-    return '${(secs ~/ 60).toString().padLeft(1, '0')}:${(secs % 60).toString().padLeft(2, '0')}';
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (_isRecording) {
-      return _buildRecordingState();
+    if (!_recorderAvailable) {
+      return Text(
+        'Voice recording not available on this device',
+        style: AppTheme.caption(size: 12),
+      );
     }
+    if (_isRecording) return _buildRecordingState();
     if (_recordedPath != null && File(_recordedPath!).existsSync()) {
       return _buildPlaybackState();
     }
@@ -158,24 +129,9 @@ class _VoiceClueRecorderState extends State<VoiceClueRecorder> {
       ),
       child: Row(
         children: [
-          // Pulsing red dot
-          TweenAnimationBuilder<double>(
-            tween: Tween(begin: 0.3, end: 1.0),
-            duration: const Duration(milliseconds: 800),
-            builder: (context, value, child) {
-              return Container(
-                width: 12,
-                height: 12,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.red.withOpacity(value),
-                ),
-              );
-            },
-            onEnd: () {},
-          ),
+          const Icon(Icons.fiber_manual_record, color: Colors.red, size: 16),
           const SizedBox(width: 10),
-          Text('Recording... $_durationText',
+          Text('Recording...',
               style: AppTheme.body(size: 14, color: Colors.red)),
           const Spacer(),
           ElevatedButton(
@@ -184,7 +140,6 @@ class _VoiceClueRecorderState extends State<VoiceClueRecorder> {
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
               minimumSize: const Size(80, 36),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
             ),
             child: const Text('Stop'),
           ),
@@ -199,8 +154,7 @@ class _VoiceClueRecorderState extends State<VoiceClueRecorder> {
       decoration: BoxDecoration(
         color: AppTheme.adventureGreen.withOpacity(0.08),
         borderRadius: BorderRadius.circular(12),
-        border:
-            Border.all(color: AppTheme.adventureGreen.withOpacity(0.3)),
+        border: Border.all(color: AppTheme.adventureGreen.withOpacity(0.3)),
       ),
       child: Row(
         children: [
@@ -210,29 +164,20 @@ class _VoiceClueRecorderState extends State<VoiceClueRecorder> {
               _isPlaying ? Icons.stop : Icons.play_arrow,
               color: AppTheme.adventureGreen,
             ),
-            constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
           ),
-          Text(
-            'Voice clue recorded',
-            style: AppTheme.body(
-                size: 13, color: AppTheme.adventureGreen),
-          ),
+          Text('Voice recorded',
+              style: AppTheme.body(size: 13, color: AppTheme.adventureGreen)),
           const Spacer(),
-          // Re-record
           IconButton(
             onPressed: () {
               _deleteRecording();
               _startRecording();
             },
             icon: const Icon(Icons.refresh, size: 20),
-            tooltip: 'Re-record',
           ),
-          // Delete
           IconButton(
             onPressed: _deleteRecording,
-            icon: Icon(Icons.delete_outline,
-                size: 20, color: Colors.red[400]),
-            tooltip: 'Remove voice clue',
+            icon: Icon(Icons.delete_outline, size: 20, color: Colors.red[400]),
           ),
         ],
       ),
