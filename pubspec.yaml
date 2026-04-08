@@ -23,8 +23,8 @@ dependencies:
   firebase_storage: ^12.3.0
   qr_flutter: ^4.1.0
   mobile_scanner: ^5.2.0
-  record: ^5.1.0
-  share_plus: ^10.0.0
+  record: ^5.0.5
+  share_plus: ^9.0.0
 
 dev_dependencies:
   flutter_test:
