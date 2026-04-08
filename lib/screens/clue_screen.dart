@@ -156,17 +156,42 @@ class _ClueScreenState extends State<ClueScreen>
     });
   }
 
+  String? _getMilestoneMessage() {
+    final total = _hunt.clues.length;
+    final found = _currentClueIndex + 1;
+    final remaining = total - found;
+
+    if (found == 1 && total > 2) return 'Great start! ${remaining} more to find!';
+    if (found == total ~/ 2 && total >= 4) return 'Halfway there! Keep going! 🔥';
+    if (remaining == 1) return 'Almost done! Just 1 more! 💪';
+    if (found == 3 && total > 4) return '$found down, $remaining to go!';
+    return null;
+  }
+
   void _onFoundIt() {
     HapticFeedback.heavyImpact();
     SoundEffects.playFound();
     _helpPulseTimer?.cancel();
+
+    final milestone = _getMilestoneMessage();
+
     setState(() {
       _found = true;
       _showHelpPulse = false;
     });
     _confettiController.play();
 
-    Future.delayed(const Duration(seconds: 2), () {
+    // Show milestone if applicable, then advance
+    final delay = milestone != null ? 3 : 2;
+
+    if (milestone != null) {
+      Future.delayed(const Duration(milliseconds: 800), () {
+        if (!mounted) return;
+        _showMilestoneOverlay(milestone);
+      });
+    }
+
+    Future.delayed(Duration(seconds: delay), () {
       if (!mounted) return;
       if (_currentClueIndex < _hunt.clues.length - 1) {
         setState(() {
@@ -188,6 +213,92 @@ class _ClueScreenState extends State<ClueScreen>
         );
       }
     });
+  }
+
+  void _showMilestoneOverlay(String message) {
+    final overlay = OverlayEntry(
+      builder: (context) => Positioned.fill(
+        child: IgnorePointer(
+          child: Center(
+            child: TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0.0, end: 1.0),
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.elasticOut,
+              builder: (context, value, child) {
+                return Transform.scale(
+                  scale: value,
+                  child: Opacity(
+                    opacity: value.clamp(0.0, 1.0),
+                    child: child,
+                  ),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 28, vertical: 16),
+                decoration: BoxDecoration(
+                  color: _theme.cardColor.withOpacity(0.95),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                      color: _theme.accentColor.withOpacity(0.5), width: 2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 20,
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: _theme.decorativeEmojis
+                          .take(3)
+                          .map((e) => Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 4),
+                                child: Text(e,
+                                    style: const TextStyle(fontSize: 24)),
+                              ))
+                          .toList(),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      message,
+                      style: AppTheme.heading(
+                          size: 20, color: _theme.accentColor),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 4),
+                    // Progress dots
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: List.generate(_hunt.clues.length, (i) {
+                        return Container(
+                          width: 10,
+                          height: 10,
+                          margin: const EdgeInsets.symmetric(horizontal: 2),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: i <= _currentClueIndex
+                                ? _theme.accentColor
+                                : _theme.accentColor.withOpacity(0.2),
+                          ),
+                        );
+                      }),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(overlay);
+    Future.delayed(const Duration(seconds: 2), () => overlay.remove());
   }
 
   void _showRulesDialog() {

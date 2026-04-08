@@ -172,6 +172,54 @@ class HuntSharingService {
     return doc.exists;
   }
 
+  /// Submit a time to the hunt leaderboard
+  static Future<void> submitTime({
+    required String huntId,
+    required String teamName,
+    required int timeTakenSeconds,
+    required int clueCount,
+  }) async {
+    // Only submit for shared hunts (id starts with "shared_")
+    final code = huntId.replaceFirst('shared_', '');
+    if (code == huntId) return; // not a shared hunt
+
+    try {
+      await _firestore
+          .collection('shared_hunts')
+          .doc(code)
+          .collection('leaderboard')
+          .add({
+        'teamName': teamName,
+        'timeTakenSeconds': timeTakenSeconds,
+        'clueCount': clueCount,
+        'completedAt': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      // Silently fail — leaderboard is optional
+    }
+  }
+
+  /// Get top times for a shared hunt
+  static Future<List<Map<String, dynamic>>> getLeaderboard(
+      String huntId) async {
+    final code = huntId.replaceFirst('shared_', '');
+    if (code == huntId) return [];
+
+    try {
+      final snapshot = await _firestore
+          .collection('shared_hunts')
+          .doc(code)
+          .collection('leaderboard')
+          .orderBy('timeTakenSeconds')
+          .limit(10)
+          .get();
+
+      return snapshot.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
   static Future<String?> _uploadPhoto(File file, String path) async {
     try {
       final ref = _storage.ref().child(path);

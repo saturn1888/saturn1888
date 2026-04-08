@@ -176,7 +176,95 @@ class _HomeScreenState extends State<HomeScreen> {
                           onTap: () => _showExitConfirmation(context),
                         ),
                       ),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 20),
+                      // Player progression badge
+                      ValueListenableBuilder(
+                        valueListenable:
+                            Hive.box<Trophy>('trophies').listenable(),
+                        builder: (context, Box<Trophy> box, _) {
+                          final count = box.length;
+                          String tier;
+                          String emoji;
+                          int nextTarget;
+                          if (count >= 25) {
+                            tier = 'Master Explorer';
+                            emoji = '🗺️';
+                            nextTarget = count;
+                          } else if (count >= 10) {
+                            tier = 'Gold Hunter';
+                            emoji = '🏆';
+                            nextTarget = 25;
+                          } else if (count >= 5) {
+                            tier = 'Silver Hunter';
+                            emoji = '⭐';
+                            nextTarget = 10;
+                          } else if (count >= 1) {
+                            tier = 'Bronze Hunter';
+                            emoji = '🥉';
+                            nextTarget = 5;
+                          } else {
+                            tier = 'Rookie';
+                            emoji = '🌱';
+                            nextTarget = 1;
+                          }
+                          return GestureDetector(
+                            onTap: () =>
+                                Navigator.pushNamed(context, '/trophies'),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.7),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                    color: AppTheme.gold.withOpacity(0.3)),
+                              ),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(emoji,
+                                          style:
+                                              const TextStyle(fontSize: 20)),
+                                      const SizedBox(width: 8),
+                                      Text(tier,
+                                          style: AppTheme.heading(
+                                              size: 15,
+                                              color: AppTheme.warmBrown)),
+                                    ],
+                                  ),
+                                  if (count < 25) ...[
+                                    const SizedBox(height: 6),
+                                    SizedBox(
+                                      width: 140,
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(4),
+                                        child: LinearProgressIndicator(
+                                          value: count / nextTarget,
+                                          backgroundColor: Colors
+                                              .grey.shade200,
+                                          valueColor:
+                                              AlwaysStoppedAnimation(
+                                                  AppTheme.gold),
+                                          minHeight: 6,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      '$count / $nextTarget hunts',
+                                      style: AppTheme.caption(size: 10),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ),

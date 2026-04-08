@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:confetti/confetti.dart';
@@ -7,6 +8,7 @@ import '../models/hunt.dart';
 import '../models/hunt_theme.dart';
 import '../models/trophy.dart';
 import '../theme/app_theme.dart';
+import '../services/hunt_sharing_service.dart';
 
 class VictoryScreen extends StatefulWidget {
   const VictoryScreen({super.key});
@@ -24,6 +26,8 @@ class _VictoryScreenState extends State<VictoryScreen>
   bool _saved = false;
   bool _initialized = false;
   final AudioPlayer _audioPlayer = AudioPlayer();
+  List<Map<String, dynamic>> _leaderboard = [];
+  bool _leaderboardLoading = false;
   late AnimationController _bounceController;
   late Animation<double> _bounceAnimation;
 
@@ -57,7 +61,30 @@ class _VictoryScreenState extends State<VictoryScreen>
       _bounceController.forward();
       _playVictorySound();
       HapticFeedback.heavyImpact();
+      _loadLeaderboard();
       _initialized = true;
+    }
+  }
+
+  Future<void> _loadLeaderboard() async {
+    if (!_hunt.id.startsWith('shared_')) return;
+    setState(() => _leaderboardLoading = true);
+
+    // Submit our time
+    await HuntSharingService.submitTime(
+      huntId: _hunt.id,
+      teamName: 'Player', // default name
+      timeTakenSeconds: _timeTaken,
+      clueCount: _hunt.clues.length,
+    );
+
+    // Load leaderboard
+    final results = await HuntSharingService.getLeaderboard(_hunt.id);
+    if (mounted) {
+      setState(() {
+        _leaderboard = results;
+        _leaderboardLoading = false;
+      });
     }
   }
 
@@ -186,30 +213,70 @@ class _VictoryScreenState extends State<VictoryScreen>
                         ),
                       ),
                     ),
-                    // Treasure summary
+                    // Treasure summary with photos
                     if (_hunt.treasureItems != null &&
                         _hunt.treasureItems!.isNotEmpty) ...[
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 20),
                       Text(
-                        'Treasures Found',
+                        'Treasures Found!',
                         style: AppTheme.heading(
                             size: 18, color: _theme.accentColor),
                       ),
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        alignment: WrapAlignment.center,
+                      const SizedBox(height: 12),
+                      GridView.count(
+                        crossAxisCount: 3,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        mainAxisSpacing: 8,
+                        crossAxisSpacing: 8,
+                        childAspectRatio: 0.8,
                         children: _hunt.treasureItems!.map((item) {
-                          return Chip(
-                            label: Text(item.name,
-                                style: AppTheme.body(
-                                    size: 13,
-                                    color: _theme.backgroundColor)),
-                            backgroundColor:
-                                _theme.accentColor.withOpacity(0.8),
-                            avatar: const Text('🎁',
-                                style: TextStyle(fontSize: 14)),
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: _theme.cardColor,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: _theme.accentColor.withOpacity(0.3),
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                if (item.photoPath != null &&
+                                    File(item.photoPath!).existsSync())
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.file(
+                                      File(item.photoPath!),
+                                      width: 56,
+                                      height: 56,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                else
+                                  Text(
+                                    _theme.decorativeEmojis.isNotEmpty
+                                        ? _theme.decorativeEmojis[0]
+                                        : '🎁',
+                                    style: const TextStyle(fontSize: 32),
+                                  ),
+                                const SizedBox(height: 6),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 4),
+                                  child: Text(
+                                    item.name,
+                                    style: AppTheme.caption(
+                                      size: 11,
+                                      color: _theme.accentColor,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
+                            ),
                           );
                         }).toList(),
                       ),
@@ -236,6 +303,83 @@ class _VictoryScreenState extends State<VictoryScreen>
                         ),
                       ),
                     ),
+                    // Leaderboard for shared hunts
+                    if (_hunt.id.startsWith('shared_')) ...[
+                      const SizedBox(height: 20),
+                      Text(
+                        'Leaderboard',
+                        style: AppTheme.heading(
+                            size: 18, color: _theme.accentColor),
+                      ),
+                      const SizedBox(height: 8),
+                      if (_leaderboardLoading)
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: _theme.accentColor,
+                            ),
+                          ),
+                        )
+                      else if (_leaderboard.isEmpty)
+                        Text(
+                          'Be the first to complete this hunt!',
+                          style: AppTheme.caption(
+                              size: 13,
+                              color: _theme.accentColor.withOpacity(0.6)),
+                        )
+                      else
+                        ...List.generate(
+                          _leaderboard.length > 5 ? 5 : _leaderboard.length,
+                          (i) {
+                            final entry = _leaderboard[i];
+                            final mins = (entry['timeTakenSeconds'] as int) ~/ 60;
+                            final secs = (entry['timeTakenSeconds'] as int) % 60;
+                            final timeStr =
+                                '${mins.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
+                            final medal = i == 0
+                                ? '🥇'
+                                : i == 1
+                                    ? '🥈'
+                                    : i == 2
+                                        ? '🥉'
+                                        : '  ${i + 1}.';
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 2),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.center,
+                                children: [
+                                  Text(medal,
+                                      style:
+                                          const TextStyle(fontSize: 16)),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    entry['teamName'] as String? ??
+                                        'Unknown',
+                                    style: AppTheme.body(
+                                        size: 14,
+                                        color: _theme.accentColor),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    timeStr,
+                                    style: AppTheme.caption(
+                                      size: 14,
+                                      color: _theme.accentColor
+                                          .withOpacity(0.7),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                    ],
                     const SizedBox(height: 12),
                     // Share hunt button
                     SizedBox(
