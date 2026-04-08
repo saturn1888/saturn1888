@@ -5,6 +5,7 @@ import '../models/clue.dart';
 import '../theme/app_theme.dart';
 import '../widgets/parchment_background.dart';
 import '../widgets/mute_button.dart';
+import '../widgets/voice_clue_recorder.dart';
 
 class ClueEditorScreen extends StatefulWidget {
   const ClueEditorScreen({super.key});
@@ -17,6 +18,7 @@ class _ClueEditorScreenState extends State<ClueEditorScreen> {
   final _clueController = TextEditingController();
   final _hintController = TextEditingController();
   String? _photoPath;
+  String? _voicePath;
   bool _isEditing = false;
   final _picker = ImagePicker();
 
@@ -28,6 +30,7 @@ class _ClueEditorScreenState extends State<ClueEditorScreen> {
       _clueController.text = clue.text;
       _hintController.text = clue.wrongAnswerHint ?? '';
       _photoPath = clue.photoPath;
+      _voicePath = clue.voicePath;
       _isEditing = true;
     }
   }
@@ -135,6 +138,13 @@ class _ClueEditorScreenState extends State<ClueEditorScreen> {
                 ),
               ),
             const SizedBox(height: 24),
+            Text('Voice Clue (Optional)', style: AppTheme.heading(size: 20)),
+            const SizedBox(height: 8),
+            VoiceClueRecorder(
+              existingPath: _voicePath,
+              onChanged: (path) => _voicePath = path,
+            ),
+            const SizedBox(height: 24),
             Text('Wrong Answer Hint (Optional)',
                 style: AppTheme.heading(size: 20)),
             const SizedBox(height: 8),
@@ -161,6 +171,7 @@ class _ClueEditorScreenState extends State<ClueEditorScreen> {
                   final clue = Clue(
                     text: text,
                     photoPath: _photoPath,
+                    voicePath: _voicePath,
                     wrongAnswerHint: _hintController.text.trim().isEmpty
                         ? null
                         : _hintController.text.trim(),

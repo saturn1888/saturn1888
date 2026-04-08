@@ -35,10 +35,19 @@ class HuntSharingService {
           'hunts/$code/clues/clue_$i.jpg',
         );
       }
+      String? voiceUrl;
+      if (clue.voicePath != null && File(clue.voicePath!).existsSync()) {
+        voiceUrl = await _uploadPhoto(
+          File(clue.voicePath!),
+          'hunts/$code/clues/clue_${i}_voice.m4a',
+        );
+      }
       clueData.add({
         'text': clue.text,
         'photoUrl': photoUrl,
+        'voiceUrl': voiceUrl,
         'wrongAnswerHint': clue.wrongAnswerHint,
+        'answer': clue.answer,
         'order': clue.order,
       });
     }
@@ -113,10 +122,19 @@ class HuntSharingService {
           '${appDir.path}/shared_hunts/$upperCode/clue_$i.jpg',
         );
       }
+      String? localVoicePath;
+      if (c['voiceUrl'] != null) {
+        localVoicePath = await _downloadPhoto(
+          c['voiceUrl'] as String,
+          '${appDir.path}/shared_hunts/$upperCode/clue_${i}_voice.m4a',
+        );
+      }
       clues.add(Clue(
         text: c['text'] as String,
         photoPath: localPhotoPath,
+        voicePath: localVoicePath,
         wrongAnswerHint: c['wrongAnswerHint'] as String?,
+        answer: c['answer'] as String?,
         order: c['order'] as int? ?? i,
       ));
     }
