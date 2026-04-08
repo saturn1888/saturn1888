@@ -142,7 +142,7 @@ class ManageHuntsScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Swipe left to delete',
+                          'Tap share to get code • Swipe to delete',
                           style: AppTheme.body(
                             size: 11,
                             color: theme.accentColor.withOpacity(0.4),
@@ -150,10 +150,28 @@ class ManageHuntsScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    trailing: IconButton(
-                      onPressed: () => _showDeleteDialog(context, hunt),
-                      icon: Icon(Icons.delete_outline,
-                          color: theme.accentColor.withOpacity(0.6)),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/share-hunt',
+                              arguments: hunt,
+                            );
+                          },
+                          icon: Icon(Icons.share,
+                              color: theme.accentColor.withOpacity(0.7),
+                              size: 22),
+                          tooltip: 'Share hunt code',
+                        ),
+                        IconButton(
+                          onPressed: () => _showDeleteDialog(context, hunt),
+                          icon: Icon(Icons.delete_outline,
+                              color: theme.accentColor.withOpacity(0.6)),
+                        ),
+                      ],
                     ),
                   ),
                 ),
