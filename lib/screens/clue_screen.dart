@@ -772,13 +772,15 @@ class _ClueScreenState extends State<ClueScreen>
     return Scaffold(
       backgroundColor: _theme.backgroundColor,
       body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(32),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
+        child: Stack(
+          children: [
+            Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(32, 48, 32, 32),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
                   _theme.emoji,
                   style: const TextStyle(fontSize: 64),
                 ),
@@ -934,6 +936,21 @@ class _ClueScreenState extends State<ClueScreen>
             ),
           ),
         ),
+        // Back/close button
+        Positioned(
+          top: 8,
+          left: 8,
+          child: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: Icon(Icons.arrow_back,
+                color: _theme.accentColor, size: 26),
+            style: IconButton.styleFrom(
+              backgroundColor: _theme.cardColor.withOpacity(0.7),
+            ),
+          ),
+        ),
+      ],
+    ),
       ),
     );
   }
