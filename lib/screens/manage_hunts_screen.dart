@@ -117,10 +117,27 @@ class ManageHuntsScreen extends StatelessWidget {
                     ),
                   );
                 },
-                child: Card(
-                  color: theme.backgroundColor,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: theme.backgroundColor,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: const Color(0xFF8B6B4A).withOpacity(0.3),
+                      width: 1.5,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.brown.withOpacity(0.12),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
                   child: ListTile(
                     contentPadding: const EdgeInsets.all(16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
                     leading: Text(theme.emoji,
                         style: const TextStyle(fontSize: 36)),
                     title: Text(
@@ -130,25 +147,12 @@ class ManageHuntsScreen extends StatelessWidget {
                         color: theme.accentColor,
                       ),
                     ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${hunt.clues.length} clues • ${theme.name}',
-                          style: AppTheme.body(
-                            size: 13,
-                            color: theme.accentColor.withOpacity(0.7),
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Tap share to get code • Swipe to delete',
-                          style: AppTheme.body(
-                            size: 11,
-                            color: theme.accentColor.withOpacity(0.4),
-                          ),
-                        ),
-                      ],
+                    subtitle: Text(
+                      '${hunt.clues.length} clues • ${theme.name}',
+                      style: AppTheme.body(
+                        size: 13,
+                        color: theme.accentColor.withOpacity(0.7),
+                      ),
                     ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
