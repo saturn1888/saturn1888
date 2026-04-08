@@ -16,11 +16,15 @@ class Clue extends HiveObject {
   @HiveField(3)
   int order;
 
+  @HiveField(4)
+  String? answer;
+
   Clue({
     required this.text,
     this.photoPath,
     this.wrongAnswerHint,
     this.order = 0,
+    this.answer,
   });
 
   Clue copyWith({
@@ -28,6 +32,7 @@ class Clue extends HiveObject {
     String? photoPath,
     String? wrongAnswerHint,
     int? order,
+    String? answer,
     bool clearPhoto = false,
   }) {
     return Clue(
@@ -35,6 +40,7 @@ class Clue extends HiveObject {
       photoPath: clearPhoto ? null : (photoPath ?? this.photoPath),
       wrongAnswerHint: wrongAnswerHint ?? this.wrongAnswerHint,
       order: order ?? this.order,
+      answer: answer ?? this.answer,
     );
   }
 }

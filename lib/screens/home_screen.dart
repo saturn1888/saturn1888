@@ -22,6 +22,31 @@ class _HomeScreenState extends State<HomeScreen> {
     MusicController.instance.start();
   }
 
+  Widget _textLink(String label, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: Text(
+          label,
+          style: AppTheme.body(
+            size: 14,
+            color: AppTheme.warmBrown.withOpacity(0.7),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _dividerDot() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2),
+      child: Text('•',
+          style: TextStyle(
+              color: AppTheme.warmBrown.withOpacity(0.3), fontSize: 14)),
+    );
+  }
+
   void _showExitConfirmation(BuildContext context) {
     showDialog(
       context: context,
@@ -141,51 +166,36 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 10),
                       _SignpostPlank(
                         label: 'Create a Hunt',
-                        tilt: 0.02,
+                        tilt: 0.015,
                         arrowDirection: -1,
                         seed: 1,
                         onTap: () => Navigator.pushNamed(context, '/setup'),
                       ),
                       const SizedBox(height: 10),
                       _SignpostPlank(
-                        label: 'Play a Hunt',
-                        tilt: -0.015,
-                        arrowDirection: -1,
-                        seed: 2,
-                        onTap: () =>
-                            Navigator.pushNamed(context, '/play-select'),
-                      ),
-                      const SizedBox(height: 10),
-                      _SignpostPlank(
                         label: 'Join a Hunt',
-                        tilt: 0.01,
+                        tilt: -0.01,
                         arrowDirection: 1,
                         seed: 8,
                         onTap: () =>
                             Navigator.pushNamed(context, '/join-hunt'),
                       ),
-                      const SizedBox(height: 10),
-                      _SignpostPlank(
-                        label: 'Manage Hunts',
-                        tilt: -0.01,
-                        arrowDirection: -1,
-                        seed: 3,
-                        onTap: () =>
-                            Navigator.pushNamed(context, '/manage'),
+                      const SizedBox(height: 16),
+                      // Secondary links row
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _textLink('My Hunts', () =>
+                              Navigator.pushNamed(context, '/play-select')),
+                          _dividerDot(),
+                          _textLink('Manage', () =>
+                              Navigator.pushNamed(context, '/manage')),
+                          _dividerDot(),
+                          _textLink('Trophies', () =>
+                              Navigator.pushNamed(context, '/trophies')),
+                        ],
                       ),
-                      const SizedBox(height: 10),
-                      // Exit plank — shorter, no arrow
-                      SizedBox(
-                        width: 180,
-                        child: _SignpostPlank(
-                          label: 'Exit',
-                          tilt: 0.0,
-                          arrowDirection: 0,
-                          seed: 7,
-                          onTap: () => _showExitConfirmation(context),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 16),
                       // Player progression badge
                       ValueListenableBuilder(
                         valueListenable:
@@ -302,42 +312,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                   ),
-                ),
-              ),
-              // Trophy badge
-              Positioned(
-                top: 12,
-                right: 12,
-                child: ValueListenableBuilder(
-                  valueListenable:
-                      Hive.box<Trophy>('trophies').listenable(),
-                  builder: (context, Box<Trophy> box, _) {
-                    return GestureDetector(
-                      onTap: () =>
-                          Navigator.pushNamed(context, '/trophies'),
-                      child: CustomPaint(
-                        painter: _WornBadgePainter(),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 10),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text('🏆',
-                                  style: TextStyle(fontSize: 22)),
-                              const SizedBox(width: 5),
-                              Text(
-                                '${box.length}',
-                                style: AppTheme.heading(
-                                    size: 18,
-                                    color: const Color(0xFF4A2E14)),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
                 ),
               ),
             ],

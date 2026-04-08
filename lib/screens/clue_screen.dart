@@ -159,6 +159,24 @@ class _ClueScreenState extends State<ClueScreen>
     });
   }
 
+  /// Get the answer for a clue — from the clue itself or the matched treasure item
+  String? _getClueAnswer(Clue clue) {
+    // Direct answer on the clue
+    if (clue.answer != null && clue.answer!.isNotEmpty) return clue.answer;
+
+    // Try to find a treasure item whose clues contain this clue text
+    if (_hunt.treasureItems != null) {
+      for (final item in _hunt.treasureItems!) {
+        for (final itemClue in item.clues) {
+          if (itemClue.text == clue.text) return item.name;
+        }
+        // Also check legacy assignedClueIndex
+        if (item.assignedClueIndex == _currentClueIndex) return item.name;
+      }
+    }
+    return null;
+  }
+
   String? _getMilestoneMessage() {
     final total = _hunt.clues.length;
     final found = _currentClueIndex + 1;
@@ -548,13 +566,53 @@ class _ClueScreenState extends State<ClueScreen>
                             Expanded(
                               child: Center(
                                 child: SingleChildScrollView(
-                                  child: Text(
-                                    clue.text,
-                                    style: AppTheme.heading(
-                                      size: 22,
-                                      color: _theme.accentColor,
-                                    ),
-                                    textAlign: TextAlign.center,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (_found && _getClueAnswer(clue) != null) ...[
+                                        // Show the answer!
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 12),
+                                          decoration: BoxDecoration(
+                                            color: _theme.accentColor.withOpacity(0.15),
+                                            borderRadius: BorderRadius.circular(12),
+                                            border: Border.all(
+                                              color: _theme.accentColor.withOpacity(0.4),
+                                            ),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                'It was...',
+                                                style: AppTheme.caption(
+                                                  size: 14,
+                                                  color: _theme.accentColor.withOpacity(0.7),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                _getClueAnswer(clue)!,
+                                                style: AppTheme.heading(
+                                                  size: 26,
+                                                  color: _theme.accentColor,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 16),
+                                      ],
+                                      Text(
+                                        clue.text,
+                                        style: AppTheme.heading(
+                                          size: _found ? 16 : 22,
+                                          color: _theme.accentColor.withOpacity(_found ? 0.5 : 1),
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),

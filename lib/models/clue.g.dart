@@ -21,13 +21,14 @@ class ClueAdapter extends TypeAdapter<Clue> {
       photoPath: fields[1] as String?,
       wrongAnswerHint: fields[2] as String?,
       order: fields[3] as int,
+      answer: fields.containsKey(4) ? fields[4] as String? : null,
     );
   }
 
   @override
   void write(BinaryWriter writer, Clue obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.text)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class ClueAdapter extends TypeAdapter<Clue> {
       ..writeByte(2)
       ..write(obj.wrongAnswerHint)
       ..writeByte(3)
-      ..write(obj.order);
+      ..write(obj.order)
+      ..writeByte(4)
+      ..write(obj.answer);
   }
 
   @override
