@@ -14,7 +14,7 @@ class HuntSetupScreen extends StatefulWidget {
 
 class _HuntSetupScreenState extends State<HuntSetupScreen> {
   final _nameController = TextEditingController();
-  HuntThemeType _selectedTheme = HuntThemeType.pirate;
+  HuntThemeType _selectedTheme = HuntThemeType.custom;
   int? _timerMinutes;
   bool _customTimer = false;
   final _customTimerController = TextEditingController();
@@ -51,66 +51,62 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
             ),
             const SizedBox(height: 24),
             Text('Choose a Theme', style: AppTheme.heading(size: 20)),
+            const SizedBox(height: 4),
+            Text(
+              'Each theme changes the look, language, and feel of your hunt',
+              style: AppTheme.caption(size: 13),
+            ),
             const SizedBox(height: 12),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 1.4,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-              itemCount: HuntThemeData.all.length,
-              itemBuilder: (context, index) {
-                final theme = HuntThemeData.all[index];
-                final isSelected = _selectedTheme == theme.type;
-                return GestureDetector(
-                  onTap: () => setState(() => _selectedTheme = theme.type),
-                  child: CustomPaint(
-                    painter: _WornMapCardPainter(
-                      baseColor: theme.backgroundColor,
-                      accentColor: theme.accentColor,
-                      isSelected: isSelected,
-                      seed: index,
+            // Theme preview card
+            _buildThemePreview(),
+            const SizedBox(height: 12),
+            // Theme selector - horizontal scrollable chips
+            SizedBox(
+              height: 44,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: HuntThemeData.all.length,
+                itemBuilder: (context, index) {
+                  final theme = HuntThemeData.all[index];
+                  final isSelected = _selectedTheme == theme.type;
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      left: index == 0 ? 0 : 4,
+                      right: 4,
                     ),
-                    child: Stack(
-                      children: [
-                        Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                theme.emoji,
-                                style: const TextStyle(fontSize: 34),
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
-                                theme.name,
-                                style: AppTheme.heading(
-                                  size: 13,
-                                  color: theme.accentColor,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (isSelected)
-                          Positioned(
-                            top: 8,
-                            right: 8,
-                            child: Icon(
-                              Icons.check_circle,
-                              color: theme.accentColor,
-                              size: 24,
+                    child: ChoiceChip(
+                      label: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(theme.emoji, style: const TextStyle(fontSize: 16)),
+                          const SizedBox(width: 6),
+                          Text(
+                            theme.name,
+                            style: TextStyle(
+                              color: isSelected ? Colors.white : AppTheme.warmBrown,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
                             ),
                           ),
-                      ],
+                        ],
+                      ),
+                      selected: isSelected,
+                      selectedColor: AppTheme.darkGold,
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        side: BorderSide(
+                          color: isSelected
+                              ? AppTheme.darkGold
+                              : Colors.grey.shade300,
+                        ),
+                      ),
+                      onSelected: (_) =>
+                          setState(() => _selectedTheme = theme.type),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
 
 
@@ -222,6 +218,108 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
     ));
   }
 
+  Widget _buildThemePreview() {
+    final theme = HuntThemeData.fromType(_selectedTheme);
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.backgroundColor,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: theme.backgroundColor.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Theme header
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+            child: Row(
+              children: [
+                Text(theme.emoji, style: const TextStyle(fontSize: 36)),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        theme.name,
+                        style: AppTheme.heading(
+                            size: 18, color: theme.accentColor),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        theme.description,
+                        style: AppTheme.caption(
+                            size: 12,
+                            color: theme.accentColor.withOpacity(0.7)),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Mini clue card preview
+          Container(
+            margin: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: theme.cardColor,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              children: [
+                Text(
+                  '"${theme.introMessage}"',
+                  style: AppTheme.caption(
+                      size: 11, color: theme.accentColor.withOpacity(0.8)),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+                // Decorative emojis row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: theme.decorativeEmojis
+                      .take(5)
+                      .map((e) => Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 4),
+                            child:
+                                Text(e, style: const TextStyle(fontSize: 18)),
+                          ))
+                      .toList(),
+                ),
+              ],
+            ),
+          ),
+          // Found it button preview
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(
+                color: theme.accentColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                theme.foundItText,
+                textAlign: TextAlign.center,
+                style: AppTheme.heading(
+                    size: 14, color: theme.backgroundColor),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 /// Paints a theme card that looks like a beaten-up old map piece

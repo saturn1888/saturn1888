@@ -454,7 +454,7 @@ class _ClueScreenState extends State<ClueScreen>
                             ),
                           ),
                           child: Text(
-                            _found ? 'Found! 🎉' : 'I Found It! ✅',
+                            _found ? 'Found! 🎉' : _theme.foundItText,
                             style: AppTheme.heading(
                               size: 22,
                               color: _theme.backgroundColor,
@@ -560,22 +560,38 @@ class _ClueScreenState extends State<ClueScreen>
                     padding: const EdgeInsets.all(20),
                     child: Column(
                       children: [
+                        // Themed decorative emojis
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: _theme.decorativeEmojis
+                              .take(5)
+                              .map((e) => Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 3),
+                                    child: Text(e,
+                                        style:
+                                            const TextStyle(fontSize: 20)),
+                                  ))
+                              .toList(),
+                        ),
+                        const SizedBox(height: 12),
                         Text(
-                          'How to Play',
-                          style: AppTheme.heading(
-                            size: 22,
-                            color: _theme.accentColor,
+                          _theme.introMessage,
+                          style: AppTheme.body(
+                            size: 14,
+                            color: _theme.accentColor.withOpacity(0.9),
                           ),
+                          textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 16),
                         _introStep('1', 'Read the riddle clue',
-                            'Each clue is a riddle hinting at a location or object'),
-                        const SizedBox(height: 12),
+                            'Each clue hints at a location or object'),
+                        const SizedBox(height: 10),
                         _introStep('2', 'Search and find it!',
                             'Look around — the answer is nearby'),
-                        const SizedBox(height: 12),
-                        _introStep('3', 'Tap "I Found It!"',
-                            'Then pass the phone for the next clue'),
+                        const SizedBox(height: 10),
+                        _introStep('3', _theme.foundItText,
+                            'Tap when you find it'),
                         if (hasPrize || hasPrizePhoto) ...[
                           const SizedBox(height: 12),
                           _introStep('4', 'Collect the treasure!',
@@ -771,7 +787,7 @@ class _ClueScreenState extends State<ClueScreen>
             ),
             const SizedBox(height: 24),
             Text(
-              'Get ready!',
+              '${_theme.countdownPrefix}...',
               style: AppTheme.body(
                 size: 18,
                 color: _theme.accentColor.withOpacity(0.7),

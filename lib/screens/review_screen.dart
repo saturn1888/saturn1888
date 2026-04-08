@@ -17,9 +17,7 @@ class ReviewScreen extends StatefulWidget {
 }
 
 class _ReviewScreenState extends State<ReviewScreen> {
-  final _victoryController = TextEditingController(
-    text: 'You did it! Amazing treasure hunters! 🎉',
-  );
+  late TextEditingController _victoryController;
   late String _huntName;
   late HuntThemeType _themeType;
   late int? _timerMinutes;
@@ -40,6 +38,11 @@ class _ReviewScreenState extends State<ReviewScreen> {
       _clues = args['clues'] as List<Clue>;
       _treasureItems = List<TreasureItem>.from(
           (args['treasureItems'] as List<TreasureItem>?) ?? []);
+      // Use themed default victory message
+      final theme = HuntThemeData.fromType(_themeType);
+      _victoryController = TextEditingController(
+        text: theme.defaultVictoryMessage,
+      );
       _initialized = true;
     }
   }
