@@ -16,12 +16,15 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
   final _nameController = TextEditingController();
   HuntThemeType _selectedTheme = HuntThemeType.pirate;
   int? _timerMinutes;
+  bool _customTimer = false;
+  final _customTimerController = TextEditingController();
 
   static const List<int?> _timerOptions = [null, 5, 10, 15, 20, 30];
 
   @override
   void dispose() {
     _nameController.dispose();
+    _customTimerController.dispose();
     super.dispose();
   }
 
@@ -117,23 +120,67 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: _timerOptions.map((minutes) {
-                final isSelected = _timerMinutes == minutes;
-                return ChoiceChip(
+              children: [
+                ..._timerOptions.map((minutes) {
+                  final isSelected = !_customTimer && _timerMinutes == minutes;
+                  return ChoiceChip(
+                    label: Text(
+                      minutes == null ? 'Off' : '$minutes min',
+                      style: TextStyle(
+                        color: isSelected ? Colors.white : AppTheme.warmBrown,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    selected: isSelected,
+                    selectedColor: AppTheme.darkGold,
+                    backgroundColor: Colors.white,
+                    onSelected: (_) => setState(() {
+                      _timerMinutes = minutes;
+                      _customTimer = false;
+                    }),
+                  );
+                }),
+                ChoiceChip(
                   label: Text(
-                    minutes == null ? 'Off' : '$minutes min',
+                    'Custom',
                     style: TextStyle(
-                      color: isSelected ? Colors.white : AppTheme.warmBrown,
+                      color: _customTimer ? Colors.white : AppTheme.warmBrown,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  selected: isSelected,
+                  selected: _customTimer,
                   selectedColor: AppTheme.darkGold,
                   backgroundColor: Colors.white,
-                  onSelected: (_) => setState(() => _timerMinutes = minutes),
-                );
-              }).toList(),
+                  onSelected: (_) => setState(() => _customTimer = true),
+                ),
+              ],
             ),
+            if (_customTimer) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 100,
+                    child: TextField(
+                      controller: _customTimerController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        hintText: 'Minutes',
+                        isDense: true,
+                      ),
+                      onChanged: (v) {
+                        final mins = int.tryParse(v);
+                        if (mins != null && mins > 0) {
+                          setState(() => _timerMinutes = mins);
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text('minutes', style: AppTheme.body(size: 14)),
+                ],
+              ),
+            ],
             const SizedBox(height: 32),
             SizedBox(
               width: double.infinity,

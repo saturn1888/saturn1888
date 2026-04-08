@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'clue.dart';
 
 part 'treasure_item.g.dart';
 
@@ -11,11 +12,15 @@ class TreasureItem extends HiveObject {
   String? photoPath;
 
   @HiveField(2)
-  int? assignedClueIndex;
+  int? assignedClueIndex; // legacy, kept for compat
+
+  @HiveField(3)
+  List<Clue> clues;
 
   TreasureItem({
     required this.name,
     this.photoPath,
     this.assignedClueIndex,
-  });
+    List<Clue>? clues,
+  }) : clues = clues ?? [];
 }

@@ -139,21 +139,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 10),
                       _SignpostPlank(
-                        label: 'Join a Hunt',
-                        tilt: -0.02,
-                        arrowDirection: -1,
-                        seed: 8,
-                        onTap: () =>
-                            Navigator.pushNamed(context, '/join-hunt'),
-                      ),
-                      const SizedBox(height: 10),
-                      _SignpostPlank(
                         label: 'Play a Hunt',
-                        tilt: 0.01,
-                        arrowDirection: 1,
+                        tilt: -0.015,
+                        arrowDirection: -1,
                         seed: 2,
                         onTap: () =>
                             Navigator.pushNamed(context, '/play-select'),
+                      ),
+                      const SizedBox(height: 10),
+                      _SignpostPlank(
+                        label: 'Join a Hunt',
+                        tilt: 0.01,
+                        arrowDirection: 1,
+                        seed: 8,
+                        onTap: () =>
+                            Navigator.pushNamed(context, '/join-hunt'),
                       ),
                       const SizedBox(height: 10),
                       _SignpostPlank(

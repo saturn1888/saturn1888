@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../models/treasure_item.dart';
+import '../models/clue.dart';
+import '../models/hunt_theme.dart';
 import '../theme/app_theme.dart';
 import '../widgets/parchment_background.dart';
 import '../widgets/mute_button.dart';
@@ -18,7 +20,6 @@ class _TreasureItemsScreenState extends State<TreasureItemsScreen> {
   final _picker = ImagePicker();
   bool _initialized = false;
 
-  // Pass-through args from Hunt Setup
   late String _huntName;
   late dynamic _themeType;
   late int? _timerMinutes;
@@ -45,7 +46,7 @@ class _TreasureItemsScreenState extends State<TreasureItemsScreen> {
         content: TextField(
           controller: nameController,
           decoration: const InputDecoration(
-            hintText: 'e.g. Golden coin, sticker, puzzle piece...',
+            hintText: 'e.g. Golden coin, sticker...',
           ),
           textCapitalization: TextCapitalization.sentences,
           autofocus: true,
@@ -70,7 +71,7 @@ class _TreasureItemsScreenState extends State<TreasureItemsScreen> {
     );
   }
 
-  Future<void> _pickPhoto(int index, ImageSource source) async {
+  Future<void> _pickItemPhoto(int index, ImageSource source) async {
     try {
       final picked = await _picker.pickImage(
         source: source,
@@ -101,7 +102,7 @@ class _TreasureItemsScreenState extends State<TreasureItemsScreen> {
               title: const Text('Take Photo'),
               onTap: () {
                 Navigator.pop(ctx);
-                _pickPhoto(index, ImageSource.camera);
+                _pickItemPhoto(index, ImageSource.camera);
               },
             ),
             ListTile(
@@ -109,7 +110,7 @@ class _TreasureItemsScreenState extends State<TreasureItemsScreen> {
               title: const Text('Choose from Gallery'),
               onTap: () {
                 Navigator.pop(ctx);
-                _pickPhoto(index, ImageSource.gallery);
+                _pickItemPhoto(index, ImageSource.gallery);
               },
             ),
             if (_items[index].photoPath != null)
@@ -128,14 +129,138 @@ class _TreasureItemsScreenState extends State<TreasureItemsScreen> {
     );
   }
 
-  void _goToClueBuilder() {
+  void _addClueToItem(int itemIndex) {
+    final clueController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Add Clue', style: AppTheme.heading(size: 20)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'For: ${_items[itemIndex].name}',
+              style: AppTheme.body(size: 13, color: AppTheme.leather),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: clueController,
+              maxLines: 4,
+              decoration: const InputDecoration(
+                hintText: 'Write a riddle or clue...',
+              ),
+              textCapitalization: TextCapitalization.sentences,
+              autofocus: true,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              final text = clueController.text.trim();
+              if (text.isNotEmpty) {
+                setState(() {
+                  _items[itemIndex].clues.add(Clue(
+                    text: text,
+                    order: _items[itemIndex].clues.length,
+                  ));
+                });
+              }
+              Navigator.pop(ctx);
+            },
+            child: Text('Add', style: TextStyle(color: AppTheme.darkGold)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _editClue(int itemIndex, int clueIndex) {
+    final clue = _items[itemIndex].clues[clueIndex];
+    final controller = TextEditingController(text: clue.text);
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Edit Clue', style: AppTheme.heading(size: 20)),
+        content: TextField(
+          controller: controller,
+          maxLines: 4,
+          textCapitalization: TextCapitalization.sentences,
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              setState(() => _items[itemIndex].clues.removeAt(clueIndex));
+              Navigator.pop(ctx);
+            },
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              final text = controller.text.trim();
+              if (text.isNotEmpty) {
+                setState(() => _items[itemIndex].clues[clueIndex].text = text);
+              }
+              Navigator.pop(ctx);
+            },
+            child: Text('Save', style: TextStyle(color: AppTheme.darkGold)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _addClueFromLibrary(int itemIndex) async {
+    final result = await Navigator.pushNamed(context, '/clue-library');
+    if (result != null && result is List<String>) {
+      setState(() {
+        for (final text in result) {
+          _items[itemIndex].clues.add(Clue(
+            text: text,
+            order: _items[itemIndex].clues.length,
+          ));
+        }
+      });
+    }
+  }
+
+  bool get _isValid {
+    if (_items.isEmpty) return true; // skip is valid
+    // At least one item must have at least one clue
+    return _items.any((item) => item.clues.isNotEmpty);
+  }
+
+  int get _totalClues =>
+      _items.fold(0, (sum, item) => sum + item.clues.length);
+
+  void _goToReview() {
+    // Flatten all clues from all items for the hunt
+    final allClues = <Clue>[];
+    for (final item in _items) {
+      for (int i = 0; i < item.clues.length; i++) {
+        item.clues[i].order = allClues.length;
+        allClues.add(item.clues[i]);
+      }
+    }
+
     Navigator.pushNamed(
       context,
-      '/clue-builder',
+      '/review',
       arguments: {
         'name': _huntName,
         'theme': _themeType,
         'timer': _timerMinutes,
+        'clues': allClues,
         'treasureItems': _items,
       },
     );
@@ -146,7 +271,7 @@ class _TreasureItemsScreenState extends State<TreasureItemsScreen> {
     return ParchmentBackground(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Treasure Items'),
+          title: const Text('Build Your Hunt'),
           actions: const [MuteButton()],
         ),
         floatingActionButton: FloatingActionButton(
@@ -155,36 +280,17 @@ class _TreasureItemsScreenState extends State<TreasureItemsScreen> {
         ),
         body: Column(
           children: [
-            // Step indicator
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-              color: AppTheme.warmBrown.withOpacity(0.08),
-              child: Row(
-                children: [
-                  _stepDot('1', 'Setup', true),
-                  _stepLine(),
-                  _stepDot('2', 'Items', false),
-                  _stepLine(),
-                  _stepDot('3', 'Clues', false),
-                  _stepLine(),
-                  _stepDot('4', 'Review', false),
-                ],
-              ),
-            ),
-            // Instructions
+            // Header
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(14),
               child: Column(
                 children: [
-                  Text(
-                    'What will hunters find?',
-                    style: AppTheme.heading(size: 20),
-                  ),
+                  Text('Add your treasure items',
+                      style: AppTheme.heading(size: 20)),
                   const SizedBox(height: 4),
                   Text(
-                    'Add the treasure items hidden at each clue location.\nTap the photo area to add a picture of each item.',
+                    'For each item, add a photo and one or more clues\nthat lead hunters to find it.',
                     style: AppTheme.body(size: 13, color: AppTheme.leather),
                     textAlign: TextAlign.center,
                   ),
@@ -211,119 +317,70 @@ class _TreasureItemsScreenState extends State<TreasureItemsScreen> {
                       ),
                     )
                   : ListView.builder(
-                      padding:
-                          const EdgeInsets.only(bottom: 80, top: 4),
+                      padding: const EdgeInsets.only(bottom: 100, top: 4),
                       itemCount: _items.length,
-                      itemBuilder: (context, index) {
-                        final item = _items[index];
-                        return Card(
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 5),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Row(
-                              children: [
-                                // Photo thumbnail
-                                GestureDetector(
-                                  onTap: () =>
-                                      _showPhotoOptions(index),
-                                  child: Container(
-                                    width: 70,
-                                    height: 70,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFEDE0D0),
-                                      borderRadius:
-                                          BorderRadius.circular(10),
-                                      border: Border.all(
-                                          color: AppTheme.leather
-                                              .withOpacity(0.3)),
-                                    ),
-                                    child: item.photoPath != null &&
-                                            File(item.photoPath!)
-                                                .existsSync()
-                                        ? ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(
-                                                    10),
-                                            child: Image.file(
-                                              File(item.photoPath!),
-                                              fit: BoxFit.cover,
-                                            ),
-                                          )
-                                        : Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .center,
-                                            children: [
-                                              Icon(Icons.add_a_photo,
-                                                  color: AppTheme
-                                                      .leather
-                                                      .withOpacity(
-                                                          0.5),
-                                                  size: 24),
-                                              const SizedBox(
-                                                  height: 2),
-                                              Text('Add photo',
-                                                  style: AppTheme.body(
-                                                      size: 9,
-                                                      color: Colors
-                                                          .grey)),
-                                            ],
-                                          ),
-                                  ),
-                                ),
-                                const SizedBox(width: 14),
-                                // Item name
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(item.name,
-                                          style: AppTheme.heading(
-                                              size: 17)),
-                                      if (item.photoPath != null)
-                                        Text('Photo added',
-                                            style: AppTheme.body(
-                                                size: 12,
-                                                color:
-                                                    AppTheme.darkGold)),
-                                    ],
-                                  ),
-                                ),
-                                // Delete
-                                IconButton(
-                                  onPressed: () => setState(
-                                      () => _items.removeAt(index)),
-                                  icon: Icon(Icons.delete_outline,
-                                      color: Colors.red[400]),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
+                      itemBuilder: (context, index) =>
+                          _buildItemCard(index),
                     ),
             ),
-            // Next button
-            Padding(
+            // Bottom bar
+            Container(
               padding: const EdgeInsets.all(16),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _goToClueBuilder,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.gold,
-                    foregroundColor: AppTheme.warmBrown,
+              child: Column(
+                children: [
+                  if (_items.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Text(
+                        '${_items.length} item${_items.length == 1 ? '' : 's'} • $_totalClues clue${_totalClues == 1 ? '' : 's'}',
+                        style: AppTheme.body(
+                            size: 13, color: AppTheme.leather),
+                      ),
+                    ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _items.isEmpty
+                          ? () {
+                              // No items — go to standalone clue builder
+                              Navigator.pushNamed(
+                                context,
+                                '/clue-builder',
+                                arguments: {
+                                  'name': _huntName,
+                                  'theme': _themeType,
+                                  'timer': _timerMinutes,
+                                  'treasureItems': <TreasureItem>[],
+                                },
+                              );
+                            }
+                          : _totalClues >= 2
+                              ? _goToReview
+                              : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.gold,
+                        foregroundColor: AppTheme.warmBrown,
+                        disabledBackgroundColor: Colors.grey[300],
+                      ),
+                      child: Text(
+                        _items.isEmpty
+                            ? 'Skip — Add Clues Only'
+                            : 'Next — Review →',
+                        style: AppTheme.heading(
+                            size: 18, color: AppTheme.warmBrown),
+                      ),
+                    ),
                   ),
-                  child: Text(
-                    _items.isEmpty
-                        ? 'Skip — No Treasure Items'
-                        : 'Next — Add Clues →',
-                    style: AppTheme.heading(
-                        size: 18, color: AppTheme.warmBrown),
-                  ),
-                ),
+                  if (_items.isNotEmpty && _totalClues < 2)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Text(
+                        'Add at least 2 clues total to continue',
+                        style: AppTheme.body(
+                            size: 12, color: Colors.orange[700]),
+                      ),
+                    ),
+                ],
               ),
             ),
           ],
@@ -332,34 +389,185 @@ class _TreasureItemsScreenState extends State<TreasureItemsScreen> {
     );
   }
 
-  Widget _stepDot(String number, String label, bool completed) {
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 12,
-          backgroundColor:
-              completed ? AppTheme.darkGold : AppTheme.leather.withOpacity(0.3),
-          child: Text(number,
-              style: TextStyle(
-                  fontSize: 12,
-                  color: completed ? Colors.white : AppTheme.warmBrown,
-                  fontWeight: FontWeight.bold)),
+  Widget _buildItemCard(int index) {
+    final item = _items[index];
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Item header: photo + name + delete
+            Row(
+              children: [
+                // Photo
+                GestureDetector(
+                  onTap: () => _showPhotoOptions(index),
+                  child: Container(
+                    width: 65,
+                    height: 65,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEDE0D0),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                          color: AppTheme.leather.withOpacity(0.3)),
+                    ),
+                    child: item.photoPath != null &&
+                            File(item.photoPath!).existsSync()
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.file(
+                              File(item.photoPath!),
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.add_a_photo,
+                                  color:
+                                      AppTheme.leather.withOpacity(0.5),
+                                  size: 22),
+                              const SizedBox(height: 2),
+                              Text('Photo',
+                                  style: AppTheme.body(
+                                      size: 9, color: Colors.grey)),
+                            ],
+                          ),
+                  ),
+                ),
+                const SizedBox(width: 14),
+                // Name
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(item.name,
+                          style: AppTheme.heading(size: 18)),
+                      Text(
+                        '${item.clues.length} clue${item.clues.length == 1 ? '' : 's'}',
+                        style: AppTheme.body(
+                          size: 12,
+                          color: item.clues.isEmpty
+                              ? Colors.orange
+                              : AppTheme.adventureGreen,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Delete item
+                IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: const Text('Delete Item?'),
+                        content: Text(
+                            'Delete "${item.name}" and all its clues?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(ctx),
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() => _items.removeAt(index));
+                              Navigator.pop(ctx);
+                            },
+                            child: const Text('Delete',
+                                style: TextStyle(color: Colors.red)),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  icon: Icon(Icons.delete_outline,
+                      color: Colors.red[400], size: 22),
+                ),
+              ],
+            ),
+            // Clues list
+            if (item.clues.isNotEmpty) ...[
+              const SizedBox(height: 10),
+              const Divider(height: 1),
+              const SizedBox(height: 8),
+              ...List.generate(item.clues.length, (ci) {
+                final clue = item.clues[ci];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: GestureDetector(
+                    onTap: () => _editClue(index, ci),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CircleAvatar(
+                          radius: 11,
+                          backgroundColor: AppTheme.darkGold,
+                          child: Text('${ci + 1}',
+                              style: const TextStyle(
+                                  fontSize: 11, color: Colors.white)),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            clue.text,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTheme.body(size: 13),
+                          ),
+                        ),
+                        Icon(Icons.edit,
+                            size: 14,
+                            color: Colors.grey.withOpacity(0.5)),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ],
+            // Add clue buttons
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _addClueToItem(index),
+                    icon: const Icon(Icons.add, size: 16),
+                    label: Text('Add Clue',
+                        style: AppTheme.body(
+                            size: 13, color: AppTheme.darkGold)),
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size(0, 36),
+                      side: BorderSide(
+                          color: AppTheme.darkGold.withOpacity(0.4)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _addClueFromLibrary(index),
+                    icon: const Text('📚', style: TextStyle(fontSize: 14)),
+                    label: Text('From Library',
+                        style: AppTheme.body(
+                            size: 13, color: AppTheme.darkGold)),
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size(0, 36),
+                      side: BorderSide(
+                          color: AppTheme.darkGold.withOpacity(0.4)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
-        const SizedBox(height: 2),
-        Text(label,
-            style: AppTheme.body(
-                size: 10,
-                color: completed ? AppTheme.darkGold : Colors.grey)),
-      ],
-    );
-  }
-
-  Widget _stepLine() {
-    return Expanded(
-      child: Container(
-        height: 2,
-        margin: const EdgeInsets.only(bottom: 14, left: 4, right: 4),
-        color: AppTheme.leather.withOpacity(0.2),
       ),
     );
   }
