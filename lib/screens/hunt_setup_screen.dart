@@ -4,6 +4,7 @@ import '../models/hunt_theme.dart';
 import '../theme/app_theme.dart';
 import '../widgets/parchment_background.dart';
 import '../widgets/mute_button.dart';
+import '../widgets/adventure_widgets.dart';
 
 class HuntSetupScreen extends StatefulWidget {
   const HuntSetupScreen({super.key});
@@ -38,7 +39,7 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Hunt Name', style: AppTheme.heading(size: 20)),
+            AdventureHeader(title: 'Hunt Name', emoji: '🏷️'),
             const SizedBox(height: 8),
             TextField(
               controller: _nameController,
@@ -50,7 +51,7 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
               textCapitalization: TextCapitalization.words,
             ),
             const SizedBox(height: 24),
-            Text('Choose a Theme', style: AppTheme.heading(size: 20)),
+            AdventureHeader(title: 'Choose a Theme', emoji: '🎨'),
             const SizedBox(height: 4),
             Text(
               'Each theme changes the look, language, and feel of your hunt',
@@ -111,7 +112,7 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
 
 
             const SizedBox(height: 24),
-            Text('Timer', style: AppTheme.heading(size: 20)),
+            AdventureHeader(title: 'Timer', emoji: '⏱️'),
             const SizedBox(height: 12),
             Wrap(
               spacing: 8,
@@ -178,38 +179,30 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
               ),
             ],
             const SizedBox(height: 32),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  final name = _nameController.text.trim();
-                  if (name.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Please enter a hunt name')),
-                    );
-                    return;
-                  }
-                  Navigator.pushNamed(
-                    context,
-                    '/treasure-items',
-                    arguments: {
-                      'name': name,
-                      'theme': _selectedTheme,
-                      'timer': _timerMinutes,
-                      'treasureItems': <dynamic>[],
-                      'clues': <dynamic>[],
-                    },
+            WoodButton(
+              label: 'Next →',
+              icon: Icons.arrow_forward,
+              onPressed: () {
+                final name = _nameController.text.trim();
+                if (name.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Please enter a hunt name')),
                   );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.gold,
-                  foregroundColor: AppTheme.warmBrown,
-                ),
-                child: Text('Next →',
-                    style: AppTheme.heading(
-                        size: 20, color: AppTheme.warmBrown)),
-              ),
+                  return;
+                }
+                Navigator.pushNamed(
+                  context,
+                  '/treasure-items',
+                  arguments: {
+                    'name': name,
+                    'theme': _selectedTheme,
+                    'timer': _timerMinutes,
+                    'treasureItems': <dynamic>[],
+                    'clues': <dynamic>[],
+                  },
+                );
+              },
             ),
             const SizedBox(height: 16),
           ],

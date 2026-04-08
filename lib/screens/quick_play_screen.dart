@@ -5,6 +5,7 @@ import '../models/hunt_theme.dart';
 import '../theme/app_theme.dart';
 import '../widgets/parchment_background.dart';
 import '../widgets/mute_button.dart';
+import '../widgets/adventure_widgets.dart';
 
 class QuickPlayScreen extends StatelessWidget {
   const QuickPlayScreen({super.key});
@@ -26,8 +27,7 @@ class QuickPlayScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  Text('Ready-to-Play Hunts',
-                      style: AppTheme.heading(size: 22)),
+                  AdventureHeader(title: 'Ready-to-Play Hunts', emoji: '🗺️'),
                   const SizedBox(height: 4),
                   Text(
                     'No setup needed! Just pick a hunt and start playing.\nSolve the riddles to find everyday objects.',

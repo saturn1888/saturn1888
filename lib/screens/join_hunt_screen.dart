@@ -6,6 +6,7 @@ import '../services/hunt_sharing_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/parchment_background.dart';
 import '../widgets/mute_button.dart';
+import '../widgets/adventure_widgets.dart';
 
 class JoinHuntScreen extends StatefulWidget {
   const JoinHuntScreen({super.key});
@@ -186,26 +187,19 @@ class _JoinHuntScreenState extends State<JoinHuntScreen> {
           ),
 
         // Enter code button
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: _loading
-                ? null
-                : () => _lookupCode(_codeController.text),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.gold,
-              foregroundColor: AppTheme.warmBrown,
-            ),
-            child: _loading
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2))
-                : Text('Find Hunt',
-                    style: AppTheme.heading(
-                        size: 20, color: AppTheme.warmBrown)),
-          ),
-        ),
+        _loading
+            ? const Center(
+                child: SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              )
+            : WoodButton(
+                label: 'Find Hunt',
+                icon: Icons.search,
+                onPressed: () => _lookupCode(_codeController.text),
+              ),
         const SizedBox(height: 16),
 
         // Divider
@@ -291,26 +285,21 @@ class _JoinHuntScreenState extends State<JoinHuntScreen> {
                 textAlign: TextAlign.center),
           ),
 
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: _loading ? null : _joinHunt,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.adventureGreen,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 18),
-            ),
-            child: _loading
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                        strokeWidth: 2, color: Colors.white))
-                : Text('Join Hunt!',
-                    style:
-                        AppTheme.heading(size: 22, color: Colors.white)),
-          ),
-        ),
+        _loading
+            ? const Center(
+                child: SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                      strokeWidth: 2, color: Colors.white),
+                ),
+              )
+            : WoodButton(
+                label: 'Join Hunt!',
+                icon: Icons.play_arrow,
+                onPressed: _joinHunt,
+                color: AppTheme.adventureGreen,
+              ),
       ],
     );
   }

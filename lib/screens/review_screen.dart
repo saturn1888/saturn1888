@@ -8,6 +8,7 @@ import '../models/treasure_item.dart';
 import '../theme/app_theme.dart';
 import '../widgets/parchment_background.dart';
 import '../widgets/mute_button.dart';
+import '../widgets/adventure_widgets.dart';
 
 class ReviewScreen extends StatefulWidget {
   const ReviewScreen({super.key});
@@ -136,7 +137,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
             const SizedBox(height: 16),
             // Treasure items summary
             if (_treasureItems.isNotEmpty) ...[
-              Text('Treasure Items', style: AppTheme.heading(size: 20)),
+              AdventureHeader(title: 'Treasure Items', emoji: '🎁'),
               const SizedBox(height: 8),
               ...List.generate(_treasureItems.length, (index) {
                 final item = _treasureItems[index];
@@ -163,7 +164,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
               }),
               const SizedBox(height: 16),
             ],
-            Text('Clues', style: AppTheme.heading(size: 20)),
+            AdventureHeader(title: 'Clues', emoji: '📜'),
             const SizedBox(height: 8),
             ...List.generate(_clues.length, (index) {
               final clue = _clues[index];
@@ -213,7 +214,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
               );
             }),
             const SizedBox(height: 24),
-            Text('Victory Message', style: AppTheme.heading(size: 20)),
+            AdventureHeader(title: 'Victory Message', emoji: '🏆'),
             const SizedBox(height: 8),
             TextField(
               controller: _victoryController,
@@ -250,77 +251,45 @@ class _ReviewScreenState extends State<ReviewScreen> {
             ),
             const SizedBox(height: 24),
             // Start hunt button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _startHunt,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.adventureGreen,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 18),
-                ),
-                child: Text(
-                  'Start Hunt 🎯',
-                  style: AppTheme.heading(size: 22, color: Colors.white),
-                ),
-              ),
+            WoodButton(
+              label: 'Start Hunt 🎯',
+              icon: Icons.play_arrow,
+              onPressed: _startHunt,
+              color: AppTheme.adventureGreen,
             ),
             const SizedBox(height: 10),
             // Save & Share button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () async {
-                  final hunt = await _saveHunt();
-                  if (mounted) {
-                    Navigator.pushNamed(
-                      context,
-                      '/share-hunt',
-                      arguments: hunt,
-                    );
-                  }
-                },
-                icon: const Icon(Icons.share, size: 20),
-                label: Text(
-                  'Save & Share Code',
-                  style: AppTheme.heading(size: 18, color: AppTheme.warmBrown),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.gold,
-                  foregroundColor: AppTheme.warmBrown,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-              ),
+            WoodButton(
+              label: 'Save & Share Code',
+              icon: Icons.share,
+              onPressed: () async {
+                final hunt = await _saveHunt();
+                if (mounted) {
+                  Navigator.pushNamed(
+                    context,
+                    '/share-hunt',
+                    arguments: hunt,
+                  );
+                }
+              },
             ),
             const SizedBox(height: 10),
             // Save only button
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton(
-                onPressed: () async {
-                  await _saveHunt();
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Hunt saved! You can play or share it later.'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                    Navigator.popUntil(context, (route) => route.isFirst);
-                  }
-                },
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: AppTheme.leather.withOpacity(0.4)),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-                child: Text(
-                  'Save for Later',
-                  style: AppTheme.body(size: 16, color: AppTheme.warmBrown),
-                ),
-              ),
+            WoodButton(
+              label: 'Save for Later',
+              icon: Icons.save,
+              onPressed: () async {
+                await _saveHunt();
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Hunt saved! You can play or share it later.'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                  Navigator.popUntil(context, (route) => route.isFirst);
+                }
+              },
             ),
             const SizedBox(height: 16),
           ],

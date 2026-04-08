@@ -6,6 +6,7 @@ import '../services/hunt_sharing_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/parchment_background.dart';
 import '../widgets/mute_button.dart';
+import '../widgets/adventure_widgets.dart';
 
 class ShareHuntScreen extends StatefulWidget {
   const ShareHuntScreen({super.key});
@@ -182,19 +183,11 @@ class _ShareHuntScreenState extends State<ShareHuntScreen> {
             style: AppTheme.body(size: 12, color: Colors.grey)),
 
         const SizedBox(height: 32),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () =>
-                Navigator.popUntil(context, (route) => route.isFirst),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.gold,
-              foregroundColor: AppTheme.warmBrown,
-            ),
-            child: Text('Done',
-                style:
-                    AppTheme.heading(size: 20, color: AppTheme.warmBrown)),
-          ),
+        WoodButton(
+          label: 'Done',
+          icon: Icons.check,
+          onPressed: () =>
+              Navigator.popUntil(context, (route) => route.isFirst),
         ),
       ],
     );

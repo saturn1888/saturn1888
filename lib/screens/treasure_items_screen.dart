@@ -8,6 +8,7 @@ import '../theme/app_theme.dart';
 import '../widgets/parchment_background.dart';
 import '../widgets/mute_button.dart';
 import '../widgets/voice_clue_recorder.dart';
+import '../widgets/adventure_widgets.dart';
 
 class TreasureItemsScreen extends StatefulWidget {
   const TreasureItemsScreen({super.key});
@@ -320,8 +321,7 @@ class _TreasureItemsScreenState extends State<TreasureItemsScreen> {
               padding: const EdgeInsets.all(14),
               child: Column(
                 children: [
-                  Text('Add your treasure items',
-                      style: AppTheme.heading(size: 20)),
+                  AdventureHeader(title: 'Add your treasure items', emoji: '🎁'),
                   const SizedBox(height: 4),
                   Text(
                     'For each item, add a photo and one or more clues\nthat lead hunters to find it.',
@@ -371,39 +371,28 @@ class _TreasureItemsScreenState extends State<TreasureItemsScreen> {
                             size: 13, color: AppTheme.leather),
                       ),
                     ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _items.isEmpty
-                          ? () {
-                              // No items — go to standalone clue builder
-                              Navigator.pushNamed(
-                                context,
-                                '/clue-builder',
-                                arguments: {
-                                  'name': _huntName,
-                                  'theme': _themeType,
-                                  'timer': _timerMinutes,
-                                  'treasureItems': <TreasureItem>[],
-                                },
-                              );
-                            }
-                          : _totalClues >= 2
-                              ? _goToReview
-                              : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.gold,
-                        foregroundColor: AppTheme.warmBrown,
-                        disabledBackgroundColor: Colors.grey[300],
-                      ),
-                      child: Text(
-                        _items.isEmpty
-                            ? 'Skip — Add Clues Only'
-                            : 'Next — Review →',
-                        style: AppTheme.heading(
-                            size: 18, color: AppTheme.warmBrown),
-                      ),
-                    ),
+                  WoodButton(
+                    label: _items.isEmpty
+                        ? 'Skip — Add Clues Only'
+                        : 'Next — Review →',
+                    icon: Icons.arrow_forward,
+                    onPressed: _items.isEmpty
+                        ? () {
+                            // No items — go to standalone clue builder
+                            Navigator.pushNamed(
+                              context,
+                              '/clue-builder',
+                              arguments: {
+                                'name': _huntName,
+                                'theme': _themeType,
+                                'timer': _timerMinutes,
+                                'treasureItems': <TreasureItem>[],
+                              },
+                            );
+                          }
+                        : _totalClues >= 2
+                            ? _goToReview
+                            : null,
                   ),
                   if (_items.isNotEmpty && _totalClues < 2)
                     Padding(
