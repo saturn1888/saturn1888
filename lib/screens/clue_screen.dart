@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../widgets/sound_effects.dart';
 import 'package:confetti/confetti.dart';
 import '../models/hunt.dart';
 import '../models/hunt_theme.dart';
@@ -79,6 +80,7 @@ class _ClueScreenState extends State<ClueScreen>
   void _startCountdown() {
     _countdownAnimController.forward();
     HapticFeedback.mediumImpact();
+    SoundEffects.playTick();
 
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted) {
@@ -90,10 +92,12 @@ class _ClueScreenState extends State<ClueScreen>
         _countdownAnimController.reset();
         _countdownAnimController.forward();
         HapticFeedback.mediumImpact();
+        SoundEffects.playTick();
       } else {
         timer.cancel();
         setState(() => _showCountdown = false);
         HapticFeedback.heavyImpact();
+        SoundEffects.playGo();
         _resetHelpPulse();
         _startTime = DateTime.now();
         if (_hunt.timerMinutes != null) {
@@ -154,6 +158,7 @@ class _ClueScreenState extends State<ClueScreen>
 
   void _onFoundIt() {
     HapticFeedback.heavyImpact();
+    SoundEffects.playFound();
     _helpPulseTimer?.cancel();
     setState(() {
       _found = true;

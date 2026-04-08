@@ -147,7 +147,7 @@ class _ShareHuntScreenState extends State<ShareHuntScreen> {
           },
           child: Container(
             padding:
-                const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+                const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             decoration: BoxDecoration(
               color: AppTheme.warmBrown,
               borderRadius: BorderRadius.circular(12),

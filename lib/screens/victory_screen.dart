@@ -258,7 +258,7 @@ class _VictoryScreenState extends State<VictoryScreen>
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(color: _theme.accentColor),
                           padding:
-                              const EdgeInsets.symmetric(vertical: 14),
+                              const EdgeInsets.symmetric(vertical: 16),
                           minimumSize: const Size(48, 48),
                         ),
                       ),
@@ -278,7 +278,7 @@ class _VictoryScreenState extends State<VictoryScreen>
                             style: OutlinedButton.styleFrom(
                               side: BorderSide(color: _theme.accentColor),
                               padding:
-                                  const EdgeInsets.symmetric(vertical: 14),
+                                  const EdgeInsets.symmetric(vertical: 16),
                               minimumSize: const Size(48, 48),
                             ),
                             child: Text(
@@ -300,7 +300,7 @@ class _VictoryScreenState extends State<VictoryScreen>
                             style: OutlinedButton.styleFrom(
                               side: BorderSide(color: _theme.accentColor),
                               padding:
-                                  const EdgeInsets.symmetric(vertical: 14),
+                                  const EdgeInsets.symmetric(vertical: 16),
                               minimumSize: const Size(48, 48),
                             ),
                             child: Text(
