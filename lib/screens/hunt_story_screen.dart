@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:ui' as ui;
 import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:share_plus/share_plus.dart' as share_plus;
 import '../models/hunt.dart';
 import '../models/hunt_theme.dart';
 import '../theme/app_theme.dart';
@@ -62,11 +62,9 @@ class _HuntStoryScreenState extends State<HuntStoryScreen> {
           '${dir.path}/ozhunt_story_${DateTime.now().millisecondsSinceEpoch}.png');
       await file.writeAsBytes(byteData.buffer.asUint8List());
 
-      await SharePlus.instance.share(
-        ShareParams(
-          files: [XFile(file.path)],
-          text: '${_hunt.name} — completed in $_timeFormatted! 🎉 #OzHunt',
-        ),
+      await share_plus.Share.shareXFiles(
+        [share_plus.XFile(file.path)],
+        text: '${_hunt.name} — completed in $_timeFormatted! 🎉 #OzHunt',
       );
     } catch (e) {
       if (mounted) {
