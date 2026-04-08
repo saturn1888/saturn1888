@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:audioplayers/audioplayers.dart';
 import '../widgets/sound_effects.dart';
 import 'package:confetti/confetti.dart';
 import '../models/clue.dart';
@@ -158,6 +159,21 @@ class _ClueScreenState extends State<ClueScreen>
         HapticFeedback.lightImpact();
       }
     });
+  }
+
+  final AudioPlayer _voicePlayer = AudioPlayer();
+
+  Future<void> _playVoiceClue(String path) async {
+    try {
+      await _voicePlayer.stop();
+      await _voicePlayer.play(DeviceFileSource(path));
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not play voice clue')),
+        );
+      }
+    }
   }
 
   /// Get the answer for a clue — from the clue itself or the matched treasure item
@@ -419,6 +435,7 @@ class _ClueScreenState extends State<ClueScreen>
     _helpPulseTimer?.cancel();
     _countdownAnimController.dispose();
     _helpPulseController.dispose();
+    _voicePlayer.dispose();
     super.dispose();
   }
 
@@ -628,6 +645,35 @@ class _ClueScreenState extends State<ClueScreen>
                     ),
                   ),
                 ),
+
+                // Voice clue button
+                if (clue.voicePath != null &&
+                    File(clue.voicePath!).existsSync())
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 4),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () => _playVoiceClue(clue.voicePath!),
+                        icon: Icon(Icons.volume_up,
+                            color: _theme.accentColor, size: 20),
+                        label: Text(
+                          'Listen to Clue 🔊',
+                          style: AppTheme.body(
+                              size: 15, color: _theme.accentColor),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          side:
+                              BorderSide(color: _theme.accentColor.withOpacity(0.4)),
+                          padding:
+                              const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                        ),
+                      ),
+                    ),
+                  ),
 
                 // Buttons
                 Padding(

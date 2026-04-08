@@ -7,6 +7,7 @@ import '../models/hunt_theme.dart';
 import '../theme/app_theme.dart';
 import '../widgets/parchment_background.dart';
 import '../widgets/mute_button.dart';
+import '../widgets/voice_clue_recorder.dart';
 
 class TreasureItemsScreen extends StatefulWidget {
   const TreasureItemsScreen({super.key});
@@ -131,51 +132,84 @@ class _TreasureItemsScreenState extends State<TreasureItemsScreen> {
 
   void _addClueToItem(int itemIndex) {
     final clueController = TextEditingController();
-    showDialog(
+    String? voicePath;
+
+    showModalBottomSheet(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Add Clue', style: AppTheme.heading(size: 20)),
-        content: Column(
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          top: 20,
+          bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+        ),
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text('Add Clue',
+                      style: AppTheme.heading(size: 20)),
+                ),
+                IconButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  icon: const Icon(Icons.close),
+                ),
+              ],
+            ),
             Text(
               'For: ${_items[itemIndex].name}',
-              style: AppTheme.body(size: 13, color: AppTheme.leather),
+              style: AppTheme.caption(size: 13),
             ),
             const SizedBox(height: 12),
             TextField(
               controller: clueController,
-              maxLines: 4,
+              maxLines: 3,
               decoration: const InputDecoration(
                 hintText: 'Write a riddle or clue...',
               ),
               textCapitalization: TextCapitalization.sentences,
               autofocus: true,
             ),
+            const SizedBox(height: 12),
+            // Voice clue recorder
+            VoiceClueRecorder(
+              onChanged: (path) => voicePath = path,
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  final text = clueController.text.trim();
+                  if (text.isNotEmpty) {
+                    setState(() {
+                      _items[itemIndex].clues.add(Clue(
+                        text: text,
+                        order: _items[itemIndex].clues.length,
+                        voicePath: voicePath,
+                      ));
+                    });
+                  }
+                  Navigator.pop(ctx);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.gold,
+                  foregroundColor: AppTheme.warmBrown,
+                ),
+                child: Text('Add Clue',
+                    style: AppTheme.heading(
+                        size: 17, color: AppTheme.warmBrown)),
+              ),
+            ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              final text = clueController.text.trim();
-              if (text.isNotEmpty) {
-                setState(() {
-                  _items[itemIndex].clues.add(Clue(
-                    text: text,
-                    order: _items[itemIndex].clues.length,
-                  ));
-                });
-              }
-              Navigator.pop(ctx);
-            },
-            child: Text('Add', style: TextStyle(color: AppTheme.darkGold)),
-          ),
-        ],
       ),
     );
   }

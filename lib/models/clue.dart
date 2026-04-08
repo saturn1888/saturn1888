@@ -19,12 +19,16 @@ class Clue extends HiveObject {
   @HiveField(4)
   String? answer;
 
+  @HiveField(5)
+  String? voicePath;
+
   Clue({
     required this.text,
     this.photoPath,
     this.wrongAnswerHint,
     this.order = 0,
     this.answer,
+    this.voicePath,
   });
 
   Clue copyWith({

@@ -381,6 +381,36 @@ class _VictoryScreenState extends State<VictoryScreen>
                         ),
                     ],
                     const SizedBox(height: 12),
+                    // Create Story button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/hunt-story',
+                            arguments: {
+                              'hunt': _hunt,
+                              'timeTaken': _timeTaken,
+                            },
+                          );
+                        },
+                        icon: Icon(Icons.auto_stories,
+                            color: _theme.backgroundColor, size: 20),
+                        label: Text(
+                          'Create & Share Story',
+                          style: AppTheme.heading(
+                              size: 16, color: _theme.backgroundColor),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: _theme.accentColor,
+                          foregroundColor: _theme.backgroundColor,
+                          padding:
+                              const EdgeInsets.symmetric(vertical: 14),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
                     // Share hunt button
                     SizedBox(
                       width: double.infinity,

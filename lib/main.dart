@@ -23,6 +23,7 @@ import 'screens/match_clues_screen.dart';
 import 'screens/share_hunt_screen.dart';
 import 'screens/join_hunt_screen.dart';
 import 'screens/quick_play_screen.dart';
+import 'screens/hunt_story_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -75,6 +76,7 @@ class OzHuntApp extends StatelessWidget {
         '/share-hunt': (context) => const ShareHuntScreen(),
         '/join-hunt': (context) => const JoinHuntScreen(),
         '/quick-play': (context) => const QuickPlayScreen(),
+        '/hunt-story': (context) => const HuntStoryScreen(),
       },
     );
   }

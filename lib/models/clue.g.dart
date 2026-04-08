@@ -22,13 +22,14 @@ class ClueAdapter extends TypeAdapter<Clue> {
       wrongAnswerHint: fields[2] as String?,
       order: fields[3] as int,
       answer: fields.containsKey(4) ? fields[4] as String? : null,
+      voicePath: fields.containsKey(5) ? fields[5] as String? : null,
     );
   }
 
   @override
   void write(BinaryWriter writer, Clue obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.text)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class ClueAdapter extends TypeAdapter<Clue> {
       ..writeByte(3)
       ..write(obj.order)
       ..writeByte(4)
-      ..write(obj.answer);
+      ..write(obj.answer)
+      ..writeByte(5)
+      ..write(obj.voicePath);
   }
 
   @override
