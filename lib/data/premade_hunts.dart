@@ -17,7 +17,8 @@ class PremadeHunts {
     name: 'House Explorer',
     themeType: HuntThemeType.pirate,
     timerMinutes: null,
-    victoryMessage: 'Arr! Ye explored every corner of the house! 🏴‍☠️💰',
+    prizeDescription: 'Captain Blackbeard hid 5 treasures around your house before he sailed away. Can you find them all before the tide comes in?',
+    victoryMessage: 'Arr! Ye found all of Captain Blackbeard\'s hidden treasures! The pirate ship sails on to the next adventure... 🏴‍☠️💰⛵',
     clues: [
       Clue(
         text: 'I\'m cold inside but warm to see,\nI keep your snacks safe — come find me!\nOpen my door and feel the chill,\nI\'m in the kitchen, standing still.',
@@ -57,7 +58,8 @@ class PremadeHunts {
     name: 'Garden Quest',
     themeType: HuntThemeType.jungle,
     timerMinutes: 15,
-    victoryMessage: 'What an explorer! You conquered the garden! 🌿🦁',
+    prizeDescription: 'A rare jungle creature has escaped into your garden! Follow the trail of clues to track it down before it disappears!',
+    victoryMessage: 'You tracked the creature through the entire garden! The jungle explorer badge is yours! 🌿🦁🏅',
     clues: [
       Clue(
         text: 'I\'m full of dirt but I\'m not a mess,\nFlowers grow in me — can you guess?\nI sit outside and hold the blooms,\nCheck near me for treasure rooms!',
@@ -95,9 +97,10 @@ class PremadeHunts {
   static final _parkHunt = Hunt(
     id: 'premade_park',
     name: 'Park Adventure',
-    themeType: HuntThemeType.custom,
+    themeType: HuntThemeType.outdoor,
     timerMinutes: 20,
-    victoryMessage: 'You explored the whole park! Amazing adventurers! 🎯⭐',
+    prizeDescription: 'A mysterious map was found at the park entrance! It shows 6 locations where treasure is buried. Race to find them all!',
+    victoryMessage: 'The map was right! You uncovered all 6 treasures and completed the park challenge! Who\'s next? 🎯⭐🏆',
     clues: [
       Clue(
         text: 'I go down fast but climb up slow,\nSit at the top and down you go!\nShiny, steep, and full of fun,\nThe clue awaits when sliding\'s done!',
@@ -143,7 +146,8 @@ class PremadeHunts {
     name: 'Birthday Surprise',
     themeType: HuntThemeType.birthday,
     timerMinutes: 10,
-    victoryMessage: 'Happy birthday! You found all the party surprises! 🎂🎉🎁',
+    prizeDescription: 'Someone has hidden the birthday surprises around the party area! Find all 5 before the party starts!',
+    victoryMessage: 'The party can begin! You found every surprise! Now who wants cake? 🎂🎉🎁🥳',
     clues: [
       Clue(
         text: 'I\'m full of air and float up high,\nIn every colour to the sky.\nPop me not — I\'m here for fun,\nThe clue is tied where I have hung!',
@@ -183,7 +187,8 @@ class PremadeHunts {
     name: 'Indoor Adventure',
     themeType: HuntThemeType.space,
     timerMinutes: null,
-    victoryMessage: 'Houston, we have a winner! All missions complete! 🚀⭐',
+    prizeDescription: 'Mission Control has detected 6 alien signals coming from inside your home. Locate each signal source to complete the mission!',
+    victoryMessage: 'All signals located! Earth is safe thanks to you, astronaut! Report back to Mission Control for your next assignment! 🚀⭐🛸',
     clues: [
       Clue(
         text: 'Look at me to see your face,\nI copy you all over the place.\nI hang on walls or sit on shelves,\nCome find me and check yourselves!',

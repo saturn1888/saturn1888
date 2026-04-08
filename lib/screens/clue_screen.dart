@@ -26,6 +26,9 @@ class _ClueScreenState extends State<ClueScreen>
   int _currentClueIndex = 0;
   bool _hintRevealed = false;
   bool _found = false;
+  bool _showFullClue = false; // Progressive reveal
+  bool _showAnswerInput = false; // Answer verification
+  final _answerController = TextEditingController();
   late ConfettiController _confettiController;
   Timer? _timer;
   int _remainingSeconds = 0;
@@ -176,6 +179,14 @@ class _ClueScreenState extends State<ClueScreen>
     }
   }
 
+  /// Show first 2 lines of clue initially, full clue after tapping "Show More"
+  String _getDisplayedClueText(Clue clue) {
+    if (_found || _showFullClue) return clue.text;
+    final lines = clue.text.split('\n');
+    if (lines.length <= 2) return clue.text;
+    return '${lines.take(2).join('\n')}...';
+  }
+
   /// Get the answer for a clue — from the clue itself or the matched treasure item
   String? _getClueAnswer(Clue clue) {
     // Direct answer on the clue
@@ -204,6 +215,49 @@ class _ClueScreenState extends State<ClueScreen>
     if (remaining == 1) return 'Almost done! Just 1 more! 💪';
     if (found == 3 && total > 4) return '$found down, $remaining to go!';
     return null;
+  }
+
+  void _showAnswerVerification() {
+    final clue = _hunt.clues[_currentClueIndex];
+    final answer = _getClueAnswer(clue);
+
+    // If no answer set, skip verification
+    if (answer == null || answer.isEmpty) {
+      _onFoundIt();
+      return;
+    }
+
+    setState(() {
+      _showAnswerInput = true;
+      _answerController.clear();
+    });
+  }
+
+  void _checkAnswer() {
+    final clue = _hunt.clues[_currentClueIndex];
+    final answer = _getClueAnswer(clue) ?? '';
+    final userAnswer = _answerController.text.trim().toLowerCase();
+    final correctAnswer = answer.replaceAll('!', '').replaceAll('The ', '').replaceAll('A ', '').trim().toLowerCase();
+
+    if (userAnswer.isNotEmpty &&
+        (correctAnswer.contains(userAnswer) || userAnswer.contains(correctAnswer))) {
+      setState(() => _showAnswerInput = false);
+      _onFoundIt();
+    } else {
+      HapticFeedback.lightImpact();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Not quite! Try again or tap Skip'),
+          backgroundColor: Colors.orange[700],
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
+  void _skipAnswer() {
+    setState(() => _showAnswerInput = false);
+    _onFoundIt();
   }
 
   Future<void> _onFoundIt() async {
@@ -252,6 +306,8 @@ class _ClueScreenState extends State<ClueScreen>
           _currentClueIndex++;
           _found = false;
           _hintRevealed = false;
+          _showFullClue = false;
+          _showAnswerInput = false;
         });
         _resetHelpPulse();
       } else {
@@ -622,14 +678,30 @@ class _ClueScreenState extends State<ClueScreen>
                                         ),
                                         const SizedBox(height: 16),
                                       ],
+                                      // Progressive clue reveal
                                       Text(
-                                        clue.text,
+                                        _getDisplayedClueText(clue),
                                         style: AppTheme.heading(
                                           size: _found ? 16 : 22,
                                           color: _theme.accentColor.withOpacity(_found ? 0.5 : 1),
                                         ),
                                         textAlign: TextAlign.center,
                                       ),
+                                      // Show More button for long clues
+                                      if (!_found &&
+                                          !_showFullClue &&
+                                          clue.text.split('\n').length > 2)
+                                        TextButton(
+                                          onPressed: () =>
+                                              setState(() => _showFullClue = true),
+                                          child: Text(
+                                            'Show full clue',
+                                            style: AppTheme.body(
+                                                size: 14,
+                                                color: _theme.accentColor
+                                                    .withOpacity(0.6)),
+                                          ),
+                                        ),
                                     ],
                                   ),
                                 ),
@@ -680,10 +752,75 @@ class _ClueScreenState extends State<ClueScreen>
                   padding: const EdgeInsets.all(24),
                   child: Column(
                     children: [
+                      // Answer verification input
+                      if (_showAnswerInput && !_found) ...[
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: _theme.cardColor,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            children: [
+                              Text('What did you find?',
+                                  style: AppTheme.heading(
+                                      size: 16, color: _theme.accentColor)),
+                              const SizedBox(height: 8),
+                              TextField(
+                                controller: _answerController,
+                                textCapitalization: TextCapitalization.words,
+                                textAlign: TextAlign.center,
+                                style: AppTheme.heading(
+                                    size: 20, color: _theme.accentColor),
+                                decoration: InputDecoration(
+                                  hintText: 'Type your answer...',
+                                  hintStyle: TextStyle(
+                                      color: _theme.accentColor.withOpacity(0.3)),
+                                  filled: true,
+                                  fillColor: _theme.backgroundColor,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                                onSubmitted: (_) => _checkAnswer(),
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: TextButton(
+                                      onPressed: _skipAnswer,
+                                      child: Text('Skip',
+                                          style: AppTheme.body(
+                                              size: 14,
+                                              color: _theme.accentColor
+                                                  .withOpacity(0.5))),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: ElevatedButton(
+                                      onPressed: _checkAnswer,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: _theme.accentColor,
+                                        foregroundColor: _theme.backgroundColor,
+                                      ),
+                                      child: const Text('Check'),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ] else
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: _found ? null : _onFoundIt,
+                          onPressed: _found
+                              ? null
+                              : _showAnswerVerification,
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
                                 _found ? Colors.green[300] : _theme.accentColor,

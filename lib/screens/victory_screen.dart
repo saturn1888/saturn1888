@@ -66,6 +66,15 @@ class _VictoryScreenState extends State<VictoryScreen>
     }
   }
 
+  String _getSpeedMessage() {
+    final secsPerClue = _timeTaken / _hunt.clues.length;
+    if (secsPerClue < 15) return '⚡ Lightning fast! Incredible speed!';
+    if (secsPerClue < 30) return '🔥 Blazing through! Super quick!';
+    if (secsPerClue < 60) return '💨 Speedy explorer! Great pace!';
+    if (secsPerClue < 120) return '🌟 Steady and sure! Nice work!';
+    return '🧭 Thorough explorer! Every clue solved!';
+  }
+
   Future<void> _loadLeaderboard() async {
     if (!_hunt.id.startsWith('shared_')) return;
     setState(() => _leaderboardLoading = true);
@@ -191,7 +200,15 @@ class _VictoryScreenState extends State<VictoryScreen>
                         color: _theme.accentColor.withOpacity(0.7),
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 4),
+                    Text(
+                      _getSpeedMessage(),
+                      style: AppTheme.heading(
+                        size: 16,
+                        color: _theme.accentColor.withOpacity(0.8),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     Card(
                       color: _theme.cardColor,
                       shape: RoundedRectangleBorder(
