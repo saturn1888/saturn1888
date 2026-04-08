@@ -27,6 +27,8 @@ class HuntThemeTypeAdapter extends TypeAdapter<HuntThemeType> {
         return HuntThemeType.christmas;
       case 6:
         return HuntThemeType.custom;
+      case 7:
+        return HuntThemeType.outdoor;
       default:
         return HuntThemeType.pirate;
     }
@@ -55,6 +57,9 @@ class HuntThemeTypeAdapter extends TypeAdapter<HuntThemeType> {
         break;
       case HuntThemeType.custom:
         writer.writeByte(6);
+        break;
+      case HuntThemeType.outdoor:
+        writer.writeByte(7);
         break;
     }
   }

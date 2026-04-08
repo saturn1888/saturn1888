@@ -25,6 +25,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   List<TreasureItem> _treasureItems = [];
   bool _initialized = false;
   bool _shuffleClues = false;
+  bool _photoVerification = false;
 
   @override
   void didChangeDependencies() {
@@ -64,6 +65,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
       timerMinutes: _timerMinutes,
       victoryMessage: _victoryController.text.trim(),
       treasureItems: _treasureItems.isEmpty ? null : _treasureItems,
+      photoVerification: _photoVerification,
     );
   }
 
@@ -232,6 +234,18 @@ class _ReviewScreenState extends State<ReviewScreen> {
               value: _shuffleClues,
               activeColor: AppTheme.darkGold,
               onChanged: (v) => setState(() => _shuffleClues = v),
+              contentPadding: EdgeInsets.zero,
+            ),
+            SwitchListTile(
+              title: Text('Photo verification', style: AppTheme.body(size: 16)),
+              subtitle: Text(
+                'Hunters must take a photo to prove each find',
+                style: AppTheme.body(size: 13, color: Colors.grey),
+              ),
+              secondary: const Text('📸', style: TextStyle(fontSize: 24)),
+              value: _photoVerification,
+              activeColor: AppTheme.darkGold,
+              onChanged: (v) => setState(() => _photoVerification = v),
               contentPadding: EdgeInsets.zero,
             ),
             const SizedBox(height: 24),

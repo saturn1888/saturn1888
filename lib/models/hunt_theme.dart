@@ -19,6 +19,8 @@ enum HuntThemeType {
   christmas,
   @HiveField(6)
   custom,
+  @HiveField(7)
+  outdoor,
 }
 
 class HuntThemeData {
@@ -147,6 +149,20 @@ class HuntThemeData {
       introMessage: 'Santa needs your help! Follow the Christmas clues to find all the hidden presents!',
       decorativeEmojis: ['🎅', '⭐', '🦌', '❄️', '🎁'],
       description: 'Help Santa find the Christmas magic',
+    ),
+    HuntThemeData(
+      name: 'Outdoor Adventure',
+      emoji: '🏕️',
+      backgroundColor: Color(0xFF2E5930),
+      accentColor: Color(0xFFF5E6C8),
+      cardColor: Color(0xFF3A7040),
+      type: HuntThemeType.outdoor,
+      foundItText: 'Spotted! 🔭',
+      countdownPrefix: 'Adventure starts in',
+      defaultVictoryMessage: 'What an expedition! You explored it all! 🏕️🌲🎯',
+      introMessage: 'Adventurers! Head outside, follow the clues, and explore the great outdoors! Look high and low!',
+      decorativeEmojis: ['🌲', '🏔️', '🦅', '🧭', '⛺'],
+      description: 'Big outdoor adventures and explorations',
     ),
   ];
 

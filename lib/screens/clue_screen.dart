@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import '../widgets/sound_effects.dart';
 import 'package:confetti/confetti.dart';
 import '../models/hunt.dart';
@@ -42,6 +43,8 @@ class _ClueScreenState extends State<ClueScreen>
   Timer? _helpPulseTimer;
   late AnimationController _helpPulseController;
   bool _showHelpPulse = false;
+  final _imagePicker = ImagePicker();
+  final List<String> _verificationPhotos = [];
 
   @override
   void initState() {
@@ -168,7 +171,23 @@ class _ClueScreenState extends State<ClueScreen>
     return null;
   }
 
-  void _onFoundIt() {
+  Future<void> _onFoundIt() async {
+    // Photo verification: take a photo first
+    if (_hunt.photoVerification) {
+      try {
+        final photo = await _imagePicker.pickImage(
+          source: ImageSource.camera,
+          maxWidth: 1024,
+          maxHeight: 1024,
+          imageQuality: 70,
+        );
+        if (photo == null) return; // cancelled
+        _verificationPhotos.add(photo.path);
+      } catch (e) {
+        // Camera not available, skip verification
+      }
+    }
+
     HapticFeedback.heavyImpact();
     SoundEffects.playFound();
     _helpPulseTimer?.cancel();

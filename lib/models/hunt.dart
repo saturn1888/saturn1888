@@ -37,6 +37,9 @@ class Hunt extends HiveObject {
   @HiveField(9)
   List<TreasureItem>? treasureItems;
 
+  @HiveField(10)
+  bool photoVerification;
+
   Hunt({
     required this.id,
     required this.name,
@@ -47,6 +50,7 @@ class Hunt extends HiveObject {
     this.prizeDescription,
     this.prizePhotoPath,
     this.treasureItems,
+    this.photoVerification = false,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 

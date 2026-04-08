@@ -29,13 +29,16 @@ class HuntAdapter extends TypeAdapter<Hunt> {
       treasureItems: fields.containsKey(9)
           ? (fields[9] as List?)?.cast<TreasureItem>()
           : null,
+      photoVerification: fields.containsKey(10)
+          ? (fields[10] as bool?) ?? false
+          : false,
     );
   }
 
   @override
   void write(BinaryWriter writer, Hunt obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -55,7 +58,9 @@ class HuntAdapter extends TypeAdapter<Hunt> {
       ..writeByte(8)
       ..write(obj.prizePhotoPath)
       ..writeByte(9)
-      ..write(obj.treasureItems);
+      ..write(obj.treasureItems)
+      ..writeByte(10)
+      ..write(obj.photoVerification);
   }
 
   @override

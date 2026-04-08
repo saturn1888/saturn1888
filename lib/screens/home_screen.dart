@@ -131,9 +131,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 14),
                       _SignpostPlank(
+                        label: 'Quick Play',
+                        tilt: -0.01,
+                        arrowDirection: 1,
+                        seed: 9,
+                        onTap: () =>
+                            Navigator.pushNamed(context, '/quick-play'),
+                      ),
+                      const SizedBox(height: 10),
+                      _SignpostPlank(
                         label: 'Create a Hunt',
                         tilt: 0.02,
-                        arrowDirection: 1,
+                        arrowDirection: -1,
                         seed: 1,
                         onTap: () => Navigator.pushNamed(context, '/setup'),
                       ),
