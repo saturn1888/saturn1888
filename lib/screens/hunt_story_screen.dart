@@ -62,9 +62,11 @@ class _HuntStoryScreenState extends State<HuntStoryScreen> {
           '${dir.path}/ozhunt_story_${DateTime.now().millisecondsSinceEpoch}.png');
       await file.writeAsBytes(byteData.buffer.asUint8List());
 
-      await Share.shareXFiles(
-        [XFile(file.path)],
-        text: '${_hunt.name} — completed in $_timeFormatted! 🎉 #OzHunt',
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(file.path)],
+          text: '${_hunt.name} — completed in $_timeFormatted! 🎉 #OzHunt',
+        ),
       );
     } catch (e) {
       if (mounted) {
