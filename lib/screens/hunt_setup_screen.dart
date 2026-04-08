@@ -39,8 +39,10 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
             const SizedBox(height: 8),
             TextField(
               controller: _nameController,
+              maxLength: 40,
               decoration: const InputDecoration(
                 hintText: 'e.g. Backyard Adventure',
+                counterText: '',
               ),
               textCapitalization: TextCapitalization.words,
             ),

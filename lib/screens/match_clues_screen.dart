@@ -56,20 +56,42 @@ class _MatchCluesScreenState extends State<MatchCluesScreen> {
   void _onClueTap(int clueIndex) {
     if (_selectedItemIndex == null) return;
 
-    setState(() {
-      final item = _treasureItems[_selectedItemIndex!];
-      // If this clue already has this item, unassign
-      if (item.assignedClueIndex == clueIndex) {
+    final item = _treasureItems[_selectedItemIndex!];
+
+    // If this clue already has this item, unassign
+    if (item.assignedClueIndex == clueIndex) {
+      setState(() {
         item.assignedClueIndex = null;
-      } else {
-        // Unassign any other item from this clue
-        for (final other in _treasureItems) {
-          if (other.assignedClueIndex == clueIndex) {
-            other.assignedClueIndex = null;
-          }
+        _selectedItemIndex = null;
+      });
+      return;
+    }
+
+    // Check if another item already has this clue
+    final existing = _treasureItems
+        .where((i) => i.assignedClueIndex == clueIndex)
+        .toList();
+
+    if (existing.isNotEmpty) {
+      // Show swap confirmation
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+              '"${existing.first.name}" was unlinked from Clue ${clueIndex + 1}'),
+          duration: const Duration(seconds: 2),
+          backgroundColor: Colors.orange[700],
+        ),
+      );
+    }
+
+    setState(() {
+      // Unassign any other item from this clue
+      for (final other in _treasureItems) {
+        if (other.assignedClueIndex == clueIndex) {
+          other.assignedClueIndex = null;
         }
-        item.assignedClueIndex = clueIndex;
       }
+      item.assignedClueIndex = clueIndex;
       _selectedItemIndex = null;
     });
   }

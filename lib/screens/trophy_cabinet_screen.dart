@@ -81,6 +81,10 @@ class TrophyCabinetScreen extends StatelessWidget {
                       '${trophies.length} Hunt${trophies.length == 1 ? '' : 's'} Completed',
                       style: AppTheme.heading(size: 22),
                     ),
+                    Text(
+                      'Long-press a trophy to delete it',
+                      style: AppTheme.body(size: 11, color: Colors.grey),
+                    ),
                     if (milestone.isNotEmpty) ...[
                       const SizedBox(height: 4),
                       Text(

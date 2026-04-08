@@ -185,6 +185,55 @@ class _ClueScreenState extends State<ClueScreen>
     });
   }
 
+  void _showRulesDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('How to Play', style: AppTheme.heading(size: 22)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _ruleRow('1', 'Read the riddle clue'),
+            const SizedBox(height: 8),
+            _ruleRow('2', 'Search the area and find the answer'),
+            const SizedBox(height: 8),
+            _ruleRow('3', 'Tap "I Found It!" when you find it'),
+            const SizedBox(height: 8),
+            _ruleRow('4', 'Use hints if you get stuck'),
+            if (_hunt.treasureItems != null &&
+                _hunt.treasureItems!.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              _ruleRow('5', 'Collect the treasure at each spot!'),
+            ],
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Got it!',
+                style: AppTheme.body(size: 16, color: AppTheme.darkGold)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _ruleRow(String num, String text) {
+    return Row(
+      children: [
+        CircleAvatar(
+          radius: 12,
+          backgroundColor: _theme.accentColor,
+          child: Text(num,
+              style: AppTheme.heading(size: 12, color: _theme.backgroundColor)),
+        ),
+        const SizedBox(width: 10),
+        Expanded(child: Text(text, style: AppTheme.body(size: 15))),
+      ],
+    );
+  }
+
   void _showHelpDialog() {
     final clue = _hunt.clues[_currentClueIndex];
     HapticFeedback.lightImpact();
@@ -257,6 +306,12 @@ class _ClueScreenState extends State<ClueScreen>
                   padding: const EdgeInsets.all(16),
                   child: Row(
                     children: [
+                      IconButton(
+                        onPressed: _showRulesDialog,
+                        icon: Icon(Icons.help_outline,
+                            color: _theme.accentColor, size: 22),
+                        tooltip: 'How to Play',
+                      ),
                       IconButton(
                         onPressed: () {
                           showDialog(

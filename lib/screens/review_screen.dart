@@ -129,14 +129,49 @@ class _ReviewScreenState extends State<ReviewScreen> {
               ),
             ),
             const SizedBox(height: 16),
+            // Treasure items summary
+            if (_treasureItems.isNotEmpty) ...[
+              Text('Treasure Items', style: AppTheme.heading(size: 20)),
+              const SizedBox(height: 8),
+              ...List.generate(_treasureItems.length, (index) {
+                final item = _treasureItems[index];
+                final hasClue = item.assignedClueIndex != null &&
+                    item.assignedClueIndex! < _clues.length;
+                return Card(
+                  child: ListTile(
+                    leading: const Text('🎁', style: TextStyle(fontSize: 24)),
+                    title: Text(item.name, style: AppTheme.body(size: 15)),
+                    subtitle: Text(
+                      hasClue
+                          ? 'Assigned to Clue ${item.assignedClueIndex! + 1}'
+                          : 'Not assigned to a clue',
+                      style: AppTheme.body(
+                        size: 12,
+                        color: hasClue ? AppTheme.adventureGreen : Colors.orange,
+                      ),
+                    ),
+                    trailing: item.photoPath != null
+                        ? const Icon(Icons.photo, size: 16, color: Colors.grey)
+                        : null,
+                  ),
+                );
+              }),
+              const SizedBox(height: 16),
+            ],
             Text('Clues', style: AppTheme.heading(size: 20)),
             const SizedBox(height: 8),
             ...List.generate(_clues.length, (index) {
               final clue = _clues[index];
+              // Find if any treasure item is assigned to this clue
+              final matchedItem = _treasureItems
+                  .where((i) => i.assignedClueIndex == index)
+                  .toList();
               return Card(
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: AppTheme.gold,
+                    backgroundColor: matchedItem.isNotEmpty
+                        ? AppTheme.adventureGreen
+                        : AppTheme.gold,
                     radius: 16,
                     child: Text(
                       '${index + 1}',
@@ -149,6 +184,13 @@ class _ReviewScreenState extends State<ReviewScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: AppTheme.body(size: 14),
                   ),
+                  subtitle: matchedItem.isNotEmpty
+                      ? Text(
+                          '🎁 ${matchedItem.map((i) => i.name).join(', ')}',
+                          style: AppTheme.body(
+                              size: 12, color: AppTheme.adventureGreen),
+                        )
+                      : null,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [

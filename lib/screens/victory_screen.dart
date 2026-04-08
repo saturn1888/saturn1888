@@ -186,6 +186,34 @@ class _VictoryScreenState extends State<VictoryScreen>
                         ),
                       ),
                     ),
+                    // Treasure summary
+                    if (_hunt.treasureItems != null &&
+                        _hunt.treasureItems!.isNotEmpty) ...[
+                      const SizedBox(height: 16),
+                      Text(
+                        'Treasures Found',
+                        style: AppTheme.heading(
+                            size: 18, color: _theme.accentColor),
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        alignment: WrapAlignment.center,
+                        children: _hunt.treasureItems!.map((item) {
+                          return Chip(
+                            label: Text(item.name,
+                                style: AppTheme.body(
+                                    size: 13,
+                                    color: _theme.backgroundColor)),
+                            backgroundColor:
+                                _theme.accentColor.withOpacity(0.8),
+                            avatar: const Text('🎁',
+                                style: TextStyle(fontSize: 14)),
+                          );
+                        }).toList(),
+                      ),
+                    ],
                     const SizedBox(height: 32),
                     SizedBox(
                       width: double.infinity,
