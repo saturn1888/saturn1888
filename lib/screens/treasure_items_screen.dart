@@ -21,7 +21,7 @@ class _TreasureItemsScreenState extends State<TreasureItemsScreen> {
   bool _initialized = false;
 
   late String _huntName;
-  late dynamic _themeType;
+  late HuntThemeType _themeType;
   late int? _timerMinutes;
 
   @override
@@ -31,7 +31,7 @@ class _TreasureItemsScreenState extends State<TreasureItemsScreen> {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       _huntName = args['name'] as String;
-      _themeType = args['theme'];
+      _themeType = args['theme'] as HuntThemeType;
       _timerMinutes = args['timer'] as int?;
       _initialized = true;
     }
