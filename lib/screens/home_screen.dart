@@ -103,34 +103,29 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 8),
                       // Hero image with overlay subtitle
                       SizedBox(
-                        width: 280,
-                        height: 280,
+                        width: 260,
+                        height: 260,
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(24),
-                                color: const Color(0xFF1A1F5E),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Color(0xFF1A1F5E),
-                                    spreadRadius: 4,
-                                    blurRadius: 0,
+                            // Clip and scale up to crop out the image's own border
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: SizedBox(
+                                width: 260,
+                                height: 260,
+                                child: Transform.scale(
+                                  scale: 1.15,
+                                  child: Image.asset(
+                                    Illustrations.appIcon,
+                                    width: 260,
+                                    height: 260,
+                                    fit: BoxFit.cover,
+                                    filterQuality: FilterQuality.high,
+                                    errorBuilder: (_, __, ___) =>
+                                        const Text('🗺️',
+                                            style: TextStyle(fontSize: 80)),
                                   ),
-                                ],
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(24),
-                                child: Image.asset(
-                                  Illustrations.appIcon,
-                                  width: 280,
-                                  height: 280,
-                                  fit: BoxFit.cover,
-                                  filterQuality: FilterQuality.high,
-                                  errorBuilder: (_, __, ___) =>
-                                      const Text('🗺️',
-                                          style: TextStyle(fontSize: 80)),
                                 ),
                               ),
                             ),
@@ -143,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 padding: const EdgeInsets.symmetric(vertical: 8),
                                 decoration: BoxDecoration(
                                   borderRadius: const BorderRadius.vertical(
-                                      bottom: Radius.circular(24)),
+                                      bottom: Radius.circular(20)),
                                   gradient: LinearGradient(
                                     begin: Alignment.topCenter,
                                     end: Alignment.bottomCenter,
@@ -232,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 10),
-                              height: 48,
+                              height: 44,
                               decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.06),
                                 borderRadius: BorderRadius.circular(16),
@@ -276,7 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         },
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 12),
                     ],
                   ),
                 ),
