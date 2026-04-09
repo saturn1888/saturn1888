@@ -1,4 +1,5 @@
-import 'dart:math';
+import 'dart:math' as math;
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,11 +18,78 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with TickerProviderStateMixin {
+  // Float animation
+  late AnimationController _floatController;
+  late Animation<double> _floatAnimation;
+
+  // Button entrance animation
+  late AnimationController _entranceController;
+  late CurvedAnimation _btn1, _btn2, _btn3;
+
+  // Twinkling stars
+  final List<double> _starOpacities = List.generate(20, (_) => 0.3);
+  late List<Offset> _starPositions;
+  late List<double> _starSizes;
+  Timer? _starTimer;
+
   @override
   void initState() {
     super.initState();
     MusicController.instance.start();
+
+    // Float
+    _floatController = AnimationController(
+      duration: const Duration(seconds: 3),
+      vsync: this,
+    )..repeat(reverse: true);
+    _floatAnimation = Tween<double>(begin: -8.0, end: 8.0).animate(
+      CurvedAnimation(parent: _floatController, curve: Curves.easeInOut),
+    );
+
+    // Entrance
+    _entranceController = AnimationController(
+      duration: const Duration(milliseconds: 900),
+      vsync: this,
+    );
+    _btn1 = CurvedAnimation(
+        parent: _entranceController,
+        curve: const Interval(0.0, 0.6, curve: Curves.easeOutCubic));
+    _btn2 = CurvedAnimation(
+        parent: _entranceController,
+        curve: const Interval(0.15, 0.75, curve: Curves.easeOutCubic));
+    _btn3 = CurvedAnimation(
+        parent: _entranceController,
+        curve: const Interval(0.30, 0.90, curve: Curves.easeOutCubic));
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (mounted) _entranceController.forward();
+    });
+
+    // Stars
+    final rng = math.Random();
+    _starPositions = List.generate(
+        20, (_) => Offset(rng.nextDouble() * 400, rng.nextDouble() * 900));
+    _starSizes =
+        List.generate(20, (_) => 1.5 + rng.nextDouble() * 2.0);
+    _starTimer = Timer.periodic(const Duration(milliseconds: 800), (_) {
+      if (!mounted) return;
+      final r = math.Random();
+      setState(() {
+        for (int j = 0; j < 3; j++) {
+          final idx = r.nextInt(20);
+          _starOpacities[idx] = r.nextBool() ? 0.1 : 0.9;
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _floatController.dispose();
+    _entranceController.dispose();
+    _starTimer?.cancel();
+    super.dispose();
   }
 
   Widget _textLink(String label, VoidCallback onTap) {
@@ -91,10 +159,27 @@ class _HomeScreenState extends State<HomeScreen> {
         child: SafeArea(
           child: Stack(
             children: [
-              // Star particles
+              // Static star field
               Positioned.fill(
                 child: CustomPaint(painter: _StarFieldPainter()),
               ),
+              // Twinkling stars
+              ...List.generate(20, (i) => Positioned(
+                    left: _starPositions[i].dx,
+                    top: _starPositions[i].dy,
+                    child: AnimatedOpacity(
+                      opacity: _starOpacities[i],
+                      duration: const Duration(milliseconds: 600),
+                      child: Container(
+                        width: _starSizes[i],
+                        height: _starSizes[i],
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                  )),
               Center(
                 child: SingleChildScrollView(
                   physics: const ClampingScrollPhysics(),
@@ -102,8 +187,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     children: [
                       const SizedBox(height: 8),
-                      // Hero image with glow
-                      Container(
+                      // Hero image with glow + float
+                      _AnimatedBuilder(animation:
+                        animation: _floatAnimation,
+                        builder: (context, child) => Transform.translate(
+                          offset: Offset(0, _floatAnimation.value),
+                          child: child,
+                        ),
+                        child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(24),
                           boxShadow: const [
@@ -133,27 +224,55 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
+                      ), // AnimatedBuilder
                       const SizedBox(height: 20),
-                      // Gradient buttons
-                      GradientButton.quickPlay(
-                        label: 'Quick Play',
-                        icon: Icons.play_arrow_rounded,
-                        onPressed: () =>
-                            Navigator.pushNamed(context, '/quick-play'),
+                      // Gradient buttons with entrance animation
+                      FadeTransition(
+                        opacity: _btn1,
+                        child: SlideTransition(
+                          position: Tween<Offset>(
+                            begin: const Offset(0, 0.5),
+                            end: Offset.zero,
+                          ).animate(_btn1),
+                          child: GradientButton.quickPlay(
+                            label: 'Quick Play',
+                            icon: Icons.play_arrow_rounded,
+                            onPressed: () =>
+                                Navigator.pushNamed(context, '/quick-play'),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 12),
-                      GradientButton.create(
-                        label: 'Create a Hunt',
-                        icon: Icons.add_circle_outline,
-                        onPressed: () =>
-                            Navigator.pushNamed(context, '/setup'),
+                      FadeTransition(
+                        opacity: _btn2,
+                        child: SlideTransition(
+                          position: Tween<Offset>(
+                            begin: const Offset(0, 0.5),
+                            end: Offset.zero,
+                          ).animate(_btn2),
+                          child: GradientButton.create(
+                            label: 'Create a Hunt',
+                            icon: Icons.add_circle_outline,
+                            onPressed: () =>
+                                Navigator.pushNamed(context, '/setup'),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 12),
-                      GradientButton.join(
-                        label: 'Join a Hunt',
-                        icon: Icons.group_add,
-                        onPressed: () =>
-                            Navigator.pushNamed(context, '/join-hunt'),
+                      FadeTransition(
+                        opacity: _btn3,
+                        child: SlideTransition(
+                          position: Tween<Offset>(
+                            begin: const Offset(0, 0.5),
+                            end: Offset.zero,
+                          ).animate(_btn3),
+                          child: GradientButton.join(
+                            label: 'Join a Hunt',
+                            icon: Icons.group_add,
+                            onPressed: () =>
+                                Navigator.pushNamed(context, '/join-hunt'),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 14),
                       // Rank strip — between buttons and nav
@@ -251,6 +370,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 left: 8,
                 child: const MuteButton(),
               ),
+              // Gold sparkles around hero
+              const Positioned(
+                top: 50, right: 40,
+                child: _GoldSparkle(size: 14, delayMs: 0),
+              ),
+              const Positioned(
+                top: 110, left: 30,
+                child: _GoldSparkle(size: 10, delayMs: 600),
+              ),
+              const Positioned(
+                top: 200, right: 50,
+                child: _GoldSparkle(size: 12, delayMs: 1200),
+              ),
             ],
           ),
         ),
@@ -275,6 +407,111 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(width: 4),
             Text(label, style: AppTheme.caption(size: 12)),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AnimatedBuilder extends AnimatedWidget {
+  final Widget Function(BuildContext, Widget?) builder;
+  final Widget? child;
+  const _AnimatedBuilder({
+    required Animation<double> animation,
+    required this.builder,
+    this.child,
+  }) : super(listenable: animation);
+  @override
+  Widget build(BuildContext context) => builder(context, child);
+}
+
+/// Gold 4-point sparkle that scales up and fades
+class _GoldSparkle extends StatefulWidget {
+  final double size;
+  final int delayMs;
+  const _GoldSparkle({this.size = 12, this.delayMs = 0});
+
+  @override
+  State<_GoldSparkle> createState() => _GoldSparkleState();
+}
+
+class _GoldSparkleState extends State<_GoldSparkle>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _ctrl;
+  late Animation<double> _scale;
+  late Animation<double> _opacity;
+  Timer? _loopTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 800));
+    _scale = Tween(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
+    _opacity = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween(begin: 0.0, end: 1.0), weight: 50),
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.0), weight: 50),
+    ]).animate(_ctrl);
+
+    Future.delayed(Duration(milliseconds: widget.delayMs), () {
+      if (!mounted) return;
+      _runLoop();
+    });
+  }
+
+  void _runLoop() {
+    _ctrl.forward(from: 0);
+    _ctrl.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        final delay = 500 + math.Random().nextInt(1500);
+        _loopTimer = Timer(Duration(milliseconds: delay), () {
+          if (mounted) _ctrl.forward(from: 0);
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    _loopTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _AnimatedBuilder(animation:
+      animation: _ctrl,
+      builder: (_, __) => Opacity(
+        opacity: _opacity.value,
+        child: Transform.scale(
+          scale: _scale.value,
+          child: SizedBox(
+            width: widget.size,
+            height: widget.size,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Transform.rotate(
+                  angle: math.pi / 4,
+                  child: Container(
+                    width: widget.size,
+                    height: 2,
+                    color: const Color(0xFFFFD23F),
+                  ),
+                ),
+                Transform.rotate(
+                  angle: -math.pi / 4,
+                  child: Container(
+                    width: widget.size,
+                    height: 2,
+                    color: const Color(0xFFFFD23F),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
