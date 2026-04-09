@@ -103,21 +103,35 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 8),
                       // Hero image with overlay subtitle
                       SizedBox(
-                        width: 270,
-                        height: 270,
+                        width: 280,
+                        height: 280,
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(24),
-                              child: Image.asset(
-                                Illustrations.appIcon,
-                                width: 270,
-                                height: 270,
-                                fit: BoxFit.cover,
-                                filterQuality: FilterQuality.high,
-                                errorBuilder: (_, __, ___) =>
-                                    const Text('🗺️', style: TextStyle(fontSize: 80)),
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(24),
+                                color: const Color(0xFF1A1F5E),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Color(0xFF1A1F5E),
+                                    spreadRadius: 4,
+                                    blurRadius: 0,
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(24),
+                                child: Image.asset(
+                                  Illustrations.appIcon,
+                                  width: 280,
+                                  height: 280,
+                                  fit: BoxFit.cover,
+                                  filterQuality: FilterQuality.high,
+                                  errorBuilder: (_, __, ___) =>
+                                      const Text('🗺️',
+                                          style: TextStyle(fontSize: 80)),
+                                ),
                               ),
                             ),
                             // Adventures overlay at bottom
@@ -218,7 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 10),
-                              height: 52,
+                              height: 48,
                               decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.06),
                                 borderRadius: BorderRadius.circular(16),
