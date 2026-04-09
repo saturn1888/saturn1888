@@ -436,7 +436,7 @@ class _TreasureItemsScreenState extends State<TreasureItemsScreen> {
                     width: 65,
                     height: 65,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFEDE0D0),
+                      color: AppTheme.navyLight,
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
                           color: AppTheme.leather.withOpacity(0.3)),

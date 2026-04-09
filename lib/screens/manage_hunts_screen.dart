@@ -127,12 +127,12 @@ class ManageHuntsScreen extends StatelessWidget {
                     color: theme.backgroundColor,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: const Color(0xFF8B6B4A).withOpacity(0.3),
+                      color: Colors.white.withOpacity(0.1),
                       width: 1.5,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.brown.withOpacity(0.12),
+                        color: Colors.black.withOpacity(0.2),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),

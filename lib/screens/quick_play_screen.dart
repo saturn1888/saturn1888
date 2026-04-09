@@ -86,12 +86,12 @@ class _HuntCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: const Color(0xFF8B6B4A).withOpacity(0.4),
+            color: Colors.white.withOpacity(0.15),
             width: 2,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.brown.withOpacity(0.15),
+              color: Colors.black.withOpacity(0.2),
               blurRadius: 6,
               offset: const Offset(0, 3),
             ),
@@ -164,7 +164,7 @@ class _HuntCard extends StatelessWidget {
                 width: double.infinity,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                color: const Color(0xFFF5EDE0),
+                color: AppTheme.navyLight,
                 child: Row(
                   children: [
                     Icon(Icons.help_outline,
