@@ -180,7 +180,7 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
               ),
             ],
             const SizedBox(height: 32),
-            WoodButton(
+            GradientButton(
               label: 'Next →',
               icon: Icons.arrow_forward,
               onPressed: () {
@@ -216,101 +216,86 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
     final theme = HuntThemeData.fromType(_selectedTheme);
     return Container(
       decoration: BoxDecoration(
-        color: theme.backgroundColor,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: theme.backgroundColor.withOpacity(0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+        gradient: const LinearGradient(
+          colors: [Color(0xFF1A0E00), Color(0xFF2A1A00)],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: AppTheme.gold.withOpacity(0.5),
+          width: 1.5,
+        ),
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          // Theme header row
+          Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(14),
+                child: Image.asset(
+                  Illustrations.themeImage(theme.name),
+                  width: 72,
+                  height: 72,
+                  fit: BoxFit.cover,
+                  filterQuality: FilterQuality.high,
+                  errorBuilder: (_, __, ___) =>
+                      Text(theme.emoji, style: const TextStyle(fontSize: 40)),
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(theme.name,
+                        style: AppTheme.heading(
+                            size: 18, color: AppTheme.gold)),
+                    const SizedBox(height: 2),
+                    Text(theme.description,
+                        style: AppTheme.body(
+                            size: 13,
+                            color: Colors.white.withOpacity(0.65))),
+                    const SizedBox(height: 4),
+                    Text(
+                      '"${theme.introMessage}"',
+                      style: AppTheme.caption(
+                          size: 11,
+                          color: Colors.white.withOpacity(0.45)),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          // Found it button preview
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF06D6A0), Color(0xFF009E78)],
+              ),
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0xFF007A5C),
+                  blurRadius: 0,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Text(
+              theme.foundItText,
+              textAlign: TextAlign.center,
+              style: AppTheme.heading(size: 15, color: Colors.white),
+            ),
           ),
         ],
       ),
-      child: Column(
-        children: [
-          // Theme header
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-            child: Row(
-              children: [
-                Text(theme.emoji, style: const TextStyle(fontSize: 36)),
-                Image.asset(Illustrations.themeImage(theme.name),
-                    width: 48,
-                    height: 48,
-                    errorBuilder: (_, __, ___) => const SizedBox.shrink()),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        theme.name,
-                        style: AppTheme.heading(
-                            size: 18, color: theme.accentColor),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        theme.description,
-                        style: AppTheme.caption(
-                            size: 12,
-                            color: theme.accentColor.withOpacity(0.7)),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Mini clue card preview
-          Container(
-            margin: const EdgeInsets.fromLTRB(12, 0, 12, 8),
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: theme.cardColor,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              children: [
-                Text(
-                  '"${theme.introMessage}"',
-                  style: AppTheme.caption(
-                      size: 11, color: theme.accentColor.withOpacity(0.8)),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 8),
-                // Decorative emojis row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: theme.decorativeEmojis
-                      .take(5)
-                      .map((e) => Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 4),
-                            child:
-                                Text(e, style: const TextStyle(fontSize: 18)),
-                          ))
-                      .toList(),
-                ),
-              ],
-            ),
-          ),
-          // Found it button preview
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              decoration: BoxDecoration(
-                color: theme.accentColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                theme.foundItText,
-                textAlign: TextAlign.center,
-                style: AppTheme.heading(
-                    size: 14, color: theme.backgroundColor),
               ),
             ),
           ),
