@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:math' as math;
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -188,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen>
                     children: [
                       const SizedBox(height: 8),
                       // Hero image with glow + float
-                      _AnimatedBuilder(animation:
+                      _AnimatedBuilder(
                         animation: _floatAnimation,
                         builder: (context, child) => Transform.translate(
                           offset: Offset(0, _floatAnimation.value),
@@ -481,7 +482,7 @@ class _GoldSparkleState extends State<_GoldSparkle>
 
   @override
   Widget build(BuildContext context) {
-    return _AnimatedBuilder(animation:
+    return _AnimatedBuilder(
       animation: _ctrl,
       builder: (_, __) => Opacity(
         opacity: _opacity.value,
