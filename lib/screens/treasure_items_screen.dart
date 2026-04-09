@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import '../data/illustrations.dart';
 import '../models/treasure_item.dart';
 import '../models/clue.dart';
 import '../models/hunt_theme.dart';
@@ -338,8 +339,12 @@ class _TreasureItemsScreenState extends State<TreasureItemsScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text('🎁',
-                              style: TextStyle(fontSize: 64)),
+                          Image.asset(Illustrations.emptyChest,
+                              width: 100,
+                              height: 100,
+                              errorBuilder: (_, __, ___) =>
+                                  const Text('🎁',
+                                      style: TextStyle(fontSize: 64))),
                           const SizedBox(height: 16),
                           Text(
                             'No treasure items yet!\nTap + to add what hunters will find.',

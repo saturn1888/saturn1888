@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../data/illustrations.dart';
 import '../data/premade_hunts.dart';
 import '../models/hunt.dart';
 import '../models/hunt_theme.dart';
@@ -120,7 +121,11 @@ class _HuntCard extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Text(theme.emoji, style: const TextStyle(fontSize: 34)),
+                    Image.asset(Illustrations.themeImage(hunt.theme.name),
+                        width: 48,
+                        height: 48,
+                        errorBuilder: (_, __, ___) =>
+                            Text(theme.emoji, style: const TextStyle(fontSize: 34))),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(

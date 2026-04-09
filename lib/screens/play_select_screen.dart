@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import '../data/illustrations.dart';
 import '../models/hunt.dart';
 import '../models/hunt_theme.dart';
 import '../theme/app_theme.dart';
@@ -21,7 +22,11 @@ class PlaySelectScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('🗺️', style: TextStyle(fontSize: 64)),
+                  Image.asset(Illustrations.emptyNoHunts,
+                      width: 120,
+                      height: 120,
+                      errorBuilder: (_, __, ___) =>
+                          const Text('🗺️', style: TextStyle(fontSize: 64))),
                   const SizedBox(height: 16),
                   Text(
                     'No hunts created yet!\nGo back and create one first.',

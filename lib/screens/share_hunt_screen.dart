@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import '../data/illustrations.dart';
 import '../models/hunt.dart';
 import '../services/hunt_sharing_service.dart';
 import '../theme/app_theme.dart';
@@ -80,8 +81,12 @@ class _ShareHuntScreenState extends State<ShareHuntScreen> {
                     ? Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text('😕',
-                              style: TextStyle(fontSize: 64)),
+                          Image.asset(Illustrations.joinIllustration,
+                              width: 120,
+                              height: 120,
+                              errorBuilder: (_, __, ___) =>
+                                  const Text('😕',
+                                      style: TextStyle(fontSize: 64))),
                           const SizedBox(height: 16),
                           Text(_error!,
                               style: AppTheme.body(

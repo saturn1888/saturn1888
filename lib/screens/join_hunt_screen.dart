@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import '../data/illustrations.dart';
 import '../models/hunt.dart';
 import '../services/hunt_sharing_service.dart';
 import '../theme/app_theme.dart';
@@ -151,7 +152,11 @@ class _JoinHuntScreenState extends State<JoinHuntScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text('🗺️', style: TextStyle(fontSize: 64)),
+        Image.asset(Illustrations.joinIllustration,
+            width: 120,
+            height: 120,
+            errorBuilder: (_, __, ___) =>
+                const Text('🗺️', style: TextStyle(fontSize: 64))),
         const SizedBox(height: 16),
         Text('Join a Hunt', style: AppTheme.heading(size: 28)),
         const SizedBox(height: 8),
@@ -242,7 +247,11 @@ class _JoinHuntScreenState extends State<JoinHuntScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text('🎯', style: TextStyle(fontSize: 64)),
+        Image.asset(Illustrations.joinIllustration,
+            width: 120,
+            height: 120,
+            errorBuilder: (_, __, ___) =>
+                const Text('🎯', style: TextStyle(fontSize: 64))),
         const SizedBox(height: 16),
         Text('Hunt Found!', style: AppTheme.heading(size: 28)),
         const SizedBox(height: 8),

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:confetti/confetti.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:audioplayers/audioplayers.dart';
+import '../data/illustrations.dart';
 import '../models/hunt.dart';
 import '../models/hunt_theme.dart';
 import '../models/trophy.dart';
@@ -160,9 +161,14 @@ class _VictoryScreenState extends State<VictoryScreen>
                       builder: (context, _) {
                         return Transform.scale(
                           scale: _bounceAnimation.value,
-                          child: Text(
-                            _theme.emoji,
-                            style: const TextStyle(fontSize: 80),
+                          child: Image.asset(
+                            Illustrations.victoryBanner,
+                            width: 120,
+                            height: 120,
+                            errorBuilder: (_, __, ___) => Text(
+                              _theme.emoji,
+                              style: const TextStyle(fontSize: 80),
+                            ),
                           ),
                         );
                       },
@@ -201,12 +207,29 @@ class _VictoryScreenState extends State<VictoryScreen>
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      _getSpeedMessage(),
-                      style: AppTheme.heading(
-                        size: 16,
-                        color: _theme.accentColor.withOpacity(0.8),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          Illustrations.speedBadge(
+                              _timeTaken / _hunt.clues.length),
+                          width: 32,
+                          height: 32,
+                          errorBuilder: (_, __, ___) =>
+                              const SizedBox.shrink(),
+                        ),
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: Text(
+                            _getSpeedMessage(),
+                            style: AppTheme.heading(
+                              size: 16,
+                              color: _theme.accentColor.withOpacity(0.8),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 20),
                     Card(
@@ -309,14 +332,30 @@ class _VictoryScreenState extends State<VictoryScreen>
                           foregroundColor: _theme.backgroundColor,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
-                        child: Text(
-                          _saved
-                              ? 'Trophy Saved! ✅'
-                              : 'Save to Trophy Cabinet 🏆',
-                          style: AppTheme.heading(
-                            size: 18,
-                            color: _theme.backgroundColor,
-                          ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset(
+                              Illustrations.victoryTrophy,
+                              width: 24,
+                              height: 24,
+                              errorBuilder: (_, __, ___) => Text(
+                                _saved ? '✅' : '🏆',
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              _saved
+                                  ? 'Trophy Saved!'
+                                  : 'Save to Trophy Cabinet',
+                              style: AppTheme.heading(
+                                size: 18,
+                                color: _theme.backgroundColor,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),

@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../data/illustrations.dart';
 import '../models/hunt_theme.dart';
 import '../theme/app_theme.dart';
 import '../widgets/parchment_background.dart';
@@ -233,6 +234,10 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
             child: Row(
               children: [
                 Text(theme.emoji, style: const TextStyle(fontSize: 36)),
+                Image.asset(Illustrations.themeImage(theme.name),
+                    width: 48,
+                    height: 48,
+                    errorBuilder: (_, __, ___) => const SizedBox.shrink()),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(

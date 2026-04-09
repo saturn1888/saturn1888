@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import '../data/illustrations.dart';
 import '../models/trophy.dart';
 import '../theme/app_theme.dart';
 import '../widgets/music_controller.dart';
@@ -127,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: ClipPath(
                             clipper: _TornEdgeClipper(),
                             child: Image.asset(
-                              'assets/images/ozhunt_logo.png',
+                              Illustrations.logoHero,
                               width: 270,
                               height: 270,
                               fit: BoxFit.cover,
@@ -226,6 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             emoji = '🌱';
                             nextTarget = 1;
                           }
+                          final badgeImage = Illustrations.progressionBadge(count);
                           return GestureDetector(
                             onTap: () =>
                                 Navigator.pushNamed(context, '/trophies'),
@@ -243,9 +245,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Text(emoji,
-                                          style:
-                                              const TextStyle(fontSize: 20)),
+                                      Image.asset(badgeImage,
+                                          width: 28,
+                                          height: 28,
+                                          errorBuilder: (_, __, ___) =>
+                                              Text(emoji,
+                                                  style: const TextStyle(
+                                                      fontSize: 20))),
                                       const SizedBox(width: 8),
                                       Text(tier,
                                           style: AppTheme.heading(
