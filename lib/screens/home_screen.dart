@@ -117,15 +117,22 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(28),
-                          child: Image.asset(
-                            Illustrations.appIcon,
+                          child: SizedBox(
                             width: 260,
                             height: 260,
-                            fit: BoxFit.cover,
-                            filterQuality: FilterQuality.high,
-                            errorBuilder: (_, __, ___) =>
-                                const Text('🗺️',
-                                    style: TextStyle(fontSize: 80)),
+                            child: Transform.scale(
+                              scale: 1.18,
+                              child: Image.asset(
+                                Illustrations.appIcon,
+                                width: 260,
+                                height: 260,
+                                fit: BoxFit.cover,
+                                filterQuality: FilterQuality.high,
+                                errorBuilder: (_, __, ___) =>
+                                    const Text('🗺️',
+                                        style: TextStyle(fontSize: 80)),
+                              ),
+                            ),
                           ),
                         ),
                       ),
