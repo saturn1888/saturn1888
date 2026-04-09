@@ -1,7 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
 
-/// Clean modern background with subtle adventure warmth.
+/// Deep navy background with subtle star particles
 class ParchmentBackground extends StatelessWidget {
   final Widget child;
   final bool showTexture;
@@ -20,9 +21,10 @@ class ParchmentBackground extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Color(0xFFF7F1E8),
-            Color(0xFFF3ECE0),
-            Color(0xFFF0E8DA),
+            Color(0xFF141850),
+            Color(0xFF1A1F5E),
+            Color(0xFF1E2468),
+            Color(0xFF1A1F5E),
           ],
         ),
       ),
@@ -30,7 +32,7 @@ class ParchmentBackground extends StatelessWidget {
         children: [
           if (showTexture)
             Positioned.fill(
-              child: CustomPaint(painter: _SubtleTexturePainter()),
+              child: CustomPaint(painter: _StarFieldPainter()),
             ),
           child,
         ],
@@ -39,21 +41,20 @@ class ParchmentBackground extends StatelessWidget {
   }
 }
 
-/// Very subtle texture — just enough to feel warm, not distracting
-class _SubtleTexturePainter extends CustomPainter {
+/// Subtle twinkling star dots
+class _StarFieldPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final rng = Random(42);
     final paint = Paint()..style = PaintingStyle.fill;
 
-    // Very faint paper grain
-    for (int i = 0; i < 80; i++) {
-      paint.color = const Color(0xFFD4C4A8).withOpacity(0.015 + rng.nextDouble() * 0.01);
-      canvas.drawCircle(
-        Offset(rng.nextDouble() * size.width, rng.nextDouble() * size.height),
-        0.5 + rng.nextDouble() * 1.0,
-        paint,
-      );
+    for (int i = 0; i < 60; i++) {
+      final x = rng.nextDouble() * size.width;
+      final y = rng.nextDouble() * size.height;
+      final radius = 0.3 + rng.nextDouble() * 1.2;
+      final opacity = 0.05 + rng.nextDouble() * 0.15;
+      paint.color = Colors.white.withOpacity(opacity);
+      canvas.drawCircle(Offset(x, y), radius, paint);
     }
   }
 

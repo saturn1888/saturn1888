@@ -2,39 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  // Modern adventure palette
-  static const Color gold = Color(0xFFD4A04A);
-  static const Color darkGold = Color(0xFFB8860B);
-  static const Color warmBrown = Color(0xFF4A3228);
-  static const Color leather = Color(0xFF7D5A3C);
-  static const Color parchment = Color(0xFFF7F1E8);
-  static const Color cream = Color(0xFFF7F1E8);
-  static const Color adventureGreen = Color(0xFF2E7D5A);
-  static const Color rust = Color(0xFFA0522D);
-  static const Color inkBrown = Color(0xFF2C1810);
-  static const Color surface = Color(0xFFFFFFFF);
-  static const Color subtleGrey = Color(0xFF8A8A8A);
+  // Midnight navy palette
+  static const Color navy = Color(0xFF1A1F5E);
+  static const Color navyLight = Color(0xFF2E3590);
+  static const Color teal = Color(0xFF06D6A0);
+  static const Color orange = Color(0xFFFF6B35);
+  static const Color gold = Color(0xFFFFD23F);
+  static const Color white = Color(0xFFFFFFFF);
+  static const Color offWhite = Color(0xFFF5F5F5);
+  static const Color textLight = Color(0xFFE8E8F0);
+  static const Color textMuted = Color(0xFF9A9AB0);
+
+  // Legacy names for compatibility
+  static const Color darkGold = Color(0xFFFFD23F);
+  static const Color warmBrown = Color(0xFF1A1F5E);
+  static const Color leather = Color(0xFF2E3590);
+  static const Color parchment = Color(0xFF1A1F5E);
+  static const Color cream = Color(0xFF1A1F5E);
+  static const Color adventureGreen = Color(0xFF06D6A0);
+  static const Color rust = Color(0xFFFF6B35);
+  static const Color inkBrown = Color(0xFFE8E8F0);
+  static const Color surface = Color(0xFF2E3590);
+  static const Color subtleGrey = Color(0xFF9A9AB0);
 
   static ThemeData get theme {
     return ThemeData(
       useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: gold,
-        brightness: Brightness.light,
-        primary: darkGold,
-        secondary: adventureGreen,
-        surface: parchment,
+      colorScheme: ColorScheme.dark(
+        primary: teal,
+        secondary: orange,
+        surface: navyLight,
+        onPrimary: navy,
+        onSecondary: white,
+        onSurface: textLight,
       ),
       scaffoldBackgroundColor: Colors.transparent,
       appBarTheme: AppBarTheme(
-        backgroundColor: warmBrown,
-        foregroundColor: const Color(0xFFF5EDD8),
+        backgroundColor: navy.withOpacity(0.95),
+        foregroundColor: textLight,
         elevation: 0,
         scrolledUnderElevation: 0,
         titleTextStyle: GoogleFonts.fredoka(
           fontWeight: FontWeight.w700,
           fontSize: 20,
-          color: const Color(0xFFF5EDD8),
+          color: textLight,
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -42,62 +53,95 @@ class AppTheme {
           minimumSize: const Size(48, 52),
           textStyle: GoogleFonts.fredoka(fontSize: 17, fontWeight: FontWeight.w700),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(24),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-          elevation: 1,
-          shadowColor: Colors.black.withOpacity(0.15),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          elevation: 0,
+          backgroundColor: teal,
+          foregroundColor: navy,
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          side: BorderSide(color: white.withOpacity(0.15)),
+          foregroundColor: textLight,
         ),
       ),
       cardTheme: CardThemeData(
-        elevation: 1,
-        shadowColor: Colors.black.withOpacity(0.1),
+        elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: white.withOpacity(0.1)),
         ),
-        color: surface,
+        color: navyLight,
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: gold,
-        foregroundColor: Colors.white,
-        elevation: 2,
+        backgroundColor: teal,
+        foregroundColor: navy,
+        elevation: 4,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Colors.white,
+        fillColor: navy,
+        hintStyle: TextStyle(color: textMuted),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: white.withOpacity(0.15)),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: white.withOpacity(0.15)),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: darkGold, width: 1.5),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: teal, width: 2),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
       chipTheme: ChipThemeData(
-        selectedColor: darkGold,
-        backgroundColor: const Color(0xFFF0EBE3),
-        labelStyle: const TextStyle(fontWeight: FontWeight.w600),
+        selectedColor: teal,
+        backgroundColor: navyLight,
+        labelStyle: TextStyle(fontWeight: FontWeight.w600, color: textLight),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(20),
         ),
+        side: BorderSide(color: white.withOpacity(0.1)),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        backgroundColor: navyLight,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
       dividerTheme: DividerThemeData(
-        color: Colors.grey.shade200,
+        color: white.withOpacity(0.1),
         thickness: 1,
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: navyLight,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        titleTextStyle: GoogleFonts.fredoka(
+          fontSize: 22,
+          fontWeight: FontWeight.w700,
+          color: textLight,
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(foregroundColor: teal),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((states) =>
+            states.contains(WidgetState.selected) ? teal : textMuted),
+        trackColor: WidgetStateProperty.resolveWith((states) =>
+            states.contains(WidgetState.selected)
+                ? teal.withOpacity(0.3)
+                : white.withOpacity(0.1)),
       ),
     );
   }
@@ -107,23 +151,23 @@ class AppTheme {
     return GoogleFonts.fredoka(
       fontWeight: FontWeight.w700,
       fontSize: size,
-      color: color ?? warmBrown,
+      color: color ?? textLight,
     );
   }
 
   static TextStyle body({double size = 16, Color? color}) {
     return GoogleFonts.nunito(
       fontSize: size,
-      color: color ?? inkBrown,
-      fontWeight: FontWeight.w600,
+      color: color ?? textLight,
+      fontWeight: FontWeight.w700,
     );
   }
 
   static TextStyle caption({double size = 12, Color? color}) {
     return GoogleFonts.nunito(
       fontSize: size,
-      color: color ?? subtleGrey,
-      fontWeight: FontWeight.w500,
+      color: color ?? textMuted,
+      fontWeight: FontWeight.w600,
     );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'music_controller.dart';
 
-/// Clean mute/unmute icon for the AppBar
 class MuteButton extends StatelessWidget {
   const MuteButton({super.key});
 
@@ -16,6 +15,7 @@ class MuteButton extends StatelessWidget {
           icon: Icon(
             muted ? Icons.volume_off_rounded : Icons.volume_up_rounded,
             size: 22,
+            color: Colors.white.withOpacity(0.7),
           ),
           tooltip: muted ? 'Unmute music' : 'Mute music',
         );

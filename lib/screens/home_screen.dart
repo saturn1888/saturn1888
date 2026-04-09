@@ -8,6 +8,7 @@ import '../models/trophy.dart';
 import '../theme/app_theme.dart';
 import '../widgets/music_controller.dart';
 import '../widgets/mute_button.dart';
+import '../widgets/adventure_widgets.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -80,245 +81,172 @@ class _HomeScreenState extends State<HomeScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFFE8D5B8),
-              Color(0xFFDCC8A8),
-              Color(0xFFD4BC98),
-              Color(0xFFCBB08A),
-              Color(0xFFD4BC98),
+              Color(0xFF141850),
+              Color(0xFF1A1F5E),
+              Color(0xFF1E2468),
+              Color(0xFF1A1F5E),
             ],
-            stops: [0.0, 0.25, 0.5, 0.8, 1.0],
           ),
         ),
         child: SafeArea(
           child: Stack(
             children: [
+              // Star particles
               Positioned.fill(
-                child: CustomPaint(painter: _MapTexturePainter()),
-              ),
-              Positioned.fill(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: RadialGradient(
-                      center: Alignment.center,
-                      radius: 0.95,
-                      colors: [
-                        Colors.transparent,
-                        Colors.brown.withOpacity(0.03),
-                        Colors.brown.withOpacity(0.12),
-                        Colors.brown.withOpacity(0.3),
-                      ],
-                      stops: const [0.5, 0.7, 0.85, 1.0],
-                    ),
-                  ),
-                ),
+                child: CustomPaint(painter: _StarFieldPainter()),
               ),
               Center(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 4),
-                      // Logo
-                      SizedBox(
+                      const SizedBox(height: 8),
+                      // Hero image
+                      Image.asset(
+                        Illustrations.appIcon,
                         width: 270,
                         height: 270,
-                        child: CustomPaint(
-                          foregroundPainter: _TornEdgeOverlayPainter(),
-                          child: ClipPath(
-                            clipper: _TornEdgeClipper(),
-                            child: Image.asset(
-                              Illustrations.logoHero,
-                              width: 270,
-                              height: 270,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  width: 240,
-                                  height: 240,
-                                  color: AppTheme.warmBrown.withOpacity(0.2),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Text('🗺️',
-                                          style: TextStyle(fontSize: 80)),
-                                      const SizedBox(height: 8),
-                                      Text('OzHunt',
-                                          style: AppTheme.heading(
-                                              size: 32,
-                                              color: AppTheme.warmBrown)),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
+                        errorBuilder: (_, __, ___) => Image.asset(
+                          Illustrations.logoHero,
+                          width: 270,
+                          height: 270,
+                          errorBuilder: (_, __, ___) =>
+                              const Text('🗺️', style: TextStyle(fontSize: 80)),
                         ),
                       ),
-                      const SizedBox(height: 14),
-                      _SignpostPlank(
+                      const SizedBox(height: 16),
+                      // Wood plank buttons
+                      WoodButton(
                         label: 'Quick Play',
-                        tilt: -0.01,
-                        arrowDirection: 1,
-                        seed: 9,
-                        onTap: () =>
+                        icon: Icons.play_arrow_rounded,
+                        onPressed: () =>
                             Navigator.pushNamed(context, '/quick-play'),
                       ),
-                      const SizedBox(height: 10),
-                      _SignpostPlank(
+                      const SizedBox(height: 12),
+                      WoodButton(
                         label: 'Create a Hunt',
-                        tilt: 0.015,
-                        arrowDirection: -1,
-                        seed: 1,
-                        onTap: () => Navigator.pushNamed(context, '/setup'),
+                        icon: Icons.add_circle_outline,
+                        onPressed: () =>
+                            Navigator.pushNamed(context, '/setup'),
                       ),
-                      const SizedBox(height: 10),
-                      _SignpostPlank(
+                      const SizedBox(height: 12),
+                      WoodButton(
                         label: 'Join a Hunt',
-                        tilt: -0.01,
-                        arrowDirection: 1,
-                        seed: 8,
-                        onTap: () =>
+                        icon: Icons.group_add,
+                        onPressed: () =>
                             Navigator.pushNamed(context, '/join-hunt'),
                       ),
-                      const SizedBox(height: 16),
-                      // Secondary links row
+                      const SizedBox(height: 20),
+                      // Secondary links
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _textLink('My Hunts', () =>
+                          _navChip('My Hunts', Icons.list, () =>
                               Navigator.pushNamed(context, '/play-select')),
-                          _dividerDot(),
-                          _textLink('Manage', () =>
+                          const SizedBox(width: 8),
+                          _navChip('Manage', Icons.settings, () =>
                               Navigator.pushNamed(context, '/manage')),
-                          _dividerDot(),
-                          _textLink('Trophies', () =>
+                          const SizedBox(width: 8),
+                          _navChip('Trophies', Icons.emoji_events, () =>
                               Navigator.pushNamed(context, '/trophies')),
                         ],
                       ),
                       const SizedBox(height: 16),
-                      // Player progression badge
+                      // Rank card
                       ValueListenableBuilder(
                         valueListenable:
                             Hive.box<Trophy>('trophies').listenable(),
                         builder: (context, Box<Trophy> box, _) {
                           final count = box.length;
                           String tier;
-                          String emoji;
                           int nextTarget;
                           if (count >= 25) {
                             tier = 'Master Explorer';
-                            emoji = '🗺️';
                             nextTarget = count;
                           } else if (count >= 10) {
                             tier = 'Gold Hunter';
-                            emoji = '🏆';
                             nextTarget = 25;
                           } else if (count >= 5) {
                             tier = 'Silver Hunter';
-                            emoji = '⭐';
                             nextTarget = 10;
                           } else if (count >= 1) {
                             tier = 'Bronze Hunter';
-                            emoji = '🥉';
                             nextTarget = 5;
                           } else {
                             tier = 'Rookie';
-                            emoji = '🌱';
                             nextTarget = 1;
                           }
-                          final badgeImage = Illustrations.progressionBadge(count);
                           return GestureDetector(
                             onTap: () =>
                                 Navigator.pushNamed(context, '/trophies'),
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 10),
+                                  horizontal: 16, vertical: 12),
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.7),
+                                color: AppTheme.navyLight,
                                 borderRadius: BorderRadius.circular(16),
                                 border: Border.all(
-                                    color: AppTheme.gold.withOpacity(0.3)),
+                                    color: Colors.white.withOpacity(0.1)),
                               ),
-                              child: Column(
+                              child: Row(
                                 children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Image.asset(badgeImage,
-                                          width: 28,
-                                          height: 28,
-                                          errorBuilder: (_, __, ___) =>
-                                              Text(emoji,
-                                                  style: const TextStyle(
-                                                      fontSize: 20))),
-                                      const SizedBox(width: 8),
-                                      Text(tier,
-                                          style: AppTheme.heading(
-                                              size: 15,
-                                              color: AppTheme.warmBrown)),
-                                    ],
+                                  Image.asset(
+                                    Illustrations.progressionBadge(count),
+                                    width: 40,
+                                    height: 40,
+                                    errorBuilder: (_, __, ___) =>
+                                        const Text('🏅',
+                                            style: TextStyle(fontSize: 28)),
                                   ),
-                                  if (count < 25) ...[
-                                    const SizedBox(height: 6),
-                                    SizedBox(
-                                      width: 140,
-                                      child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(4),
-                                        child: LinearProgressIndicator(
-                                          value: count / nextTarget,
-                                          backgroundColor: Colors
-                                              .grey.shade200,
-                                          valueColor:
-                                              AlwaysStoppedAnimation(
-                                                  AppTheme.gold),
-                                          minHeight: 6,
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(tier,
+                                            style: AppTheme.heading(
+                                                size: 15)),
+                                        const SizedBox(height: 4),
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(4),
+                                          child: LinearProgressIndicator(
+                                            value: count / nextTarget,
+                                            backgroundColor: Colors
+                                                .white
+                                                .withOpacity(0.1),
+                                            valueColor:
+                                                const AlwaysStoppedAnimation(
+                                                    AppTheme.gold),
+                                            minHeight: 6,
+                                          ),
                                         ),
-                                      ),
+                                      ],
                                     ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      '$count / $nextTarget hunts',
-                                      style: AppTheme.caption(size: 10),
-                                    ),
-                                  ],
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    '$count',
+                                    style: AppTheme.heading(
+                                        size: 20, color: AppTheme.gold),
+                                  ),
                                 ],
                               ),
                             ),
                           );
                         },
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 24),
                     ],
                   ),
                 ),
               ),
-              // Mute button top-left — bigger, more visible
+              // Mute button top-left
               Positioned(
-                top: 10,
-                left: 10,
-                child: GestureDetector(
-                  onTap: () => MusicController.instance.toggleMute(),
-                  child: ListenableBuilder(
-                    listenable: MusicController.instance,
-                    builder: (context, _) {
-                      final muted = MusicController.instance.isMuted;
-                      return CustomPaint(
-                        painter: _WornBadgePainter(),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 8),
-                          child: Icon(
-                            muted ? Icons.volume_off : Icons.volume_up,
-                            color: const Color(0xFF4A2E14),
-                            size: 26,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                top: 8,
+                left: 8,
+                child: const MuteButton(),
               ),
             ],
           ),
@@ -326,46 +254,47 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-}
 
-
-/// Text that looks hand-painted with a brush onto cloth
-class _PaintedText extends StatelessWidget {
-  final String text;
-  const _PaintedText({required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    final rng = Random(text.hashCode);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: text.split('').map((char) {
-        final dy = (rng.nextDouble() - 0.5) * 1.5;
-        final dx = (rng.nextDouble() - 0.5) * 0.4;
-        final rotation = (rng.nextDouble() - 0.5) * 0.03;
-        final sizeVar = 17.0 + (rng.nextDouble() - 0.5) * 2.0;
-        // Vary opacity like paint thickness — some strokes heavier than others
-        final opacity = 0.7 + rng.nextDouble() * 0.3;
-
-        return Transform.translate(
-          offset: Offset(dx, dy),
-          child: Transform.rotate(
-            angle: rotation,
-            child: Text(
-              char,
-              style: GoogleFonts.caveat(
-                fontSize: sizeVar,
-                fontWeight: FontWeight.w700,
-                color: Color.fromRGBO(80, 30, 10, opacity),
-                height: 1.0,
-              ),
-            ),
-          ),
-        );
-      }).toList(),
+  Widget _navChip(String label, IconData icon, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: AppTheme.navyLight,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.white.withOpacity(0.1)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: AppTheme.textMuted),
+            const SizedBox(width: 4),
+            Text(label, style: AppTheme.caption(size: 12)),
+          ],
+        ),
+      ),
     );
   }
+}
+
+class _StarFieldPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rng = Random(42);
+    final paint = Paint()..style = PaintingStyle.fill;
+    for (int i = 0; i < 80; i++) {
+      paint.color = Colors.white.withOpacity(0.03 + rng.nextDouble() * 0.12);
+      canvas.drawCircle(
+        Offset(rng.nextDouble() * size.width, rng.nextDouble() * size.height),
+        0.3 + rng.nextDouble() * 1.5,
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 /// A tilted wooden signpost plank with golden text
