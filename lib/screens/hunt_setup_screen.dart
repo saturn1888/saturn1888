@@ -296,11 +296,6 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
           ),
         ],
       ),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
