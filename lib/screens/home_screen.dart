@@ -101,18 +101,54 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     children: [
                       const SizedBox(height: 8),
-                      // Hero image
-                      Image.asset(
-                        Illustrations.appIcon,
+                      // Hero image with overlay subtitle
+                      SizedBox(
                         width: 270,
                         height: 270,
-                        errorBuilder: (_, __, ___) =>
-                            const Text('🗺️', style: TextStyle(fontSize: 80)),
-                      ),
-                      // Subtitle
-                      Text(
-                        'Adventures',
-                        style: AppTheme.heading(size: 18, color: AppTheme.gold),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(24),
+                              child: Image.asset(
+                                Illustrations.appIcon,
+                                width: 270,
+                                height: 270,
+                                fit: BoxFit.cover,
+                                filterQuality: FilterQuality.high,
+                                errorBuilder: (_, __, ___) =>
+                                    const Text('🗺️', style: TextStyle(fontSize: 80)),
+                              ),
+                            ),
+                            // Adventures overlay at bottom
+                            Positioned(
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.vertical(
+                                      bottom: Radius.circular(24)),
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Colors.transparent,
+                                      Colors.black.withOpacity(0.7),
+                                    ],
+                                  ),
+                                ),
+                                child: Text(
+                                  'Adventures',
+                                  textAlign: TextAlign.center,
+                                  style: AppTheme.heading(
+                                      size: 22, color: AppTheme.gold),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 20),
                       // Gradient buttons
@@ -181,65 +217,44 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Navigator.pushNamed(context, '/trophies'),
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 12),
+                                  horizontal: 16, vertical: 10),
+                              height: 52,
                               decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [Color(0xFF2E3590), Color(0xFF252B7A)],
-                                ),
+                                color: Colors.white.withOpacity(0.06),
                                 borderRadius: BorderRadius.circular(16),
-                                border: Border.all(
-                                    color: AppTheme.gold.withOpacity(0.3),
-                                    width: 1.5),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.3),
-                                    blurRadius: 16,
-                                    offset: const Offset(0, 6),
-                                  ),
-                                ],
                               ),
-                              child: Row(
+                              child: Column(
                                 children: [
-                                  Image.asset(
-                                    Illustrations.progressionBadge(count),
-                                    width: 40,
-                                    height: 40,
-                                    errorBuilder: (_, __, ___) =>
-                                        const Text('🏅',
-                                            style: TextStyle(fontSize: 28)),
+                                  Row(
+                                    children: [
+                                      const Text('⭐',
+                                          style: TextStyle(fontSize: 16)),
+                                      const SizedBox(width: 6),
+                                      Text(tier,
+                                          style: AppTheme.heading(
+                                              size: 14,
+                                              color: AppTheme.gold)),
+                                      const Spacer(),
+                                      Text('$count pts',
+                                          style: AppTheme.body(
+                                              size: 13,
+                                              color: Colors.white)),
+                                    ],
                                   ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(tier,
-                                            style: AppTheme.heading(
-                                                size: 15)),
-                                        const SizedBox(height: 4),
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(4),
-                                          child: LinearProgressIndicator(
-                                            value: count / nextTarget,
-                                            backgroundColor: Colors
-                                                .white
-                                                .withOpacity(0.1),
-                                            valueColor:
-                                                const AlwaysStoppedAnimation(
-                                                    AppTheme.gold),
-                                            minHeight: 6,
-                                          ),
-                                        ),
-                                      ],
+                                  const SizedBox(height: 6),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(2),
+                                    child: LinearProgressIndicator(
+                                      value: nextTarget > 0
+                                          ? count / nextTarget
+                                          : 1.0,
+                                      backgroundColor:
+                                          Colors.white.withOpacity(0.15),
+                                      valueColor:
+                                          const AlwaysStoppedAnimation(
+                                              AppTheme.gold),
+                                      minHeight: 4,
                                     ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Text(
-                                    '$count',
-                                    style: AppTheme.heading(
-                                        size: 20, color: AppTheme.gold),
                                   ),
                                 ],
                               ),

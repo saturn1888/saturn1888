@@ -26,24 +26,24 @@ class GradientButton extends StatefulWidget {
     required this.label,
     required this.onPressed,
     this.icon,
-  })  : gradient = const [Color(0xFFFF6B35), Color(0xFFFF3D7F)],
-        shadowColor = const Color(0xFFB02A20);
+  })  : gradient = const [Color(0xFFFF6B35), Color(0xFFFF8C42)],
+        shadowColor = const Color(0xB3B43C00);
 
   const GradientButton.create({
     super.key,
     required this.label,
     required this.onPressed,
     this.icon,
-  })  : gradient = const [Color(0xFF7C3AED), Color(0xFFE040FB)],
-        shadowColor = const Color(0xFF5B1FA8);
+  })  : gradient = const [Color(0xFF7C3AED), Color(0xFF9B59D4)],
+        shadowColor = const Color(0x99501496);
 
   const GradientButton.join({
     super.key,
     required this.label,
     required this.onPressed,
     this.icon,
-  })  : gradient = const [Color(0xFF252B7A), Color(0xFF3A42AA)],
-        shadowColor = const Color(0xFF1A1F5E);
+  })  : gradient = const [Color(0xFF2E3590), Color(0xFF3A42AA)],
+        shadowColor = const Color(0xCC0A0F3C);
 
   @override
   State<GradientButton> createState() => _GradientButtonState();

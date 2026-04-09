@@ -52,41 +52,38 @@ class TrophyCabinetScreen extends StatelessWidget {
           if (box.isEmpty) {
             return Stack(
               children: [
-                // Full-width cabinet background
                 Positioned.fill(
                   child: Image.asset(
                     Illustrations.trophyCabinetBg,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-                  ),
-                ),
-                // Overlay
-                Positioned.fill(
-                  child: Container(
-                    color: AppTheme.navy.withOpacity(0.5),
+                    filterQuality: FilterQuality.high,
+                    errorBuilder: (_, __, ___) => Container(
+                        color: AppTheme.navy),
                   ),
                 ),
                 Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(Illustrations.emptyNoTrophies,
-                          width: 200,
-                          height: 200,
-                          errorBuilder: (_, __, ___) =>
-                              const Text('🏆', style: TextStyle(fontSize: 80))),
-                      const SizedBox(height: 20),
-                      Text(
-                        'No trophies yet!',
-                        style: AppTheme.heading(size: 24),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Complete a hunt to earn your first trophy.',
-                        style: AppTheme.caption(size: 15),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.45),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('No trophies yet!',
+                            style: AppTheme.heading(size: 22)),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Complete a hunt to earn your first trophy.',
+                          style: AppTheme.body(
+                              size: 14,
+                              color: Colors.white.withOpacity(0.7)),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

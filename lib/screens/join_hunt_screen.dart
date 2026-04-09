@@ -152,18 +152,47 @@ class _JoinHuntScreenState extends State<JoinHuntScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Image.asset(Illustrations.joinIllustration,
-            width: 120,
-            height: 120,
-            errorBuilder: (_, __, ___) =>
-                const Text('🗺️', style: TextStyle(fontSize: 64))),
-        const SizedBox(height: 16),
+        // Illustration with radial glow
+        SizedBox(
+          width: 320,
+          height: 280,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                width: 320,
+                height: 320,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [Color(0x33FFD23F), Color(0x00FFD23F)],
+                  ),
+                ),
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.asset(Illustrations.joinIllustration,
+                    width: 280,
+                    height: 280,
+                    fit: BoxFit.contain,
+                    filterQuality: FilterQuality.high,
+                    errorBuilder: (_, __, ___) =>
+                        const Text('🗺️', style: TextStyle(fontSize: 80))),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
         Text('Join a Hunt', style: AppTheme.heading(size: 28)),
         const SizedBox(height: 8),
-        Text(
-          'Enter the hunt code or scan the QR code\nto join an adventure!',
-          style: AppTheme.body(size: 15, color: AppTheme.leather),
-          textAlign: TextAlign.center,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          child: Text(
+            'Enter the hunt code or scan the QR code to join an adventure!',
+            style: AppTheme.body(
+                size: 14, color: Colors.white.withOpacity(0.65)),
+            textAlign: TextAlign.center,
+          ),
         ),
         const SizedBox(height: 32),
 

@@ -339,16 +339,51 @@ class _TreasureItemsScreenState extends State<TreasureItemsScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset(Illustrations.emptyChest,
-                              width: 100,
-                              height: 100,
-                              errorBuilder: (_, __, ___) =>
-                                  const Text('🎁',
-                                      style: TextStyle(fontSize: 64))),
-                          const SizedBox(height: 16),
+                          // Chest with glow
+                          SizedBox(
+                            width: 280,
+                            height: 280,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Container(
+                                  width: 280,
+                                  height: 280,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: RadialGradient(colors: [
+                                      Color(0x2206D6A0),
+                                      Color(0x0006D6A0),
+                                    ]),
+                                  ),
+                                ),
+                                Image.asset(Illustrations.emptyChest,
+                                    width: 220,
+                                    height: 220,
+                                    filterQuality: FilterQuality.high,
+                                    errorBuilder: (_, __, ___) =>
+                                        const Text('🎁',
+                                            style: TextStyle(fontSize: 80))),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
                           Text(
-                            'No treasure items yet!\nTap + to add what hunters will find.',
+                            'No treasure items yet!',
+                            style: AppTheme.heading(size: 18),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Tap + to add what hunters will find.',
                             style: AppTheme.body(
+                                size: 14,
+                                color: Colors.white.withOpacity(0.65)),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 16),
+                          // Removed old text below
+                          const SizedBox.shrink(),
+                          Text('', style: AppTheme.body(
                                 size: 16, color: Colors.grey),
                             textAlign: TextAlign.center,
                           ),
