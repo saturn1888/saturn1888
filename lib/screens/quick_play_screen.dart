@@ -84,21 +84,26 @@ class _HuntCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 14),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
+          gradient: const LinearGradient(
+            colors: [Color(0xFF2E3590), Color(0xFF252B7A)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: Colors.white.withOpacity(0.15),
-            width: 2,
+            color: Colors.white.withOpacity(0.1),
+            width: 1.5,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 6,
-              offset: const Offset(0, 3),
+              color: Colors.black.withOpacity(0.4),
+              blurRadius: 24,
+              offset: const Offset(0, 8),
             ),
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(20),
           child: Column(
             children: [
               // Theme header — rich coloured banner
@@ -159,12 +164,12 @@ class _HuntCard extends StatelessWidget {
                   ],
                 ),
               ),
-              // Details bar — parchment coloured
+              // Details bar
               Container(
                 width: double.infinity,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                color: AppTheme.navyLight,
+                color: Colors.black.withOpacity(0.15),
                 child: Row(
                   children: [
                     Icon(Icons.help_outline,

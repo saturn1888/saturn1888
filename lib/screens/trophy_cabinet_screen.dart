@@ -50,23 +50,46 @@ class TrophyCabinetScreen extends StatelessWidget {
         valueListenable: Hive.box<Trophy>('trophies').listenable(),
         builder: (context, Box<Trophy> box, _) {
           if (box.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(Illustrations.emptyNoTrophies,
-                      width: 120,
-                      height: 120,
-                      errorBuilder: (_, __, ___) =>
-                          const Text('🏆', style: TextStyle(fontSize: 64))),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No trophies yet!\nComplete a hunt to earn your first trophy.',
-                    style: AppTheme.body(size: 16, color: Colors.grey),
-                    textAlign: TextAlign.center,
+            return Stack(
+              children: [
+                // Full-width cabinet background
+                Positioned.fill(
+                  child: Image.asset(
+                    Illustrations.trophyCabinetBg,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => const SizedBox.shrink(),
                   ),
-                ],
-              ),
+                ),
+                // Overlay
+                Positioned.fill(
+                  child: Container(
+                    color: AppTheme.navy.withOpacity(0.5),
+                  ),
+                ),
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(Illustrations.emptyNoTrophies,
+                          width: 200,
+                          height: 200,
+                          errorBuilder: (_, __, ___) =>
+                              const Text('🏆', style: TextStyle(fontSize: 80))),
+                      const SizedBox(height: 20),
+                      Text(
+                        'No trophies yet!',
+                        style: AppTheme.heading(size: 24),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Complete a hunt to earn your first trophy.',
+                        style: AppTheme.caption(size: 15),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             );
           }
 
