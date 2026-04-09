@@ -106,31 +106,31 @@ class _HomeScreenState extends State<HomeScreen> {
                         Illustrations.appIcon,
                         width: 270,
                         height: 270,
-                        errorBuilder: (_, __, ___) => Image.asset(
-                          Illustrations.logoHero,
-                          width: 270,
-                          height: 270,
-                          errorBuilder: (_, __, ___) =>
-                              const Text('🗺️', style: TextStyle(fontSize: 80)),
-                        ),
+                        errorBuilder: (_, __, ___) =>
+                            const Text('🗺️', style: TextStyle(fontSize: 80)),
                       ),
-                      const SizedBox(height: 16),
-                      // Wood plank buttons
-                      WoodButton(
+                      // Subtitle
+                      Text(
+                        'Adventures',
+                        style: AppTheme.heading(size: 18, color: AppTheme.gold),
+                      ),
+                      const SizedBox(height: 20),
+                      // Gradient buttons
+                      GradientButton.quickPlay(
                         label: 'Quick Play',
                         icon: Icons.play_arrow_rounded,
                         onPressed: () =>
                             Navigator.pushNamed(context, '/quick-play'),
                       ),
                       const SizedBox(height: 12),
-                      WoodButton(
+                      GradientButton.create(
                         label: 'Create a Hunt',
                         icon: Icons.add_circle_outline,
                         onPressed: () =>
                             Navigator.pushNamed(context, '/setup'),
                       ),
                       const SizedBox(height: 12),
-                      WoodButton(
+                      GradientButton.join(
                         label: 'Join a Hunt',
                         icon: Icons.group_add,
                         onPressed: () =>
@@ -183,10 +183,20 @@ class _HomeScreenState extends State<HomeScreen> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 12),
                               decoration: BoxDecoration(
-                                color: AppTheme.navyLight,
+                                gradient: const LinearGradient(
+                                  colors: [Color(0xFF2E3590), Color(0xFF252B7A)],
+                                ),
                                 borderRadius: BorderRadius.circular(16),
                                 border: Border.all(
-                                    color: Colors.white.withOpacity(0.1)),
+                                    color: AppTheme.gold.withOpacity(0.3),
+                                    width: 1.5),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.3),
+                                    blurRadius: 16,
+                                    offset: const Offset(0, 6),
+                                  ),
+                                ],
                               ),
                               child: Row(
                                 children: [
@@ -261,9 +271,9 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: AppTheme.navyLight,
+          color: Colors.white.withOpacity(0.08),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white.withOpacity(0.1)),
+          border: Border.all(color: Colors.white.withOpacity(0.15)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
