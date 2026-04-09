@@ -97,66 +97,36 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Center(
                 child: SingleChildScrollView(
+                  physics: const ClampingScrollPhysics(),
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
                     children: [
                       const SizedBox(height: 8),
-                      // Hero image with overlay subtitle
-                      SizedBox(
-                        width: 260,
-                        height: 260,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            // Clip and scale up to crop out the image's own border
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: SizedBox(
-                                width: 260,
-                                height: 260,
-                                child: Transform.scale(
-                                  scale: 1.15,
-                                  child: Image.asset(
-                                    Illustrations.appIcon,
-                                    width: 260,
-                                    height: 260,
-                                    fit: BoxFit.cover,
-                                    filterQuality: FilterQuality.high,
-                                    errorBuilder: (_, __, ___) =>
-                                        const Text('🗺️',
-                                            style: TextStyle(fontSize: 80)),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            // Adventures overlay at bottom
-                            Positioned(
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 8),
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.vertical(
-                                      bottom: Radius.circular(20)),
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.transparent,
-                                      Colors.black.withOpacity(0.7),
-                                    ],
-                                  ),
-                                ),
-                                child: Text(
-                                  'Adventures',
-                                  textAlign: TextAlign.center,
-                                  style: AppTheme.heading(
-                                      size: 22, color: AppTheme.gold),
-                                ),
-                              ),
+                      // Hero image with glow
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(28),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x66D4A04A),
+                              blurRadius: 32,
+                              spreadRadius: 4,
+                              offset: Offset(0, 8),
                             ),
                           ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(28),
+                          child: Image.asset(
+                            Illustrations.appIcon,
+                            width: 260,
+                            height: 260,
+                            fit: BoxFit.cover,
+                            filterQuality: FilterQuality.high,
+                            errorBuilder: (_, __, ___) =>
+                                const Text('🗺️',
+                                    style: TextStyle(fontSize: 80)),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -181,23 +151,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         onPressed: () =>
                             Navigator.pushNamed(context, '/join-hunt'),
                       ),
-                      const SizedBox(height: 20),
-                      // Secondary links
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _navChip('My Hunts', Icons.list, () =>
-                              Navigator.pushNamed(context, '/play-select')),
-                          const SizedBox(width: 8),
-                          _navChip('Manage', Icons.settings, () =>
-                              Navigator.pushNamed(context, '/manage')),
-                          const SizedBox(width: 8),
-                          _navChip('Trophies', Icons.emoji_events, () =>
-                              Navigator.pushNamed(context, '/trophies')),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      // Rank card
+                      const SizedBox(height: 14),
+                      // Rank strip — between buttons and nav
                       ValueListenableBuilder(
                         valueListenable:
                             Hive.box<Trophy>('trophies').listenable(),
@@ -221,55 +176,65 @@ class _HomeScreenState extends State<HomeScreen> {
                             tier = 'Rookie';
                             nextTarget = 1;
                           }
-                          return GestureDetector(
-                            onTap: () =>
-                                Navigator.pushNamed(context, '/trophies'),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 10),
-                              height: 44,
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.06),
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Text('⭐',
-                                          style: TextStyle(fontSize: 16)),
-                                      const SizedBox(width: 6),
-                                      Text(tier,
-                                          style: AppTheme.heading(
-                                              size: 14,
-                                              color: AppTheme.gold)),
-                                      const Spacer(),
-                                      Text('$count pts',
-                                          style: AppTheme.body(
-                                              size: 13,
-                                              color: Colors.white)),
-                                    ],
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.05),
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    const Text('⭐',
+                                        style: TextStyle(fontSize: 14)),
+                                    const SizedBox(width: 6),
+                                    Text(tier,
+                                        style: AppTheme.heading(
+                                            size: 13,
+                                            color: AppTheme.gold)),
+                                    const Spacer(),
+                                    Text('$count pts',
+                                        style: AppTheme.body(
+                                            size: 12,
+                                            color: Colors.white)),
+                                  ],
+                                ),
+                                const SizedBox(height: 6),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(2),
+                                  child: LinearProgressIndicator(
+                                    value: nextTarget > 0
+                                        ? count / nextTarget
+                                        : 1.0,
+                                    backgroundColor:
+                                        Colors.white.withOpacity(0.15),
+                                    valueColor:
+                                        const AlwaysStoppedAnimation(
+                                            AppTheme.gold),
+                                    minHeight: 4,
                                   ),
-                                  const SizedBox(height: 6),
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(2),
-                                    child: LinearProgressIndicator(
-                                      value: nextTarget > 0
-                                          ? count / nextTarget
-                                          : 1.0,
-                                      backgroundColor:
-                                          Colors.white.withOpacity(0.15),
-                                      valueColor:
-                                          const AlwaysStoppedAnimation(
-                                              AppTheme.gold),
-                                      minHeight: 4,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           );
                         },
+                      ),
+                      const SizedBox(height: 14),
+                      // Secondary links
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _navChip('My Hunts', Icons.list, () =>
+                              Navigator.pushNamed(context, '/play-select')),
+                          const SizedBox(width: 8),
+                          _navChip('Manage', Icons.settings, () =>
+                              Navigator.pushNamed(context, '/manage')),
+                          const SizedBox(width: 8),
+                          _navChip('Trophies', Icons.emoji_events, () =>
+                              Navigator.pushNamed(context, '/trophies')),
+                        ],
                       ),
                       const SizedBox(height: 12),
                     ],
