@@ -105,34 +105,31 @@ class _HomeScreenState extends State<HomeScreen> {
                       // Hero image with glow
                       Container(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(28),
+                          borderRadius: BorderRadius.circular(24),
                           boxShadow: const [
                             BoxShadow(
-                              color: Color(0x66D4A04A),
-                              blurRadius: 32,
-                              spreadRadius: 4,
-                              offset: Offset(0, 8),
+                              color: Color(0xCCD4A04A),
+                              blurRadius: 40,
+                              spreadRadius: -4,
+                            ),
+                            BoxShadow(
+                              color: Color(0xFF1A1F5E),
+                              blurRadius: 0,
+                              spreadRadius: 6,
                             ),
                           ],
                         ),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(28),
-                          child: SizedBox(
-                            width: 260,
-                            height: 260,
-                            child: Transform.scale(
-                              scale: 1.18,
-                              child: Image.asset(
-                                Illustrations.appIcon,
-                                width: 260,
-                                height: 260,
-                                fit: BoxFit.cover,
-                                filterQuality: FilterQuality.high,
-                                errorBuilder: (_, __, ___) =>
-                                    const Text('🗺️',
-                                        style: TextStyle(fontSize: 80)),
-                              ),
-                            ),
+                          borderRadius: BorderRadius.circular(24),
+                          child: Image.asset(
+                            Illustrations.appIcon,
+                            width: 280,
+                            height: 280,
+                            fit: BoxFit.cover,
+                            filterQuality: FilterQuality.high,
+                            errorBuilder: (_, __, ___) =>
+                                const Text('🗺️',
+                                    style: TextStyle(fontSize: 80)),
                           ),
                         ),
                       ),

@@ -226,45 +226,62 @@ class _JoinHuntScreenState extends State<JoinHuntScreen> {
                 child: SizedBox(
                   height: 20,
                   width: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                 ),
               )
-            : WoodButton(
-                label: 'Find Hunt',
-                icon: Icons.search,
+            : GradientButton(
+                label: '🔍  Find Hunt',
                 onPressed: () => _lookupCode(_codeController.text),
               ),
         const SizedBox(height: 16),
 
-        // Divider
+        // OR Divider
         Row(
           children: [
             Expanded(
-                child: Divider(color: AppTheme.leather.withOpacity(0.3))),
+                child: Divider(color: Colors.white.withOpacity(0.15))),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text('OR',
-                  style: AppTheme.body(size: 14, color: Colors.grey)),
+                  style: AppTheme.caption(
+                      size: 13,
+                      color: Colors.white.withOpacity(0.5))),
             ),
             Expanded(
-                child: Divider(color: AppTheme.leather.withOpacity(0.3))),
+                child: Divider(color: Colors.white.withOpacity(0.15))),
           ],
         ),
         const SizedBox(height: 16),
 
         // Scan QR button
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton.icon(
-            onPressed: () => setState(() => _showScanner = true),
-            icon: const Icon(Icons.qr_code_scanner),
-            label: Text('Scan QR Code',
-                style: AppTheme.body(size: 16, color: AppTheme.warmBrown)),
-            style: OutlinedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 56),
-              side: BorderSide(color: AppTheme.leather.withOpacity(0.4)),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14)),
+        GestureDetector(
+          onTap: () => setState(() => _showScanner = true),
+          child: Container(
+            width: double.infinity,
+            height: 58,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.35),
+                width: 2,
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(Illustrations.qrFrame,
+                    width: 28, height: 28,
+                    filterQuality: FilterQuality.high,
+                    errorBuilder: (_, __, ___) =>
+                        const Icon(Icons.qr_code_scanner,
+                            color: Colors.white70, size: 28)),
+                const SizedBox(width: 10),
+                Text('Scan QR Code',
+                    style: AppTheme.heading(
+                        size: 17,
+                        color: Colors.white.withOpacity(0.85))),
+              ],
             ),
           ),
         ),

@@ -225,56 +225,59 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
           width: 1.5,
         ),
       ),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       child: Column(
         children: [
           // Theme header row
           Row(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
                 child: Image.asset(
                   Illustrations.themeImage(theme.name),
-                  width: 72,
-                  height: 72,
+                  width: 80,
+                  height: 80,
                   fit: BoxFit.cover,
                   filterQuality: FilterQuality.high,
                   errorBuilder: (_, __, ___) =>
-                      Text(theme.emoji, style: const TextStyle(fontSize: 40)),
+                      Text(theme.emoji, style: const TextStyle(fontSize: 44)),
                 ),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(theme.name,
                         style: AppTheme.heading(
-                            size: 18, color: AppTheme.gold)),
-                    const SizedBox(height: 2),
+                            size: 20, color: AppTheme.gold)),
+                    const SizedBox(height: 4),
                     Text(theme.description,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: AppTheme.body(
                             size: 13,
-                            color: Colors.white.withOpacity(0.65))),
-                    const SizedBox(height: 4),
-                    Text(
-                      '"${theme.introMessage}"',
-                      style: AppTheme.caption(
-                          size: 11,
-                          color: Colors.white.withOpacity(0.45)),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                            color: Colors.white.withOpacity(0.7))),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
+          // Preview label
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text('Preview:',
+                style: AppTheme.caption(
+                    size: 10,
+                    color: Colors.white.withOpacity(0.45))),
+          ),
+          const SizedBox(height: 4),
           // Found it button preview
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 10),
+            height: 40,
+            alignment: Alignment.center,
             decoration: BoxDecoration(
               gradient: const LinearGradient(
                 colors: [Color(0xFF06D6A0), Color(0xFF009E78)],

@@ -152,14 +152,14 @@ class _HuntCard extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      width: 40,
-                      height: 40,
+                      width: 48,
+                      height: 48,
                       decoration: BoxDecoration(
-                        color: theme.accentColor.withOpacity(0.2),
+                        color: Colors.black.withOpacity(0.3),
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(Icons.play_arrow_rounded,
-                          color: theme.accentColor, size: 28),
+                      child: const Icon(Icons.play_arrow_rounded,
+                          color: Colors.white, size: 32),
                     ),
                   ],
                 ),
@@ -190,12 +190,15 @@ class _HuntCard extends StatelessWidget {
                           size: 12, color: AppTheme.warmBrown),
                     ),
                     const Spacer(),
-                    Row(
-                      children: theme.decorativeEmojis
-                          .take(3)
-                          .map((e) => Text(e,
-                              style: const TextStyle(fontSize: 16)))
-                          .toList(),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                      child: Image.asset(
+                        Illustrations.themeImage(hunt.theme.name),
+                        width: 20, height: 20,
+                        filterQuality: FilterQuality.high,
+                        errorBuilder: (_, __, ___) =>
+                            Text(theme.emoji, style: const TextStyle(fontSize: 16)),
+                      ),
                     ),
                   ],
                 ),
