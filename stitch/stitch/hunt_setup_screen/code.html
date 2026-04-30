@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hunt Setup - OzHunt Adventures</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-on-surface": "#4a4f8f",
+                    "on-secondary-fixed": "#631b00",
+                    "primary-fixed-dim": "#2de3ac",
+                    "on-surface-variant": "#a0a6ec",
+                    "outline": "#6a70b2",
+                    "error-container": "#9f0519",
+                    "tertiary-dim": "#eabf2b",
+                    "surface-container-low": "#000253",
+                    "error-dim": "#d7383b",
+                    "on-primary-container": "#00412f",
+                    "error": "#ff716c",
+                    "on-secondary-container": "#fff6f3",
+                    "primary": "#45f2b9",
+                    "on-tertiary-container": "#584500",
+                    "primary-container": "#00d59f",
+                    "tertiary": "#ffdd7a",
+                    "secondary-container": "#ab3500",
+                    "on-tertiary-fixed": "#413200",
+                    "surface-tint": "#45f2b9",
+                    "tertiary-container": "#f9cd3a",
+                    "secondary": "#ff7442",
+                    "on-secondary-fixed-variant": "#942d00",
+                    "on-primary-fixed-variant": "#006046",
+                    "tertiary-fixed-dim": "#eabf2b",
+                    "on-tertiary-fixed-variant": "#634e00",
+                    "surface": "#000144",
+                    "surface-bright": "#131a83",
+                    "secondary-dim": "#ff7442",
+                    "surface-container-highest": "#0e1476",
+                    "on-primary-fixed": "#00412e",
+                    "tertiary-fixed": "#f9cd3a",
+                    "background": "#000144",
+                    "on-surface": "#e3e3ff",
+                    "outline-variant": "#3d4281",
+                    "surface-variant": "#0e1476",
+                    "on-primary": "#00563e",
+                    "primary-dim": "#2de3ac",
+                    "on-tertiary": "#624e00",
+                    "inverse-primary": "#006d4f",
+                    "on-background": "#e3e3ff",
+                    "secondary-fixed": "#ffc4b2",
+                    "surface-dim": "#000144",
+                    "inverse-surface": "#fbf8ff",
+                    "surface-container": "#04085e",
+                    "on-secondary": "#410f00",
+                    "surface-container-lowest": "#000000",
+                    "surface-container-high": "#080e6a",
+                    "secondary-fixed-dim": "#ffb197",
+                    "on-error": "#490006",
+                    "on-error-container": "#ffa8a3",
+                    "primary-fixed": "#45f2b9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Fredoka One", "cursive"],
+                    "body": ["Plus Jakarta Sans", "sans-serif"],
+                    "label": ["Plus Jakarta Sans", "sans-serif"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .star-particle-bg {
+            background-color: #1a1f5e;
+            background-image: 
+                radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 50px 160px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 130px 80px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 160px 120px, #ffffff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255,255,255,0) 0%,
+                rgba(255,255,255,0.1) 50%,
+                rgba(255,255,255,0) 100%
+            );
+            transform: rotate(45deg);
+            pointer-events: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body star-particle-bg min-h-screen flex flex-col overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="docked full-width top-0 z-50 bg-gradient-to-b from-[#04085e] to-transparent shadow-none">
+<div class="flex justify-between items-center w-full px-6 py-4">
+<button class="hover:opacity-80 transition-opacity active:scale-95 duration-150 text-[#45f2b9]">
+<span class="material-symbols-outlined text-2xl" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-['Fredoka_One'] font-bold text-xl uppercase tracking-wider text-white">Hunt Setup</h1>
+<button class="hover:opacity-80 transition-opacity active:scale-95 duration-150 text-[#45f2b9]">
+<span class="material-symbols-outlined text-2xl" data-icon="volume_up">volume_up</span>
+</button>
+</div>
+</header>
+<main class="flex-grow overflow-y-auto px-6 pb-32 pt-4">
+<div class="max-w-md mx-auto space-y-6">
+<!-- SECTION 1: Hunt Name -->
+<section class="space-y-3">
+<div class="flex items-center gap-2">
+<span class="font-['Fredoka_One'] text-[17px] text-white">🏷️ Hunt Name</span>
+</div>
+<div class="h-[1px] w-full bg-gradient-to-r from-tertiary/60 via-tertiary/20 to-transparent"></div>
+<div class="relative">
+<input class="w-full h-14 bg-white/10 border border-white/20 rounded-[16px] px-4 text-on-background placeholder:text-on-background/40 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all shadow-inner" placeholder="e.g. Backyard Adventure" type="text"/>
+</div>
+</section>
+<!-- SECTION 2: Choose a Theme -->
+<section class="space-y-4">
+<div class="space-y-1">
+<h2 class="font-['Fredoka_One'] text-[17px] text-white">🎨 Choose a Theme</h2>
+<p class="text-xs text-on-background/60 font-semibold tracking-wide">Each theme changes the look and feel</p>
+</div>
+<!-- Featured Theme Card -->
+<div class="bg-gradient-to-br from-[#1a0e00] to-[#2a1a00] border-[1.5px] border-tertiary/30 rounded-[20px] p-5 shadow-2xl relative overflow-hidden group">
+<!-- Subtle Glow -->
+<div class="absolute -top-12 -right-12 w-32 h-32 bg-tertiary/10 blur-[40px] rounded-full"></div>
+<div class="flex items-center gap-4 mb-4 relative z-10">
+<div class="w-20 h-20 rounded-xl overflow-hidden shadow-lg border border-tertiary/20 bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Illustration of a weathered parchment pirate map with stylized compass and golden skull icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIOQeyyPTzpj9V73_iPWF6hlx-SRZXiJ1weKO5NdlhVy9o6z194cSuXZGq_GiknvL-zWmxkGE1hz7svhB02XDujOaUqgP5tttJx1q-cDV5qdgUqVpQOW0IlzsoVdGaWsZ9YE2W3x3JOXEUt5lLWVvGnnZ3cGPRk0vSuQjhEYlZKcO7tv3hKwfP1l2dkPB_1sdfAKWAbgz1gSfxljV6xp3vN8cxtxx4uWtmsdcmbXT21r6sVtD6uawr-TYbVf0zPBBwIovT9hIqwRY"/>
+</div>
+<div class="flex-grow">
+<h3 class="font-['Fredoka_One'] text-lg text-tertiary mb-1">Pirate Map</h3>
+<p class="text-[13px] text-white/90 leading-tight">Classic adventure with hidden gold!</p>
+</div>
+</div>
+<button class="w-full h-10 bg-primary-container text-on-primary-container rounded-[12px] font-extrabold text-sm flex items-center justify-center gap-2 hover:brightness-110 active:scale-95 transition-all shimmer">
+                        I Found It! ✅
+                    </button>
+</div>
+<!-- Theme Chips Carousel -->
+<div class="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 no-scrollbar">
+<!-- Selected Chip -->
+<div class="flex-shrink-0 flex items-center gap-2 bg-tertiary text-on-tertiary px-4 py-2 rounded-full border border-tertiary shadow-lg">
+<div class="w-6 h-6 rounded-full overflow-hidden bg-white/20">
+<img class="w-full h-full object-cover" data-alt="Miniature pirate map icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1KsH7KcXl03lVVPuyVDl_G-dwgPdqhb3ykjowKGUbxQu-Y2Cqd_y3uuT7MI7v6aHTYHWwCliNwDSR7h9kxu2a9qR_2IMvqQpfFhKXm1W_7mZ2XyR_PITyA-m97E-WXWoVYcqA3WLDut8RFp8e8_5gAnffLMYmW1okWRKFBL3rUZLWuL_eYuDlyV38hCHWYsMhVSGUK-p-ME6fNAwlKHByLMrKGb8eN9iHJMXk2Y-ems91DXhM2qu7kB_bwshN_NDnCVRt6bLFj_A"/>
+</div>
+<span class="font-extrabold text-sm">Pirate</span>
+</div>
+<!-- Unselected Chip -->
+<div class="flex-shrink-0 flex items-center gap-2 bg-surface-container/60 text-on-background/80 px-4 py-2 rounded-full border border-white/10 hover:bg-surface-container transition-colors">
+<div class="w-6 h-6 rounded-full overflow-hidden bg-white/20">
+<img class="w-full h-full object-cover" data-alt="Dense green jungle canopy icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEZXPKueAfw6WClfoMyqzpo4mQHicOLvSjWLaLkkeOYt98wA7kA2AQ6KR86nafipWcHmxxcZoQbHwDLeFTvZ-bK1wx6pW7oc9Q0rlOzCkc2jrXiRT76i5-prMzor9E_339IwBBsDTjmTfYTpry1Bt9dw10hLe8vybs2CyCkhO-VaZWgGvr2yFBHcObTAEBawDrkC4eAszfAjegvtCwGIVXnVdTF_K4oXfu3g7UpB0YKhSHYRpLvYlK0vdcXP36FbJWxpvtb-aV_U8"/>
+</div>
+<span class="font-extrabold text-sm">Jungle</span>
+</div>
+<!-- Unselected Chip -->
+<div class="flex-shrink-0 flex items-center gap-2 bg-surface-container/60 text-on-background/80 px-4 py-2 rounded-full border border-white/10 hover:bg-surface-container transition-colors">
+<div class="w-6 h-6 rounded-full overflow-hidden bg-white/20">
+<img class="w-full h-full object-cover" data-alt="Glowing blue galaxy with stars icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4KqKIj7FZ1z_7mu-vHawIkzEE-eMFbF6kr9Jk6IlCk5ovu25sJ2yzyLsVFyW5k-gVDYpEagHhw8clho-IyP8A9xSJm3gUasMjCnJKwnGncrmgjVyaMbvAdx_FRxHGp0TFzBw8qqd3SwRITT9zs-Wvauf1Rz3zuuBa1dDzngf05BajpKVb8IrWkMFqFhEfzJAeqplP8wLuMtIA3bwEisR-YM6Ny8DlKmN-mbkNqMdCw4b5AtWXLA4QEBZsl412mBAiUOFXS5lbjfU"/>
+</div>
+<span class="font-extrabold text-sm">Space</span>
+</div>
+<!-- Unselected Chip -->
+<div class="flex-shrink-0 flex items-center gap-2 bg-surface-container/60 text-on-background/80 px-4 py-2 rounded-full border border-white/10 hover:bg-surface-container transition-colors">
+<div class="w-6 h-6 rounded-full overflow-hidden bg-white/20">
+<img class="w-full h-full object-cover" data-alt="Sparkling magical potion with swirls icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6TtnHlxexRXXqsDyv7vZxZ33zaA8q9uMK7Mf5QPinSi2bYE_qI9hLyN1shAirBWV4ftH1fwRqHrhsenT9XaXriq1mMljCPPXV-dcc7dlHDZePQB9BFeQ2BTkcVn9RtrUpQ7yWpAgdF2xCV_d4c6ojekamUalsdx19r9EztchITuJE5FNKhKgvvTejpYNLZzUeznK4QDl4GbzfUiWge-xkqHL2hIGyYBOkHN-F9E1ptJsFmfxu5BeEzLKh3SM2eHiBpaAC-Hw0y04"/>
+</div>
+<span class="font-extrabold text-sm">Magic</span>
+</div>
+</div>
+</section>
+<!-- SECTION 3: Timer -->
+<section class="space-y-4">
+<div class="flex items-center gap-2">
+<span class="font-['Fredoka_One'] text-[17px] text-white">⏱️ Timer</span>
+</div>
+<div class="grid grid-cols-3 sm:grid-cols-4 gap-3">
+<button class="px-3 py-3 rounded-2xl bg-surface-container/40 border border-white/10 text-on-background font-bold text-sm hover:border-primary/50 transition-colors">Off</button>
+<button class="px-3 py-3 rounded-2xl bg-surface-container/40 border border-white/10 text-on-background font-bold text-sm hover:border-primary/50 transition-colors">5min</button>
+<button class="px-3 py-3 rounded-2xl bg-surface-container/40 border border-white/10 text-on-background font-bold text-sm hover:border-primary/50 transition-colors">10min</button>
+<!-- Selected Chip -->
+<button class="px-3 py-3 rounded-2xl bg-gradient-to-br from-[#7c3aed] to-[#9b59d4] text-white font-extrabold text-sm shadow-[0_4px_12px_rgba(124,58,237,0.4)] border border-white/20 scale-105">15min</button>
+<button class="px-3 py-3 rounded-2xl bg-surface-container/40 border border-white/10 text-on-background font-bold text-sm hover:border-primary/50 transition-colors">20min</button>
+<button class="px-3 py-3 rounded-2xl bg-surface-container/40 border border-white/10 text-on-background font-bold text-sm hover:border-primary/50 transition-colors">30min</button>
+<button class="px-3 py-3 rounded-2xl bg-surface-container/40 border border-white/10 text-on-background font-bold text-sm hover:border-primary/50 transition-colors flex items-center justify-center gap-1 col-span-1 sm:col-span-1">
+<span class="material-symbols-outlined text-sm" data-icon="edit">edit</span>
+</button>
+</div>
+</section>
+</div>
+</main>
+<!-- Bottom Action Area -->
+<div class="fixed bottom-0 left-0 w-full p-6 bg-gradient-to-t from-background via-background to-transparent pointer-events-none">
+<div class="max-w-md mx-auto pointer-events-auto">
+<button class="w-full h-[58px] bg-gradient-to-r from-[#06d6a0] to-[#009e78] rounded-[20px] shadow-[0_6px_0_#007a5c] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center shimmer">
+<span class="font-['Fredoka_One'] text-white text-xl uppercase tracking-widest drop-shadow-md flex items-center gap-2">
+                    → Next →
+                </span>
+</button>
+</div>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-40 flex justify-around items-center px-6 pb-8 pt-4 bg-[#04085e]/90 backdrop-blur-xl rounded-t-[2.5rem] border-t border-white/10 shadow-[0_-10px_40px_rgba(0,1,68,0.5)] md:hidden">
+<button class="flex flex-col items-center justify-center text-[#45f2b9]/40 p-3 hover:text-[#45f2b9] transition-all active:translate-y-1 transition-transform">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-[#131a83] text-[#45f2b9] rounded-full p-3 shadow-[0_0_15px_rgba(69,242,185,0.3)] active:translate-y-1 transition-transform">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#45f2b9]/40 p-3 hover:text-[#45f2b9] transition-all active:translate-y-1 transition-transform">
+<span class="material-symbols-outlined" data-icon="military_tech">military_tech</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#45f2b9]/40 p-3 hover:text-[#45f2b9] transition-all active:translate-y-1 transition-transform">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</button>
+</nav>
+</body></html>

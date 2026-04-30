@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OzHunt Adventures - Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&amp;family=Plus+Jakarta+Sans:wght@400;600;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-dim": "#ff7442",
+                    "inverse-surface": "#fbf8ff",
+                    "background": "#000144",
+                    "on-background": "#e3e3ff",
+                    "primary-fixed": "#45f2b9",
+                    "surface": "#000144",
+                    "primary-dim": "#2de3ac",
+                    "outline-variant": "#3d4281",
+                    "surface-tint": "#45f2b9",
+                    "on-tertiary-fixed-variant": "#634e00",
+                    "on-secondary-fixed-variant": "#942d00",
+                    "surface-container-high": "#080e6a",
+                    "surface-variant": "#0e1476",
+                    "surface-dim": "#000144",
+                    "secondary": "#ff7442",
+                    "surface-bright": "#131a83",
+                    "inverse-primary": "#006d4f",
+                    "secondary-fixed": "#ffc4b2",
+                    "on-primary-container": "#00412f",
+                    "on-secondary-container": "#fff6f3",
+                    "on-primary-fixed-variant": "#006046",
+                    "on-surface": "#e3e3ff",
+                    "secondary-container": "#ab3500",
+                    "on-tertiary-fixed": "#413200",
+                    "inverse-on-surface": "#4a4f8f",
+                    "tertiary-container": "#f9cd3a",
+                    "outline": "#6a70b2",
+                    "surface-container": "#04085e",
+                    "on-error-container": "#ffa8a3",
+                    "secondary-fixed-dim": "#ffb197",
+                    "on-tertiary-container": "#584500",
+                    "tertiary-fixed": "#f9cd3a",
+                    "on-surface-variant": "#a0a6ec",
+                    "on-primary-fixed": "#00412e",
+                    "tertiary": "#ffdd7a",
+                    "tertiary-fixed-dim": "#eabf2b",
+                    "surface-container-highest": "#0e1476",
+                    "error-container": "#9f0519",
+                    "primary-fixed-dim": "#2de3ac",
+                    "on-primary": "#00563e",
+                    "surface-container-low": "#000253",
+                    "primary": "#45f2b9",
+                    "error-dim": "#d7383b",
+                    "on-secondary": "#410f00",
+                    "surface-container-lowest": "#000000",
+                    "on-error": "#490006",
+                    "on-secondary-fixed": "#631b00",
+                    "on-tertiary": "#624e00",
+                    "primary-container": "#00d59f",
+                    "tertiary-dim": "#eabf2b",
+                    "error": "#ff716c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Fredoka One"],
+                    "body": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        h1, h2, h3, .btn-text { font-family: 'Fredoka One', cursive; }
+        
+        .star-particle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen overflow-x-hidden relative flex flex-col">
+<!-- Star Particle Background -->
+<div class="fixed inset-0 pointer-events-none z-0">
+<div class="star-particle w-1 h-1 top-[10%] left-[5%]"></div>
+<div class="star-particle w-0.5 h-0.5 top-[25%] left-[80%]"></div>
+<div class="star-particle w-1.5 h-1.5 top-[40%] left-[15%]"></div>
+<div class="star-particle w-1 h-1 top-[60%] left-[85%]"></div>
+<div class="star-particle w-0.5 h-0.5 top-[80%] left-[45%]"></div>
+<div class="star-particle w-1 h-1 top-[15%] left-[60%]"></div>
+<div class="star-particle w-1 h-1 top-[35%] left-[90%]"></div>
+<div class="star-particle w-0.5 h-0.5 top-[5%] left-[30%]"></div>
+<div class="star-particle w-1 h-1 top-[55%] left-[25%]"></div>
+<div class="star-particle w-1 h-1 top-[70%] left-[10%]"></div>
+<div class="star-particle w-1.5 h-1.5 top-[12%] left-[45%]"></div>
+<div class="star-particle w-0.5 h-0.5 top-[95%] left-[70%]"></div>
+<div class="star-particle w-1 h-1 top-[45%] left-[55%]"></div>
+<div class="star-particle w-1 h-1 top-[22%] left-[12%]"></div>
+<div class="star-particle w-0.5 h-0.5 top-[88%] left-[22%]"></div>
+<div class="star-particle w-1 h-1 top-[30%] left-[35%]"></div>
+<div class="star-particle w-1 h-1 top-[75%] left-[65%]"></div>
+<div class="star-particle w-1.5 h-1.5 top-[50%] left-[75%]"></div>
+<div class="star-particle w-0.5 h-0.5 top-[65%] left-[40%]"></div>
+<div class="star-particle w-1 h-1 top-[92%] left-[92%]"></div>
+</div>
+<!-- Top App Bar Shared Component -->
+<header class="bg-[#000144] dark:bg-[#000144] flex justify-between items-center w-full px-6 h-20 z-10 docked full-width top-0 shadow-[0_16px_32px_-8px_rgba(0,1,34,0.08)]">
+<div class="flex items-center gap-4">
+<button class="text-[#45f2b9] hover:brightness-110 transition-all active:translate-y-1 transition-transform">
+<span class="material-symbols-outlined text-3xl" data-icon="menu">menu</span>
+</button>
+<h1 class="text-2xl font-['Fredoka_One'] text-[#ffdd7a] drop-shadow-[0_2px_0_rgba(171,53,0,1)]">OzHunt Adventures</h1>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden border-2 border-primary">
+<img alt="Adventurer avatar" class="w-full h-full object-cover" data-alt="Close-up of a smiling young explorer with a rugged hat and sun-kissed skin, warm natural lighting, high-end digital portrait style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAG5BVxRf483m39JxLc61b1fsjHbxsH75nRxEVuaOW4ohDGqpJtk_xAFxxuDe_8dES-Uoe1RyaV4w7Sqw4mfpSLf2vDSbHAFQ-1gn1CgUcQIengNg7NQALyhM8bZ14DCgPfUMAwqoVXTYvSrv6_m-kBsDbp-WhiiDyuDlu-ZilhfXitOjSlg_QdNdUlnhxx_OA1mbdZarFxVHBPvp2PEiYMiH1qKj5aCcHzg4D8X-WSL8L4hvzUlzWwECN_tyBBqPXvRaZFVg4j9_s"/>
+</div>
+</header>
+<main class="flex-1 relative z-10 px-6 pt-4 pb-32 flex flex-col items-center">
+<!-- Sound Toggle Button -->
+<div class="w-full flex justify-start mb-4">
+<button class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center hover:bg-white/20 transition-all active:scale-90 shadow-lg">
+<span class="material-symbols-outlined text-white text-[20px]" data-icon="volume_up">volume_up</span>
+</button>
+</div>
+<!-- Hero Icon Section -->
+<div class="relative mb-12 flex justify-center items-center group">
+<div class="absolute w-[320px] h-[320px] bg-tertiary/20 rounded-full blur-[60px] animate-pulse"></div>
+<div class="relative w-72 h-72 bg-gradient-to-br from-surface-container-high to-surface-container rounded-[24px] shadow-2xl flex items-center justify-center transform transition-transform duration-1000 hover:scale-105">
+<img alt="Magical compass icon" class="w-56 h-56 object-contain drop-shadow-[0_20px_40px_rgba(255,221,122,0.4)]" data-alt="3D render of a magical golden compass with glowing blue runes, floating in a dark midnight space with dust particles and warm lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCL9Nt0jxH7rohQV0qFkvHVZ3Z5_u7Af3FcbNt0XSJ2oROwsKS7P0rnEfs-FUMLr6eqnah2YyC8tidOWGSDrsGMPxgkqyx0zyyTXeWvc8vHd0XENrkAFMzxooCQJmnyVztDe-Vp3Ldenuq6skBWDW34IuRkpg-Y_0XaGAxRsUvr0E_v54ByZ0PFV1S35nOFzDbiYbLh-FK9Jqf_RPziJoVFUUmnrNiXJB1cHU8fyZhQQ8XWEc8DBLLdkBt7YHQ-VT0fX0r0OFgi3x8"/>
+</div>
+</div>
+<!-- Main Action Buttons -->
+<div class="w-full max-w-sm flex flex-col gap-4 mb-8">
+<!-- QUICK PLAY -->
+<button class="group relative w-full h-16 bg-gradient-to-r from-[#ff6b35] to-[#ff8c42] rounded-2xl flex items-center px-6 transition-all active:translate-y-1 active:shadow-[0_2px_0_#ab3500] shadow-[0_6px_0_#ab3500]">
+<span class="material-symbols-outlined text-white text-3xl mr-4" data-icon="bolt" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span class="btn-text text-white text-xl tracking-wide">QUICK PLAY</span>
+</button>
+<!-- CREATE A HUNT -->
+<button class="group relative w-full h-16 bg-gradient-to-r from-[#7c3aed] to-[#9b59d4] rounded-2xl flex items-center px-6 transition-all active:translate-y-1 active:shadow-[0_2px_0_#4c1d95] shadow-[0_6px_0_#4c1d95]">
+<span class="material-symbols-outlined text-white text-3xl mr-4" data-icon="add_circle" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span class="btn-text text-white text-xl tracking-wide">CREATE A HUNT</span>
+</button>
+<!-- JOIN A HUNT -->
+<button class="group relative w-full h-16 bg-gradient-to-r from-[#2e3590] to-[#3a42aa] rounded-2xl flex items-center px-6 transition-all active:translate-y-1 active:shadow-[0_2px_0_#000144] shadow-[0_6px_0_#000144]">
+<span class="material-symbols-outlined text-white text-3xl mr-4" data-icon="group" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="btn-text text-white text-xl tracking-wide">JOIN A HUNT</span>
+</button>
+</div>
+<!-- Rank Progress Strip -->
+<div class="w-full max-w-sm bg-white/5 rounded-[14px] p-4 mb-8 border border-white/5 shadow-inner">
+<div class="flex justify-between items-center mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary" data-icon="stars" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="font-headline text-tertiary text-lg uppercase tracking-tight">Rookie</span>
+</div>
+<span class="font-body font-extrabold text-white/80">0 pts</span>
+</div>
+<div class="h-[6px] w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-1/4 rounded-full shadow-[0_0_12px_rgba(255,221,122,0.8)]"></div>
+</div>
+</div>
+<!-- Secondary Links -->
+<div class="w-full max-w-sm flex justify-between gap-3">
+<button class="flex-1 bg-surface-container-high/50 hover:bg-surface-container-high backdrop-blur-md rounded-full py-2.5 px-3 flex items-center justify-center transition-colors">
+<span class="font-body font-extrabold text-[12px] text-white">My Hunts</span>
+</button>
+<button class="flex-1 bg-surface-container-high/50 hover:bg-surface-container-high backdrop-blur-md rounded-full py-2.5 px-3 flex items-center justify-center transition-colors">
+<span class="font-body font-extrabold text-[12px] text-white">Manage</span>
+</button>
+<button class="flex-1 bg-surface-container-high/50 hover:bg-surface-container-high backdrop-blur-md rounded-full py-2.5 px-3 flex items-center justify-center transition-colors">
+<span class="font-body font-extrabold text-[12px] text-white">Trophies</span>
+</button>
+</div>
+</main>
+<!-- Bottom Navigation Bar Shared Component -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#04085e]/90 backdrop-blur-xl rounded-t-[24px] border-t border-[#ffffff]/15 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+<a class="flex flex-col items-center justify-center bg-[#131a83] text-[#45f2b9] rounded-2xl px-4 py-2 shadow-[inset_0_4px_10px_rgba(0,0,0,0.3)] scale-95 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="explore" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-['Plus_Jakarta_Sans'] font-extrabold text-[12px]">Map</span>
+</a>
+<a class="flex flex-col items-center justify-center text-white/60 px-4 py-2 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="military_tech">military_tech</span>
+<span class="font-['Plus_Jakarta_Sans'] font-extrabold text-[12px]">Quests</span>
+</a>
+<a class="flex flex-col items-center justify-center text-white/60 px-4 py-2 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="database">database</span>
+<span class="font-['Plus_Jakarta_Sans'] font-extrabold text-[12px]">Treasures</span>
+</a>
+<a class="flex flex-col items-center justify-center text-white/60 px-4 py-2 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] font-extrabold text-[12px]">Profile</span>
+</a>
+</nav>
+</body></html>

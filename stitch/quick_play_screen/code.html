@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OzHunt Adventures - Quick Play</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Fredoka+One&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#0e1476",
+                        "surface": "#000144",
+                        "primary-dim": "#2de3ac",
+                        "tertiary": "#ffdd7a",
+                        "primary-fixed-dim": "#2de3ac",
+                        "on-background": "#e3e3ff",
+                        "on-secondary-fixed": "#631b00",
+                        "secondary-container": "#ab3500",
+                        "surface-bright": "#131a83",
+                        "error-dim": "#d7383b",
+                        "on-tertiary": "#624e00",
+                        "on-secondary": "#410f00",
+                        "on-primary-container": "#00412f",
+                        "error": "#ff716c",
+                        "on-primary-fixed": "#00412e",
+                        "secondary-dim": "#ff7442",
+                        "inverse-on-surface": "#4a4f8f",
+                        "primary": "#45f2b9",
+                        "on-surface": "#e3e3ff",
+                        "on-surface-variant": "#a0a6ec",
+                        "on-primary": "#00563e",
+                        "surface-container-highest": "#0e1476",
+                        "background": "#000144",
+                        "secondary": "#ff7442",
+                        "outline": "#6a70b2",
+                        "on-tertiary-fixed": "#413200",
+                        "on-tertiary-container": "#584500",
+                        "inverse-surface": "#fbf8ff",
+                        "on-error": "#490006",
+                        "surface-container-low": "#000253",
+                        "tertiary-dim": "#eabf2b",
+                        "surface-dim": "#000144",
+                        "error-container": "#9f0519",
+                        "inverse-primary": "#006d4f",
+                        "on-primary-fixed-variant": "#006046",
+                        "surface-container-high": "#080e6a",
+                        "secondary-fixed-dim": "#ffb197",
+                        "surface-container": "#04085e",
+                        "primary-container": "#00d59f",
+                        "on-secondary-container": "#fff6f3",
+                        "surface-tint": "#45f2b9",
+                        "on-tertiary-fixed-variant": "#634e00",
+                        "surface-container-lowest": "#000000",
+                        "tertiary-fixed": "#f9cd3a",
+                        "outline-variant": "#3d4281",
+                        "tertiary-fixed-dim": "#eabf2b",
+                        "secondary-fixed": "#ffc4b2",
+                        "on-error-container": "#ffa8a3",
+                        "tertiary-container": "#f9cd3a",
+                        "on-secondary-fixed-variant": "#942d00",
+                        "primary-fixed": "#45f2b9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"],
+                        "brand": ["Fredoka One"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface min-h-screen font-body text-on-surface selection:bg-primary selection:text-on-primary overflow-x-hidden">
+<!-- Star Particle Background -->
+<div class="fixed inset-0 pointer-events-none z-0">
+<div class="star w-1 h-1 top-[10%] left-[15%]"></div>
+<div class="star w-0.5 h-0.5 top-[25%] left-[80%]" style="animation-delay: 0.5s;"></div>
+<div class="star w-1 h-1 top-[40%] left-[30%]" style="animation-delay: 1.2s;"></div>
+<div class="star w-0.5 h-0.5 top-[60%] left-[70%]" style="animation-delay: 0.8s;"></div>
+<div class="star w-1 h-1 top-[85%] left-[10%]" style="animation-delay: 2s;"></div>
+<div class="star w-0.5 h-0.5 top-[15%] left-[50%]" style="animation-delay: 0.3s;"></div>
+<div class="star w-1 h-1 top-[70%] left-[40%]" style="animation-delay: 1.5s;"></div>
+<div class="star w-0.5 h-0.5 top-[5%] left-[90%]" style="animation-delay: 0.1s;"></div>
+<div class="star w-1 h-1 top-[90%] left-[60%]" style="animation-delay: 2.2s;"></div>
+<div class="star w-0.5 h-0.5 top-[35%] left-[15%]" style="animation-delay: 0.7s;"></div>
+<div class="star w-1 h-1 top-[55%] left-[85%]" style="animation-delay: 1.1s;"></div>
+<div class="star w-0.5 h-0.5 top-[75%] left-[25%]" style="animation-delay: 1.8s;"></div>
+<div class="star w-1 h-1 top-[20%] left-[45%]" style="animation-delay: 0.4s;"></div>
+<div class="star w-0.5 h-0.5 top-[45%] left-[55%]" style="animation-delay: 1.3s;"></div>
+<div class="star w-1 h-1 top-[65%] left-[95%]" style="animation-delay: 0.9s;"></div>
+<div class="star w-0.5 h-0.5 top-[80%] left-[5%]" style="animation-delay: 2.1s;"></div>
+<div class="star w-1 h-1 top-[12%] left-[65%]" style="animation-delay: 0.6s;"></div>
+<div class="star w-0.5 h-0.5 top-[30%] left-[35%]" style="animation-delay: 1.7s;"></div>
+<div class="star w-1 h-1 top-[50%] left-[12%]" style="animation-delay: 1.4s;"></div>
+<div class="star w-0.5 h-0.5 top-[95%] left-[88%]" style="animation-delay: 2.5s;"></div>
+</div>
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#000144] shadow-[0_16px_32px_-12px_rgba(0,1,34,0.08)]">
+<div class="flex justify-between items-center px-6 py-4 w-full">
+<button class="hover:scale-105 active:scale-95 transition-transform duration-200 text-[#45f2b9]">
+<span class="material-symbols-outlined text-2xl" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-brand text-2xl text-white tracking-wider">Quick Play</h1>
+<button class="hover:scale-105 active:scale-95 transition-transform duration-200 text-[#ffdd7a]">
+<span class="material-symbols-outlined text-2xl" data-icon="volume_up">volume_up</span>
+</button>
+</div>
+</header>
+<main class="relative z-10 pt-24 pb-32 px-6 max-w-2xl mx-auto">
+<!-- Hero Banner -->
+<section class="mb-8 rounded-[20px] p-[20px] bg-gradient-to-br from-[#ff6b35] to-[#ff3d7f] flex justify-between items-center shadow-lg">
+<div>
+<h2 class="font-brand text-[26px] leading-tight text-white mb-1">Pick a Hunt &amp; Start Playing!</h2>
+<p class="text-white/90 text-[13px] font-medium">No setup needed!</p>
+</div>
+<div class="text-4xl animate-bounce">⚡</div>
+</section>
+<!-- Filter Chips -->
+<section class="mb-6">
+<div class="flex overflow-x-auto gap-3 no-scrollbar py-2">
+<button class="flex-shrink-0 px-6 py-2.5 rounded-full bg-[#ffd23f] text-surface font-extrabold text-sm shadow-[0_4px_12px_rgba(255,210,63,0.3)]">
+                    All Hunts
+                </button>
+<button class="flex-shrink-0 px-6 py-2.5 rounded-full bg-surface-container-high/40 text-white font-extrabold text-sm border border-white/10 hover:bg-surface-container-high transition-colors">
+                    Indoor
+                </button>
+<button class="flex-shrink-0 px-6 py-2.5 rounded-full bg-surface-container-high/40 text-white font-extrabold text-sm border border-white/10 hover:bg-surface-container-high transition-colors">
+                    Outdoor
+                </button>
+<button class="flex-shrink-0 px-6 py-2.5 rounded-full bg-surface-container-high/40 text-white font-extrabold text-sm border border-white/10 hover:bg-surface-container-high transition-colors">
+                    Special
+                </button>
+<button class="flex-shrink-0 px-6 py-2.5 rounded-full bg-surface-container-high/40 text-white font-extrabold text-sm border border-white/10 hover:bg-surface-container-high transition-colors">
+                    Space
+                </button>
+</div>
+</section>
+<!-- Section Label -->
+<div class="mb-4">
+<span class="text-on-surface-variant text-[12px] font-extrabold tracking-widest uppercase">6 Ready-to-Play Hunts</span>
+</div>
+<!-- Hunt Cards List -->
+<div class="space-y-4">
+<!-- Card 1: House Explorer -->
+<div class="relative overflow-hidden bg-gradient-to-r from-[#ff6b35]/10 to-surface-container-high rounded-[20px] border-[1.5px] border-[#ff6b35]/30 p-4 pl-6 group hover:translate-y-[-2px] transition-all duration-300">
+<div class="absolute left-0 top-0 bottom-0 w-[5px] bg-[#ff6b35]"></div>
+<div class="flex items-center gap-4">
+<img alt="Pirate Map" class="w-14 h-14 rounded-xl object-cover" data-alt="Stylized treasure map with burned edges and a golden compass on a dark wood background with glowing orange sparks" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBseElnrbNe2xQOIvXorJv6_i7q3o7vb6Q5WrG866Em-GDMZVU8aPmRkxJbzDaK6Mv00MUOppVt6M--Kxh8GPkTqFtFADjMGPp0C3xpUa-xX3G48LTtYPmakG3TmhvKmnajimMBCBXG41ca7lRod9bZZZiUDdVFmQbU-37W5O4m-CQ9PSMEhT-WH7fqgkAZ1WzrasY3SLZwIN1x482jN6XP2gUzIlM-Vd8aKt09guIhfxj9g02N5acyOpc1KdH83MToyW3WskXwP-s"/>
+<div class="flex-1 min-w-0">
+<h3 class="font-brand text-[17px] text-[#ff6b35] truncate">House Explorer</h3>
+<p class="text-white text-[12px] line-clamp-1 opacity-80">Find the hidden pirate treasure!</p>
+<div class="flex items-center justify-between mt-2">
+<span class="text-on-surface-variant text-[11px] font-bold">12 Clues • 30m</span>
+<div class="flex gap-1">
+<span class="text-xs">🏴‍☠️</span>
+<span class="text-xs">🦜</span>
+<span class="text-xs">⚓</span>
+</div>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full bg-[#ff6b35] flex items-center justify-center text-white shadow-lg shadow-[#ff6b35]/20 active:scale-90 transition-transform">
+<span class="material-symbols-outlined font-variation-settings-fill" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</div>
+<!-- Card 2: Garden Quest -->
+<div class="relative overflow-hidden bg-gradient-to-r from-[#06d6a0]/10 to-surface-container-high rounded-[20px] border-[1.5px] border-[#06d6a0]/30 p-4 pl-6 group hover:translate-y-[-2px] transition-all duration-300">
+<div class="absolute left-0 top-0 bottom-0 w-[5px] bg-[#06d6a0]"></div>
+<div class="flex items-center gap-4">
+<img alt="Jungle" class="w-14 h-14 rounded-xl object-cover" data-alt="Lush green jungle foliage with large tropical leaves and mysterious golden light filtering through vines in a magical forest" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx7ir2lb0aZ7F5Eh2onHcCFlcVLlywGJeuJcPcGE5q0aQPjxndcKBVsjJFrDl1iTZFK1fjzZCXcRkLJkFNBNppRSF87drcLVODZcI5Nz9hKTB5WRJVTr8Mwk0xk2IgPlhaD62F0fne2a-O-Q0ve0HAt8PESFKVIjXJnCM4b2GAdel7BEnKjdvieAU6FBxOMzwf99nvwDd1lmUPZCcEMgsf3TJsMaIpV4FgbM24mebWmeE1l2QlzU7x3FnTiXPUOl1k5ZPFwTowNNo"/>
+<div class="flex-1 min-w-0">
+<h3 class="font-brand text-[17px] text-[#06d6a0] truncate">Garden Quest</h3>
+<p class="text-white text-[12px] line-clamp-1 opacity-80">Nature hunt in the wild backyard.</p>
+<div class="flex items-center justify-between mt-2">
+<span class="text-on-surface-variant text-[11px] font-bold">10 Clues • 20m</span>
+<div class="flex gap-1">
+<span class="text-xs">🌿</span>
+<span class="text-xs">🦋</span>
+<span class="text-xs">🔎</span>
+</div>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full bg-[#06d6a0] flex items-center justify-center text-white shadow-lg shadow-[#06d6a0]/20 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</div>
+<!-- Card 3: Park Adventure -->
+<div class="relative overflow-hidden bg-gradient-to-r from-[#e040fb]/10 to-surface-container-high rounded-[20px] border-[1.5px] border-[#e040fb]/30 p-4 pl-6 group hover:translate-y-[-2px] transition-all duration-300">
+<div class="absolute left-0 top-0 bottom-0 w-[5px] bg-[#e040fb]"></div>
+<div class="flex items-center gap-4">
+<img alt="Park" class="w-14 h-14 rounded-xl object-cover" data-alt="An ethereal public park at twilight with glowing purple lanterns hanging from oak trees and soft mist on the ground" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEa2k0UfJ7EAcaNcsFp16ZjT3xECTyhGnihWQJ6f3QPc84owsHx1D02cWvtGFFlFbyiPNBXz2mjTDodAwwOjrdVlZdL_JbLcOWigKlEXF4Nxw3dezHkxeZ0qk0MG5noMoEYaUiOVRpv9gGNNR9q3rriZmigX98FELlajIgERIGWvbWHOo146FUqsXhf4OTaOZKMxgLL50-Tlp4Uq9IwQdkY3CpzpjzplsW3WFLrYR8vdIWdSE985JuOLDNfTfaF9iVFeem-aIwGgg"/>
+<div class="flex-1 min-w-0">
+<h3 class="font-brand text-[17px] text-[#e040fb] truncate">Park Adventure</h3>
+<p class="text-white text-[12px] line-clamp-1 opacity-80">Explore the local playground secrets.</p>
+<div class="flex items-center justify-between mt-2">
+<span class="text-on-surface-variant text-[11px] font-bold">15 Clues • 45m</span>
+<div class="flex gap-1">
+<span class="text-xs">🏃</span>
+<span class="text-xs">🌳</span>
+<span class="text-xs">🎡</span>
+</div>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full bg-[#e040fb] flex items-center justify-center text-white shadow-lg shadow-[#e040fb]/20 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</div>
+<!-- Card 4: Birthday Surprise -->
+<div class="relative overflow-hidden bg-gradient-to-r from-[#ff6eb4]/10 to-surface-container-high rounded-[20px] border-[1.5px] border-[#ff6eb4]/30 p-4 pl-6 group hover:translate-y-[-2px] transition-all duration-300">
+<div class="absolute left-0 top-0 bottom-0 w-[5px] bg-[#ff6eb4]"></div>
+<div class="flex items-center gap-4">
+<img alt="Party" class="w-14 h-14 rounded-xl object-cover" data-alt="Sparkling pink and gold birthday balloons with confetti floating in a dreamy soft-focus background with festive lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxj7hXCc3czrVnT_V-6yz8DvpIRP2dcpGlRpP74qoDqSk-nZ1pL2fDKsrT7ll2n4L3k4cfGCeUBDwiCwcBxaW0orDDNtVXs4NEAAuaNdCt7gk-PhyqkhTk-Pg762Tlc6lGW2BPBfWXyxRNoDSqX7eoqosRRR6P3Hpl57S5VFUMwAh4F0_TRH8KQMvg8U3p_ZKUUXQmCrnch2liaoW710vgntC7zbqmGlMPLo6JXL-gl4z1Y2YLVij1WbamStBb8sBZc_NIxOF2ybM"/>
+<div class="flex-1 min-w-0">
+<h3 class="font-brand text-[17px] text-[#ff6eb4] truncate">Birthday Surprise</h3>
+<p class="text-white text-[12px] line-clamp-1 opacity-80">Follow the path to the big gift!</p>
+<div class="flex items-center justify-between mt-2">
+<span class="text-on-surface-variant text-[11px] font-bold">8 Clues • 15m</span>
+<div class="flex gap-1">
+<span class="text-xs">🎂</span>
+<span class="text-xs">🎈</span>
+<span class="text-xs">🎁</span>
+</div>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full bg-[#ff6eb4] flex items-center justify-center text-white shadow-lg shadow-[#ff6eb4]/20 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</div>
+<!-- Card 5: Indoor Adventure -->
+<div class="relative overflow-hidden bg-gradient-to-r from-[#4fc3f7]/10 to-surface-container-high rounded-[20px] border-[1.5px] border-[#4fc3f7]/30 p-4 pl-6 group hover:translate-y-[-2px] transition-all duration-300">
+<div class="absolute left-0 top-0 bottom-0 w-[5px] bg-[#4fc3f7]"></div>
+<div class="flex items-center gap-4">
+<img alt="Home" class="w-14 h-14 rounded-xl object-cover" data-alt="Modern cozy living room interior at night with soft blue ambient light and glowing digital screens in a tactical tech aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbtQjPbrR0taq5Xd7SajkEs9VKu9r56aRqxZCc_VBRil4gYJjCL8MCxUoJN-5vU3rz4GToOSKzPzqMJ759WhMbNjUYcdjMDpLy7MvwlSCrdtxSWfDvPaMeYcPE5CqwyAaBNi-bJYBsUF_HGHJtaS--N0UI19HHWMRA1hci2b7Wpcy4PWaMJT66yA6-8vfJVj6OEvDxmtexJA8c5Jb2-AkZNvyFyDsBY50w65pQhKx1ZPzwFcEvd0JxNcHCjrukbl5lQujuswfICqk"/>
+<div class="flex-1 min-w-0">
+<h3 class="font-brand text-[17px] text-[#4fc3f7] truncate">Indoor Adventure</h3>
+<p class="text-white text-[12px] line-clamp-1 opacity-80">Rainy day fun around the house.</p>
+<div class="flex items-center justify-between mt-2">
+<span class="text-on-surface-variant text-[11px] font-bold">12 Clues • 25m</span>
+<div class="flex gap-1">
+<span class="text-xs">🏠</span>
+<span class="text-xs">👟</span>
+<span class="text-xs">🛋️</span>
+</div>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full bg-[#4fc3f7] flex items-center justify-center text-white shadow-lg shadow-[#4fc3f7]/20 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</div>
+<!-- Card 6: Beach Bonanza -->
+<div class="relative overflow-hidden bg-gradient-to-r from-[#ffd23f]/10 to-surface-container-high rounded-[20px] border-[1.5px] border-[#ffd23f]/30 p-4 pl-6 group hover:translate-y-[-2px] transition-all duration-300">
+<div class="absolute left-0 top-0 bottom-0 w-[5px] bg-[#ffd23f]"></div>
+<div class="flex items-center gap-4">
+<img alt="Beach" class="w-14 h-14 rounded-xl object-cover" data-alt="Golden sandy beach at sunset with shimmering ocean waves and scattered seashells glowing under a warm amber sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2B55LhSTWlyxBDN2vKkqopCuNXvGcRBSE_schGGOLuhtG8UZja-bJwttCLTJI8MJjDf5JJkuqAgr_ac4ejad_bZ-Dbtvmu6OB8dy80T85_evxvTs_1Fdj8KECVkiAWi9shzXQSFFDmMaWTduICfETzf428paLnOtIIDVizVIlpTdszOLIUB-5bo2NxRdVgr9PGE5S9fpZJzDunC218p45MiD-6PyJmAjLqJJe3nHrAnuU57pMOE76GTKyiv6tnlmia9S2TdXuG6s"/>
+<div class="flex-1 min-w-0">
+<h3 class="font-brand text-[17px] text-[#ffd23f] truncate">Beach Bonanza</h3>
+<p class="text-white text-[12px] line-clamp-1 opacity-80">Find shells and lost ocean treasures.</p>
+<div class="flex items-center justify-between mt-2">
+<span class="text-on-surface-variant text-[11px] font-bold">14 Clues • 40m</span>
+<div class="flex gap-1">
+<span class="text-xs">🏖️</span>
+<span class="text-xs">🐚</span>
+<span class="text-xs">🦀</span>
+</div>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full bg-[#ffd23f] flex items-center justify-center text-surface shadow-lg shadow-[#ffd23f]/20 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#04085e]/80 backdrop-blur-xl rounded-t-[2.5rem] border-t border-white/10 shadow-[0_-8px_24px_rgba(0,0,0,0.3)]">
+<button class="flex flex-col items-center justify-center text-white/60 p-3 hover:text-[#45f2b9] transition-colors">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-[#45f2b9] text-[#000144] rounded-full p-3 shadow-[0_0_15px_rgba(69,242,185,0.4)] scale-90 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+</button>
+<button class="flex flex-col items-center justify-center text-white/60 p-3 hover:text-[#45f2b9] transition-colors">
+<span class="material-symbols-outlined" data-icon="military_tech">military_tech</span>
+</button>
+<button class="flex flex-col items-center justify-center text-white/60 p-3 hover:text-[#45f2b9] transition-colors">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</button>
+</nav>
+</body></html>

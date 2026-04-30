@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&amp;family=Plus_Jakarta_Sans:wght@400;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed-dim": "#2de3ac",
+                    "on-background": "#e3e3ff",
+                    "tertiary": "#ffdd7a",
+                    "surface-variant": "#0e1476",
+                    "surface": "#000144",
+                    "primary-dim": "#2de3ac",
+                    "secondary-container": "#ab3500",
+                    "surface-bright": "#131a83",
+                    "on-secondary-fixed": "#631b00",
+                    "on-primary-fixed": "#00412e",
+                    "on-secondary": "#410f00",
+                    "on-primary-container": "#00412f",
+                    "error": "#ff716c",
+                    "on-tertiary": "#624e00",
+                    "error-dim": "#d7383b",
+                    "inverse-on-surface": "#4a4f8f",
+                    "secondary-dim": "#ff7442",
+                    "primary": "#45f2b9",
+                    "surface-container-highest": "#0e1476",
+                    "background": "#000144",
+                    "on-primary": "#00563e",
+                    "on-surface": "#e3e3ff",
+                    "on-surface-variant": "#a0a6ec",
+                    "on-tertiary-container": "#584500",
+                    "inverse-surface": "#fbf8ff",
+                    "secondary": "#ff7442",
+                    "outline": "#6a70b2",
+                    "on-tertiary-fixed": "#413200",
+                    "on-error": "#490006",
+                    "surface-container-low": "#000253",
+                    "error-container": "#9f0519",
+                    "inverse-primary": "#006d4f",
+                    "tertiary-dim": "#eabf2b",
+                    "surface-dim": "#000144",
+                    "on-primary-fixed-variant": "#006046",
+                    "secondary-fixed-dim": "#ffb197",
+                    "surface-container-high": "#080e6a",
+                    "surface-container": "#04085e",
+                    "primary-container": "#00d59f",
+                    "on-secondary-container": "#fff6f3",
+                    "tertiary-fixed": "#f9cd3a",
+                    "outline-variant": "#3d4281",
+                    "surface-container-lowest": "#000000",
+                    "surface-tint": "#45f2b9",
+                    "on-tertiary-fixed-variant": "#634e00",
+                    "on-secondary-fixed-variant": "#942d00",
+                    "primary-fixed": "#45f2b9",
+                    "on-error-container": "#ffa8a3",
+                    "tertiary-container": "#f9cd3a",
+                    "tertiary-fixed-dim": "#eabf2b",
+                    "secondary-fixed": "#ffc4b2"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+        .star-particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+        .gold-glow-text {
+            text-shadow: 0 0 20px rgba(255, 221, 122, 0.8), 0 0 40px rgba(255, 221, 122, 0.4);
+        }
+        .trophy-glow {
+            background: radial-gradient(circle, rgba(255, 221, 122, 0.3) 0%, rgba(255, 221, 122, 0) 70%);
+        }
+        .pennant {
+            clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body min-h-screen relative overflow-hidden flex flex-col">
+<!-- Star Particles Background -->
+<div class="absolute inset-0 pointer-events-none opacity-40">
+<div class="star-particle top-10 left-10"></div>
+<div class="star-particle top-40 left-1/4"></div>
+<div class="star-particle top-20 right-20"></div>
+<div class="star-particle bottom-20 left-1/3"></div>
+<div class="star-particle bottom-40 right-1/4"></div>
+<div class="star-particle top-1/2 left-10"></div>
+<div class="star-particle top-3/4 right-5"></div>
+</div>
+<!-- Pennant Garland -->
+<div class="absolute top-0 left-0 w-full flex justify-between px-2 pt-0 z-10 pointer-events-none">
+<div class="flex space-x-1 w-full justify-center">
+<div class="pennant w-8 h-10 bg-[#ff716c] shadow-lg"></div>
+<div class="pennant w-8 h-10 bg-[#ffdd7a] shadow-lg"></div>
+<div class="pennant w-8 h-10 bg-[#45f2b9] shadow-lg"></div>
+<div class="pennant w-8 h-10 bg-[#6a70b2] shadow-lg"></div>
+<div class="pennant w-8 h-10 bg-[#ab3500] shadow-lg"></div>
+<div class="pennant w-8 h-10 bg-[#ff716c] shadow-lg"></div>
+<div class="pennant w-8 h-10 bg-[#ffdd7a] shadow-lg"></div>
+<div class="pennant w-8 h-10 bg-[#45f2b9] shadow-lg"></div>
+<div class="pennant w-8 h-10 bg-[#6a70b2] shadow-lg"></div>
+<div class="pennant w-8 h-10 bg-[#ab3500] shadow-lg"></div>
+</div>
+</div>
+<!-- Corners Sparkles -->
+<span class="material-symbols-outlined absolute top-8 left-8 text-tertiary opacity-80" style="font-variation-settings: 'FILL' 1;">colors_spark</span>
+<span class="material-symbols-outlined absolute top-8 right-8 text-tertiary opacity-80" style="font-variation-settings: 'FILL' 1;">colors_spark</span>
+<span class="material-symbols-outlined absolute bottom-24 left-8 text-tertiary opacity-80" style="font-variation-settings: 'FILL' 1;">colors_spark</span>
+<span class="material-symbols-outlined absolute bottom-24 right-8 text-tertiary opacity-80" style="font-variation-settings: 'FILL' 1;">colors_spark</span>
+<!-- Top App Bar (Shared Component Strategy) -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-transparent">
+<button class="text-[#45f2b9] hover:scale-110 transition-transform active:scale-95 duration-150">
+<span class="material-symbols-outlined text-3xl">close</span>
+</button>
+<h1 class="font-['Fredoka_One'] uppercase tracking-wider text-2xl text-[#45f2b9] drop-shadow-[0_2px_0_#ab3500]">QUEST COMPLETE</h1>
+<button class="text-[#45f2b9] hover:scale-110 transition-transform active:scale-95 duration-150">
+<span class="material-symbols-outlined text-3xl">share</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col items-center justify-center px-6 pt-24 pb-32 max-w-lg mx-auto w-full">
+<!-- Victory Title -->
+<div class="text-center mb-8">
+<h2 class="font-['Fredoka_One'] text-[52px] leading-none bg-gradient-to-b from-[#ffdd7a] to-[#ab3500] bg-clip-text text-transparent gold-glow-text uppercase">VICTORY!</h2>
+<div class="flex items-center justify-center mt-2">
+<div class="h-[2px] w-16 bg-[#ffdd7a]"></div>
+<span class="material-symbols-outlined text-tertiary mx-3 text-sm" style="font-variation-settings: 'FILL' 1;">diamond</span>
+<div class="h-[2px] w-16 bg-[#ffdd7a]"></div>
+</div>
+</div>
+<!-- Trophy Hero Section -->
+<div class="relative flex items-center justify-center mb-6">
+<!-- Ray Starburst behind trophy -->
+<div class="absolute w-[260px] h-[260px] trophy-glow rounded-full"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-full h-full relative animate-pulse opacity-20">
+<div class="absolute w-full h-[1px] bg-tertiary top-1/2 rotate-0"></div>
+<div class="absolute w-full h-[1px] bg-tertiary top-1/2 rotate-45"></div>
+<div class="absolute w-full h-[1px] bg-tertiary top-1/2 rotate-90"></div>
+<div class="absolute w-full h-[1px] bg-tertiary top-1/2 rotate-135"></div>
+</div>
+</div>
+<!-- Trophy Image -->
+<img alt="Victory Trophy" class="w-[200px] h-[200px] object-contain relative z-10" data-alt="large ornate 3D golden trophy with intricate filigree embossing standing proud on a midnight blue background soft magical glow highly detailed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAqvmhlc6ABpp4wguT0uKxUPhE0SpWKLKW-XCLu1F4fmqMKIsL8gCRbH9IxqQW0vZKGqzJ7xIW9CI3RH_e1Yf5seucKfsc4ZfDNJZ5_IvYT1DwNTt9lDhq5t7YVOCKbtXdtZHKDgde75lQMXdcz5gx1lX3wu_M2OMg-IPqY_DyKl38CsR9KCiJ7Wknlcv5pH5Q22cm2zW5v7unG1-F4AaGWLhNz3httHYeoPvz0PJ7S8t08m88YobHXcg13OSn4nEeiEsuNXqm_3w"/>
+</div>
+<!-- Star Rating -->
+<div class="flex space-x-2 mb-10">
+<span class="material-symbols-outlined text-[48px] text-tertiary drop-shadow-lg" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="material-symbols-outlined text-[48px] text-tertiary drop-shadow-lg scale-125" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="material-symbols-outlined text-[48px] text-tertiary drop-shadow-lg" style="font-variation-settings: 'FILL' 1;">stars</span>
+</div>
+<!-- Score Card -->
+<div class="w-full bg-surface-container-high rounded-lg p-6 border-2 border-tertiary/20 shadow-[0_0_20px_rgba(255,221,122,0.1)] mb-6 flex items-center justify-between">
+<div class="flex items-center">
+<div class="bg-secondary-container p-3 rounded-full mr-4 shadow-inner">
+<span class="material-symbols-outlined text-tertiary text-3xl" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+</div>
+<div>
+<div class="font-['Fredoka_One'] text-3xl text-tertiary">+250 pts</div>
+<div class="font-bold text-on-surface-variant text-xs uppercase tracking-widest">Total Score</div>
+</div>
+</div>
+<div class="flex flex-col space-y-2">
+<div class="bg-[#0e1476] px-4 py-1.5 rounded-full flex items-center shadow-md">
+<span class="material-symbols-outlined text-xs text-[#2de3ac] mr-2">timer</span>
+<span class="font-extrabold text-xs text-[#2de3ac]">12 min 34 sec</span>
+</div>
+<div class="bg-primary-container/20 px-4 py-1.5 rounded-full flex items-center shadow-md">
+<span class="material-symbols-outlined text-xs text-primary mr-2" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-extrabold text-xs text-primary">5/5 found</span>
+</div>
+</div>
+</div>
+<!-- Speed Badge -->
+<div class="flex items-center bg-surface-bright/40 px-6 py-3 rounded-full mb-10 border border-outline-variant/30 backdrop-blur-sm">
+<div class="relative mr-3">
+<span class="material-symbols-outlined text-5xl text-tertiary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<span class="font-['Fredoka_One'] text-lg text-tertiary uppercase tracking-wide">⚡ Lightning Speed!</span>
+</div>
+<!-- Action Buttons -->
+<div class="w-full space-y-4">
+<button class="w-full bg-gradient-to-r from-secondary to-pink-500 text-white font-['Fredoka_One'] text-xl py-5 rounded-lg shadow-[0_6px_0_#ab3500] active:translate-y-1 active:shadow-[0_2px_0_#ab3500] transition-all flex items-center justify-center uppercase tracking-widest">
+<span class="material-symbols-outlined mr-2">bolt</span> Play Again!
+            </button>
+<div class="flex space-x-4">
+<button class="flex-1 bg-surface-container-highest text-tertiary font-bold py-4 rounded-lg border border-outline-variant/20 hover:bg-surface-bright transition-colors flex items-center justify-center uppercase text-sm tracking-widest">
+<span class="material-symbols-outlined mr-2">military_tech</span> Trophies
+                </button>
+<button class="flex-1 bg-surface-container-highest text-on-surface text-on-surface font-bold py-4 rounded-lg border border-outline-variant/20 hover:bg-surface-bright transition-colors flex items-center justify-center uppercase text-sm tracking-widest">
+<span class="material-symbols-outlined mr-2">home</span> Home
+                </button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Shell (Contextual Suppression Active: Not shown on victory screen) -->
+</body></html>
