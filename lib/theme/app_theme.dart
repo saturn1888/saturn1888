@@ -59,7 +59,7 @@ class AppTheme {
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: true,
-        titleTextStyle: GoogleFonts.fredokaOne(
+        titleTextStyle: GoogleFonts.fredoka(fontWeight: FontWeight.w700,
           fontSize: 20,
           color: onSurface,
         ),
@@ -67,7 +67,7 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           minimumSize: const Size(48, 56),
-          textStyle: GoogleFonts.fredokaOne(fontSize: 17),
+          textStyle: GoogleFonts.fredoka(fontWeight: FontWeight.w700,fontSize: 17),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24),
           ),
@@ -141,7 +141,7 @@ class AppTheme {
       dialogTheme: DialogThemeData(
         backgroundColor: surfaceHigh,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        titleTextStyle: GoogleFonts.fredokaOne(
+        titleTextStyle: GoogleFonts.fredoka(fontWeight: FontWeight.w700,
           fontSize: 22,
           color: onSurface,
         ),
@@ -169,7 +169,7 @@ class AppTheme {
 
   // Text hierarchy — Fredoka One for headings
   static TextStyle heading({double size = 28, Color? color}) {
-    return GoogleFonts.fredokaOne(
+    return GoogleFonts.fredoka(fontWeight: FontWeight.w700,
       fontSize: size,
       color: color ?? onSurface,
     );
