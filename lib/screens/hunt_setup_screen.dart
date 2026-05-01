@@ -34,9 +34,13 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
   @override
   Widget build(BuildContext context) {
     return ParchmentBackground(child: Scaffold(
-      appBar: AppBar(title: const Text('Hunt Setup'), actions: [const MuteButton()]),
+      appBar: AppBar(
+        title: Text('HUNT SETUP', style: AppTheme.heading(size: 20)),
+        actions: const [MuteButton()],
+      ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        physics: const ClampingScrollPhysics(),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -45,24 +49,23 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
             TextField(
               controller: _nameController,
               maxLength: 40,
+              style: AppTheme.body(size: 16),
               decoration: const InputDecoration(
                 hintText: 'e.g. Backyard Adventure',
                 counterText: '',
               ),
               textCapitalization: TextCapitalization.words,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 28),
             AdventureHeader(title: 'Choose a Theme', emoji: '🎨'),
-            const SizedBox(height: 4),
             Text(
-              'Each theme changes the look, language, and feel of your hunt',
+              'Each theme changes the look and feel',
               style: AppTheme.caption(size: 13),
             ),
             const SizedBox(height: 12),
-            // Theme preview card
             _buildThemePreview(),
             const SizedBox(height: 12),
-            // Theme selector - horizontal scrollable chips
+            // Theme selector chips
             SizedBox(
               height: 44,
               child: ListView.builder(
@@ -76,35 +79,46 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
                       left: index == 0 ? 0 : 4,
                       right: 4,
                     ),
-                    child: ChoiceChip(
-                      label: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(theme.emoji, style: const TextStyle(fontSize: 16)),
-                          const SizedBox(width: 6),
-                          Text(
-                            theme.name,
-                            style: TextStyle(
-                              color: isSelected ? Colors.white : AppTheme.warmBrown,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
-                      selected: isSelected,
-                      selectedColor: AppTheme.darkGold,
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        side: BorderSide(
+                    child: GestureDetector(
+                      onTap: () =>
+                          setState(() => _selectedTheme = theme.type),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 8),
+                        decoration: BoxDecoration(
                           color: isSelected
-                              ? AppTheme.darkGold
-                              : Colors.grey.shade300,
+                              ? AppTheme.tertiary
+                              : AppTheme.surfaceVariant,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(6),
+                              child: Image.asset(
+                                Illustrations.themeImage(theme.name),
+                                width: 20,
+                                height: 20,
+                                filterQuality: FilterQuality.high,
+                                errorBuilder: (_, __, ___) => Text(
+                                    theme.emoji,
+                                    style: const TextStyle(fontSize: 14)),
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              theme.name.split(' ').first,
+                              style: AppTheme.body(
+                                size: 13,
+                                color: isSelected
+                                    ? const Color(0xFF1A0A00)
+                                    : AppTheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      onSelected: (_) =>
-                          setState(() => _selectedTheme = theme.type),
                     ),
                   );
                 },
@@ -121,35 +135,58 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
               children: [
                 ..._timerOptions.map((minutes) {
                   final isSelected = !_customTimer && _timerMinutes == minutes;
-                  return ChoiceChip(
-                    label: Text(
-                      minutes == null ? 'Off' : '$minutes min',
-                      style: TextStyle(
-                        color: isSelected ? Colors.white : AppTheme.warmBrown,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    selected: isSelected,
-                    selectedColor: AppTheme.darkGold,
-                    backgroundColor: Colors.white,
-                    onSelected: (_) => setState(() {
+                  return GestureDetector(
+                    onTap: () => setState(() {
                       _timerMinutes = minutes;
                       _customTimer = false;
                     }),
+                    child: Container(
+                      height: 40,
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      decoration: BoxDecoration(
+                        gradient: isSelected
+                            ? const LinearGradient(
+                                colors: [Color(0xFF7C3AED), Color(0xFF9B59D4)])
+                            : null,
+                        color: isSelected ? null : AppTheme.surfaceVariant,
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: isSelected
+                            ? [BoxShadow(
+                                color: const Color(0xFF7C3AED).withOpacity(0.4),
+                                blurRadius: 8,
+                                offset: const Offset(0, 3))]
+                            : null,
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        minutes == null ? 'Off' : '${minutes}min',
+                        style: AppTheme.body(
+                          size: 13,
+                          color: isSelected
+                              ? Colors.white
+                              : AppTheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
                   );
                 }),
-                ChoiceChip(
-                  label: Text(
-                    'Custom',
-                    style: TextStyle(
-                      color: _customTimer ? Colors.white : AppTheme.warmBrown,
-                      fontWeight: FontWeight.bold,
+                GestureDetector(
+                  onTap: () => setState(() => _customTimer = true),
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: _customTimer
+                          ? AppTheme.primary
+                          : AppTheme.surfaceVariant,
+                      borderRadius: BorderRadius.circular(24),
                     ),
+                    child: Icon(Icons.edit,
+                        size: 18,
+                        color: _customTimer
+                            ? AppTheme.background
+                            : AppTheme.onSurfaceVariant),
                   ),
-                  selected: _customTimer,
-                  selectedColor: AppTheme.darkGold,
-                  backgroundColor: Colors.white,
-                  onSelected: (_) => setState(() => _customTimer = true),
                 ),
               ],
             ),
@@ -216,14 +253,8 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
     final theme = HuntThemeData.fromType(_selectedTheme);
     return Container(
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF1A0E00), Color(0xFF2A1A00)],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppTheme.gold.withOpacity(0.5),
-          width: 1.5,
-        ),
+        color: AppTheme.surfaceHigh,
+        borderRadius: BorderRadius.circular(24),
       ),
       padding: const EdgeInsets.all(18),
       child: Column(
@@ -280,12 +311,12 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF06D6A0), Color(0xFF009E78)],
+                colors: [AppTheme.primary, AppTheme.primaryDim],
               ),
               borderRadius: BorderRadius.circular(12),
               boxShadow: const [
                 BoxShadow(
-                  color: Color(0xFF007A5C),
+                  color: const Color(0xFF00412F),
                   blurRadius: 0,
                   offset: Offset(0, 3),
                 ),
@@ -303,129 +334,3 @@ class _HuntSetupScreenState extends State<HuntSetupScreen> {
   }
 }
 
-/// Paints a theme card that looks like a beaten-up old map piece
-class _WornMapCardPainter extends CustomPainter {
-  final Color baseColor;
-  final Color accentColor;
-  final bool isSelected;
-  final int seed;
-
-  _WornMapCardPainter({
-    required this.baseColor,
-    required this.accentColor,
-    required this.isSelected,
-    required this.seed,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final rng = Random(seed * 5113);
-    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-
-    // Torn edge outline
-    final outline = Path();
-    const jag = 2.5;
-    const step = 4.0;
-
-    outline.moveTo(3, rng.nextDouble() * jag);
-    for (double x = 3; x < size.width - 3; x += step) {
-      outline.lineTo(x, rng.nextDouble() * jag);
-    }
-    for (double y = 0; y < size.height; y += step) {
-      outline.lineTo(size.width - rng.nextDouble() * jag, y);
-    }
-    for (double x = size.width; x > 3; x -= step) {
-      outline.lineTo(x, size.height - rng.nextDouble() * jag);
-    }
-    for (double y = size.height; y > 0; y -= step) {
-      outline.lineTo(rng.nextDouble() * jag, y);
-    }
-    outline.close();
-
-    // Drop shadow
-    canvas.drawPath(
-      outline.shift(const Offset(2, 3)),
-      Paint()..color = Colors.black.withOpacity(0.2),
-    );
-
-    // Base fill
-    canvas.save();
-    canvas.clipPath(outline);
-    canvas.drawRect(rect, Paint()..color = baseColor);
-
-    // Crumple/crease marks
-    final creasePaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.8;
-    for (int i = 0; i < 5; i++) {
-      final x1 = rng.nextDouble() * size.width;
-      final y1 = rng.nextDouble() * size.height;
-      final x2 = x1 + (rng.nextDouble() - 0.5) * size.width * 0.6;
-      final y2 = y1 + (rng.nextDouble() - 0.5) * size.height * 0.4;
-      creasePaint.color = Colors.white.withOpacity(0.04 + rng.nextDouble() * 0.06);
-      canvas.drawLine(Offset(x1, y1), Offset(x2, y2), creasePaint);
-    }
-
-    // Stain spots
-    for (int i = 0; i < 4; i++) {
-      canvas.drawOval(
-        Rect.fromCenter(
-          center: Offset(rng.nextDouble() * size.width, rng.nextDouble() * size.height),
-          width: 8 + rng.nextDouble() * 18,
-          height: 6 + rng.nextDouble() * 12,
-        ),
-        Paint()..color = Colors.black.withOpacity(0.03 + rng.nextDouble() * 0.04),
-      );
-    }
-
-    // Grain dots
-    for (int i = 0; i < 30; i++) {
-      canvas.drawCircle(
-        Offset(rng.nextDouble() * size.width, rng.nextDouble() * size.height),
-        0.3 + rng.nextDouble() * 1.0,
-        Paint()..color = Colors.white.withOpacity(0.02 + rng.nextDouble() * 0.03),
-      );
-    }
-
-    // Burned edge vignette
-    canvas.drawRect(
-      rect,
-      Paint()
-        ..shader = RadialGradient(
-          center: Alignment.center,
-          radius: 0.8,
-          colors: [
-            Colors.transparent,
-            Colors.black.withOpacity(0.2),
-          ],
-        ).createShader(rect),
-    );
-
-    canvas.restore();
-
-    // Border
-    canvas.drawPath(
-      outline,
-      Paint()
-        ..color = isSelected
-            ? accentColor.withOpacity(0.9)
-            : Colors.black.withOpacity(0.2)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = isSelected ? 3.0 : 1.0,
-    );
-
-    // Selection glow
-    if (isSelected) {
-      canvas.drawPath(
-        outline,
-        Paint()
-          ..color = accentColor.withOpacity(0.15)
-          ..style = PaintingStyle.fill
-          ..maskFilter = const MaskFilter.blur(BlurStyle.outer, 6),
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-}
