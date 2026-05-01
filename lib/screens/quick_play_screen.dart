@@ -18,23 +18,22 @@ class QuickPlayScreen extends StatelessWidget {
     return ParchmentBackground(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Quick Play'),
+          title: Text('Quick Play', style: AppTheme.heading(size: 20)),
           actions: const [MuteButton()],
         ),
         body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AdventureHeader(title: 'Ready-to-Play Hunts', emoji: '🗺️'),
+                  Text('⚡ Pick a Hunt & Start Playing!',
+                      style: AppTheme.heading(size: 20)),
                   const SizedBox(height: 4),
-                  Text(
-                    'No setup needed! Just pick a hunt and start playing.\nSolve the riddles to find everyday objects.',
-                    style: AppTheme.caption(size: 13),
-                    textAlign: TextAlign.center,
-                  ),
+                  Text('No setup needed!',
+                      style: AppTheme.caption(size: 13)),
                 ],
               ),
             ),
@@ -45,17 +44,7 @@ class QuickPlayScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final hunt = hunts[index];
                   final theme = HuntThemeData.fromType(hunt.themeType);
-                  return _HuntCard(
-                    hunt: hunt,
-                    theme: theme,
-                    onPlay: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/play',
-                        arguments: hunt,
-                      );
-                    },
-                  );
+                  return _HuntCard(hunt: hunt, theme: theme);
                 },
               ),
             ),
@@ -69,142 +58,76 @@ class QuickPlayScreen extends StatelessWidget {
 class _HuntCard extends StatelessWidget {
   final Hunt hunt;
   final HuntThemeData theme;
-  final VoidCallback onPlay;
 
-  const _HuntCard({
-    required this.hunt,
-    required this.theme,
-    required this.onPlay,
-  });
+  const _HuntCard({required this.hunt, required this.theme});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onPlay,
+      onTap: () => Navigator.pushNamed(context, '/play', arguments: hunt),
       child: Container(
-        margin: const EdgeInsets.only(bottom: 14),
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFF2E3590), Color(0xFF252B7A)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: Colors.white.withOpacity(0.1),
-            width: 1.5,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.4),
-              blurRadius: 24,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Column(
-            children: [
-              // Theme header — rich coloured banner
-              Container(
-                width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                decoration: BoxDecoration(
-                  color: theme.backgroundColor,
-                  // Subtle wood grain effect via gradient
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      theme.backgroundColor,
-                      Color.lerp(theme.backgroundColor, Colors.black, 0.08)!,
-                      theme.backgroundColor,
-                    ],
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Image.asset(Illustrations.themeImage(hunt.theme.name),
-                        width: 48,
-                        height: 48,
-                        errorBuilder: (_, __, ___) =>
-                            Text(theme.emoji, style: const TextStyle(fontSize: 34))),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            hunt.name,
-                            style: AppTheme.heading(
-                                size: 19, color: theme.accentColor),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            theme.description,
-                            style: AppTheme.caption(
-                                size: 12,
-                                color: theme.accentColor.withOpacity(0.7)),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(Icons.play_arrow_rounded,
-                          color: Colors.white, size: 32),
-                    ),
-                  ],
-                ),
-              ),
-              // Details bar
-              Container(
-                width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                color: Colors.black.withOpacity(0.15),
-                child: Row(
-                  children: [
-                    Icon(Icons.help_outline,
-                        size: 14, color: AppTheme.leather),
-                    const SizedBox(width: 4),
-                    Text('${hunt.clues.length} clues',
-                        style: AppTheme.caption(
-                            size: 12, color: AppTheme.warmBrown)),
-                    const SizedBox(width: 16),
-                    Icon(Icons.timer_outlined,
-                        size: 14, color: AppTheme.leather),
-                    const SizedBox(width: 4),
-                    Text(
-                      hunt.timerMinutes != null
-                          ? '${hunt.timerMinutes} min'
-                          : 'No timer',
-                      style: AppTheme.caption(
-                          size: 12, color: AppTheme.warmBrown),
-                    ),
-                    const Spacer(),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(6),
-                      child: Image.asset(
-                        Illustrations.themeImage(hunt.theme.name),
-                        width: 20, height: 20,
-                        filterQuality: FilterQuality.high,
-                        errorBuilder: (_, __, ___) =>
-                            Text(theme.emoji, style: const TextStyle(fontSize: 16)),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+          gradient: LinearGradient(
+            colors: [
+              theme.backgroundColor,
+              Color.lerp(theme.backgroundColor, AppTheme.surfaceBright, 0.3)!,
             ],
           ),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                Illustrations.themeImage(hunt.theme.name),
+                width: 48,
+                height: 48,
+                fit: BoxFit.cover,
+                filterQuality: FilterQuality.high,
+                errorBuilder: (_, __, ___) =>
+                    Text(theme.emoji, style: const TextStyle(fontSize: 28)),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(hunt.name,
+                      style: AppTheme.heading(
+                          size: 15, color: theme.accentColor)),
+                  Text(
+                    theme.description,
+                    style: AppTheme.caption(
+                        size: 11,
+                        color: theme.accentColor.withOpacity(0.6)),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '${hunt.clues.length} clues • ${hunt.timerMinutes != null ? "${hunt.timerMinutes} min" : "Free play"}',
+                    style: AppTheme.caption(
+                        size: 10,
+                        color: theme.accentColor.withOpacity(0.5)),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: AppTheme.primary.withOpacity(0.2),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.play_arrow_rounded,
+                  color: AppTheme.primary, size: 22),
+            ),
+          ],
         ),
       ),
     );
